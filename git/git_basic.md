@@ -1,40 +1,32 @@
-## 깃 저장공간
-
-실제 폴터 = git_init
+# git
 
 
 
- 로컬 저장소(git)
+## Interface
 
-- wordking directory
+GUI( Graphic User Interface): 컴퓨터와 유저의 상호작용
 
-- commit :  버전을 넘기는 용도 (커밋에 올린다)
-
-- staging area: 올리기 전에 임시로 저장하는 것
+CLI(command line interface): 컴퓨터만의 언어
 
 
 
-깃에서 하지말아야 할 것
+## 경로
 
-1. home_dir 에서 깃 시작하지 않기
+- ~/ 주소: 내 위치
 
-   ( 다른 어떤 위치에서도 깃을 시작할 수 없게 된다.)(관리해야할 것이 너무 많아짐) 등등
+- 상대경로: 내 위치에 따라서 접근하는 곳이 바뀔 수 있다. 
 
-2. 깃에서 깃시작하지 않기 (버전관리가 지워지기 때문이다)
+- 절대경로: 어디서 접근하던지 변하지 않는다.
 
+  
 
-
-초기 세팅
+## 초기 세팅
 
 git config --global user.name {유저이름}
 
 git config --global user.email{이메일}
 
 git config --global -l : 확인하는 용도
-
-
-
-실제폴더 == 실제폴더 + 로컬 저장소(git)
 
 
 
@@ -46,25 +38,94 @@ git config --global -l : 확인하는 용도
 
 ​		==> git push -u origin master
 
+연결 ==> 버전 ==> 파일 ==> 추가 ==> 커밋 ==> 올리기
 
 
 
+## 문법
 
-git 문법
+### 기본 문법
 
-- git init: 
+- **mkdir** :
+
+  - 폴더 만들기
+  - 
+
+- **ls** : (list segment) :
+
+  -  폴더들을 보여주게 된다.
+  -  ls -a : 모든 폴더들을 보여주게 된다.
+  -  ls --all: 숨김파일도 보여주게 된다.
+
+  
+
+- **cd**
+
+  - cd : change directory : folder1으로 이동하는 것
+
+  - cd + 띄어 .. :  부모 디렉토리로 옮길꺼야
+
+  - .. : 부모 디렉토리를 가르킨다
+
+  - . : 현재 디렉토리로 가르킨다
+
+    
+
+- **touch**
+
+  - touch: 파일을 생성 ==> 확장자까지 써줘야한다 ex) a.txt
+
+    
+
+- **start**
+
+  -  실행 ex) start a.txt
+
+    
+
+- **mv**
+
+  - mv 파일이름1 파일이름2: 파일이름을 변경시키는 것
+
+  - mv 파일이름 폴더 : 파일이름을 폴더이름으로 옮길꺼야
+
+    
+
+- **rm**
+
+  - rm 파일이름.txt : 파일을 지우기 방법
+
+  - rm *.txt :              txt를 모두 지워라는 뜻이다.
+
+  - rm - r folder1:     폴더를 지우는 방법
+
+  - rm - r f folder1:   init되어있는 폴더 지우기
+
+    
+
+### 깃 문법
+
+- **git init**: 
+
   - 깃을 시작한다
 
-- git status: 
+    
+
+- **git status: **
+
   - 깃의 상태를 확인 할께
 
-- git add a.txt: 
-  - 깃에다가 a.txt 파일을 더할께 --> 깃을 statge area에 보낼께
+    
 
-- git add . : 
-  - 이 폴더에 있는 모든 애들을 추가하겠어
+- **git add**
 
-- git commit -m "first commit": 
+  - git add a.txt:  깃에다가 a.txt 파일을 더할께 --> 깃을 statge area에 보낼께
+
+  - git add . :         이 폴더에 있는 모든 애들을 추가하겠어
+
+    
+
+- **git commit -m "first commit"**: 
 
   - 메세지 first commit을 남기겠어
 
@@ -72,34 +133,34 @@ git 문법
 
     빠져나오는 방법 == i를 누른다 ==> esx ==> :wq ==> git log --oneline
 
-- git log: 
+- **git log:** 
+
   - commit에 어떤 파일이 있는지 말해준다
+
   - git log --online: 코밋 상태를 한줄로 확인한다
 
-- rm *.txt :  
-  - .txt를 모두 지워라는 뜻이다.
+    
 
-- git remote add origin {주소}:   (주소는 깃허브 홈페이지에서 가져온다)
-  - 깃허브로 연결을 하는 것
+- **git remote**
 
-- git remote -v
-  - 연결되었는지 확인
+  - git remote add origin {주소}:  
+    - 깃허브로 연결을 하는 것 (주소는 깃허브 홈페이지에서 가져온다)
+  - git remote -v
+    - 연결되었는지 확인
 
-- git remote rm origin
+  - git remote rm origin
 
-  - 제거하는 방법
+    - 제거하는 방법
 
-- git push origin master : origin(별명)이라는 mater에 올릴꺼야
+    
+
+- **git push origin master : **
+
+  - origin(별명)이라는 mater에 올릴꺼야
+
   - git puch -u origin master: origin master를 기억해준다 (origin master를 치기 귀찮음)
 
-- git commit만 쳤을때 메모장으로 들어와진다
-  - 빠져나오는 방법 == i를 누른다 ==> esx ==> :wq ==> git log --oneline
-
-
-
-git hub는 협업이 가능하다
-
-
+    
 
 ### 불러오기
 
@@ -131,6 +192,42 @@ git hub는 협업이 가능하다
 - git merge {branch} : branch를 합칠께
 
 - 
+
+
+
+# 깃 저장공간
+
+
+
+**로컬 저장소(git)**
+
+- wordking directory
+
+- commit :  버전을 넘기는 용도 (커밋에 올린다)
+
+- staging area: 올리기 전에 임시로 저장하는 것
+
+
+
+**깃에서 하지말아야 할 것**
+
+1. home_dir 에서 깃 시작하지 않기
+
+   ( 다른 어떤 위치에서도 깃을 시작할 수 없게 된다.)(관리해야할 것이 너무 많아짐) 등등
+
+2. 깃에서 깃시작하지 않기 (버전관리가 지워지기 때문이다)
+
+
+
+실제폴더 == 실제폴더 + 로컬 저장소(git)
+
+
+
+
+
+
+
+
 
 ### 충돌났을 때 오류
 
