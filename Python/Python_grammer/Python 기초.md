@@ -58,8 +58,35 @@ too many 				:  변수가 너무 많음
 - 특징 : rounding error
 
   - ![image-20220117094838096](Python 기초.assets/image-20220117094838096.png)
-
   - 해결: 절대값을 씌워서 굉장히 작은 수라면 rounding 에러라고 판단한다. 
+
+- 확인 하는 방법 2가지
+
+  - ```python
+    a = 3.5 - 3.12
+    b = 0.38
+    
+    abs(a - b) <= 1e-10
+    ```
+
+  - ```python
+    import sys
+    abs(a - b) <= sys.float_info.epsilon
+    ```
+
+  - ```python
+    # math.isclose() 를 이용해서 a와 b의 값이 같은지 확인할수 있습니다.
+    import math
+    math.isclose(a, b)
+    입실론은 굉장히 작은 수이다
+    따라서 굉장히 작은 수 인지 물어보는 것이다.
+    ```
+
+
+### Complex
+
+- 복소수
+- 문자열 => 복소수 complex('1 + 2j') 안됨 // complex('1+2j') 됨
 
 
 
@@ -85,6 +112,18 @@ too many 				:  변수가 너무 많음
 
 
 ![image-20220117101227557](Python 기초.assets/image-20220117101227557.png)
+
+- datetime 에서도 가능
+
+  - ```python
+    import datatime
+    today = datetime.datetime.now()
+    print(f'오늘을 {today:%y}년 {today:%m}월{today:%d]일 {today:%A}}')
+    ```
+
+  - 
+
+
 
 
 
@@ -153,7 +192,13 @@ too many 				:  변수가 너무 많음
 - **key**에 **list 불가**   ///  **value**에 **list 가능**
 - 순서 없음
 
-
+```python
+dic = {1 : 2, 2: 3}
+dict.get(1)
+dict[1]
+# 둘다 값이 똑같이 나온다
+# 하지만 둘이 다른점: get은 에러를 출력하지 않고 None을 밷는다
+```
 
 
 
@@ -198,8 +243,12 @@ dictionary를 list로 변환 ==> key만 나옴
 ### 산술연산자
 
 - divmod ==> 튜플로 반환 (몫, 나머지)
+- import math
+- math.squrt ==> 루트
 
-
+- 특정 변수가 비어 있는지 확인하기 위해서는
+  - x == None이 아닌 x is None을 사용하는 것을 권장한다.
+- 
 
 ### 논리 연산자
 
@@ -213,6 +262,10 @@ and : 3번쨋꺼 ==> 0이 False ==> 0
 or :  4번쨋꺼 ==> 5가 True ==> 5
 
 
+
+is 는 같은 저장장소를 물어보는 것이다
+
+ex) 같은 list라고 하더라고 저장장소가 다르기 때문에 False가 뜬다.
 
 ### 멤버십 연산자
 

@@ -117,7 +117,27 @@ for i in range(len(chars)):
 3. 딕셔너리 순회
 
 ``` python
+# 0. dictionary 순회 (key 활용)
+for key in dict:
+    print(key)
+    print(dict[key])
 
+
+# 1. `.keys()` 활용
+for key in dict.keys():
+    print(key)
+    print(dict[key])
+
+
+# 2. `.values()` 활용
+# 이 경우 key는 출력할 수 없음
+for val in dict.values():
+    print(val)
+
+
+# 3. `.items()` 활용
+for key, val in dict.items():
+    print(key, val)
 ```
 
 ![image-20220117151642673](Python 기초(2).assets/image-20220117151642673.png)
@@ -202,8 +222,7 @@ key: value for (변수) in <iterable> if <조건>
 
 - 특정 조건에 반목문을 종료 시키기 위해서는 **break**
 
-```python
-```
+- 
 
 
 
@@ -225,7 +244,9 @@ for i in range(6):
 
 ### else
 
+- 즉, for 문이 끝까지 돌았는지를 알아보기 위한 것
 - else문은 break로 중단 되었는지 여부에 따라 실행
+- else는 자주 if - break와 같이 사용된다
 
 ![image-20220117154412181](Python 기초(2).assets/image-20220117154412181.png)
 
