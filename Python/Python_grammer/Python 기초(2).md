@@ -222,8 +222,6 @@ key: value for (변수) in <iterable> if <조건>
 
 - 특정 조건에 반목문을 종료 시키기 위해서는 **break**
 
-- 
-
 
 
 ### continue
