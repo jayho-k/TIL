@@ -3,9 +3,9 @@
 Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 - RPN을 이용 = 물체가 있을 것 같은 것을 찾음, GPU를 이용 
-
 - detection network???
 - CPU에 넣는 것과 GPU에 넣는 것에 차이가 무엇??
+- fine-tuning: 작은 조정 (전에 사용한 weight 사용, )
 
 ### 초록:
 
@@ -26,15 +26,15 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 ### 1. introduction
 
-- 그래서 Regon proposal을 GPU로 올리게 되었음
+- 그래서 Region proposal을 GPU로 올리게 되었음
 - 하지만 이때 어떻게 sharing computation(같이 계산)이 가능할 것인가에 대한 논의가 필요
 - 따라서 알고리즘을 변경함 ==> 사실상 공짜로 이용
 
 - 앞쪽에 몇 가지 layer들만 추가해주면 되기 때문이다
 
-- RPN은 다양한 크기와 측면비율을 예측할 수 있음(다양한 박스 형태)
+- RPN은 다양한 크기와 박스비율을 예측할 수 있음(다양한 박스 형태)
 - 다양한 anchor 박스를 사용함으로써 예측 ==> 본 논문 9개를 사용
-- RPN과 Fast RCNN을 통합하기 위해서 region proposal(물체가 어디 있는지) 과 object detection(종류와 위치)을 번갈아 가면서 fine tuning을 진행하게 된다. == > 적절히 공유 될 수 있고 빠름
+- RPN과 Fast RCNN을 통합하기 위해서 region proposal(물체가 어디 있는지) 과 object detection(종류와 위치)을 번갈아 가면서 fine tuning(?)을 진행하게 된다. == > 적절히 공유 될 수 있고 빠름
 
 
 
@@ -55,14 +55,14 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 
 
-#### 3.1 Region PRoposal Networks
+#### 3.1 Region Proposal Networks
 
 - (zeiler and ergus model )ZF(2013년도 논문 VGG 이전에 많이 사용했었음) 또는 (Simonyan and Zisserman model) VGG와같은 CNN 아키텍쳐를 사용하게 된다.
 
 1. feature map을 n x n 크기의 윈도우를 슬라이딩하는 방식으로 prediction을 진행하게 된다.
 
 2. 각각의 sliding window는 더 작은 차원 feature로 mapping을 진행하게 된다.
-3. 이때 이 feature들은 2가지(box regression layer와 box classification layer)로 넣게 된다.
+3. 이때 이 feature들은 2가지(box regression layer와 box classification layer)로 넣게 된다. (?)
 
 ![image-20220123175741665](C:\Users\장호\AppData\Roaming\Typora\typora-user-images\image-20220123175741665.png)
 
@@ -82,11 +82,11 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 - cls는 2k의 스코어로 ouput을 내고 이때 가능성 여부를 판단하게 된다
   ex)  물체가 있음 72% // 없음  28% // 이런식으로 각 사진당 2가지의 ouput을 내도록 해준다.
 - 3가지 scales, 3가지 종류의 비율 ==> 총 k = 9의 앵커 박스를 사용하게 된다.
-  ex) feature map of size = W X H  ==> WHk개의 anchor가 사용될 것이다.
+  ex) feature map of size = W x H  ==> WHk개의 anchor가 사용될 것이다.
 
 #####    Translation Invariant Anchors( object detection에서 중요함)
 
-- traslation invariant: 이미지에 대하여 이동이 가해진다고 하더라도 traslation invariant가 보장이 되기 때문에 좋은 특성을 가지고 있다.
+- translation invariant: 이미지에 대하여 이동이 가해진다고 하더라도 traslation invariant가 보장이 되기 때문에 좋은 특성을 가지고 있다.
   슬라이딩 기법을 이용하는 것이기 때문에 이미지에 변형이 일어난다 하더라도 invariant한 장점을 가지고 있다. 
 
 
@@ -131,6 +131,100 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 - loss function (결과적으로 이 공식을 사용하게 된다.)
 
 ![image-20220123184611568](C:\Users\장호\AppData\Roaming\Typora\typora-user-images\image-20220123184611568.png)
+
+![image-20220125144703588](Faster R-CNN(region based CNN).assets/image-20220125144703588.png)
+
+
+
+x,y ==> 바운딩박스의 중간점 위치
+
+너비와 높이로 바운딩박스의 크기를 설정한다. 
+
+
+
+regression을 위한 feature의 크기 = 3 x 3
+
+bounding 박스는 ==> 말그대로 사진에 네모쳐져있는 것들
+
+anchor박스는 ==> 여러가지 크기로 특징을 추출하는데 사용되는 것?
+
+####  Training RPNs
+
+- end to end 방식을 사용하였다
+- 모든 엥커에 대해서는 고려하지 않고 랜덤하게 256가지를 골라서 학습하게 된다.
+- positive anchor와 negative anchor의 비율이 1: 1정도로 가능하다면 될 수 있도록 한다.(128:128)
+
+- 이 모델에 맞게 hyper parameter정보가 나와있으니 참고 할 것
+
+
+
+#### 3.2 Sharing Features for RPN and Fast R-CNN
+
+- fast R-CNN detector와 RPN을 어떻게 공유할 수 있는지에 대하여 나와있음
+
+- detection network = Fast R-CNN에서 가져옴
+- \+ RPN
+
+how to share?  3가지
+
+1.  **Alternative training**: 
+   - 번갈아가며 학습
+   - RPN 학습 >> Fast R CNN학습 >> 다시 RPN 
+2. Approximate joint training
+   - RPN 과  Fast R CNN을 합병시켜서 하나의 네트워크로 진행한다.
+   - 구현하기 쉬움
+   - propoal boxes들의 coordinates 의 미분값을 무시하게 된다
+   - 따라서 근사치가 나오게 된다.
+   - 정확도가 살짝 부족함
+3.  Non _ Approximate joint training
+
+
+
+**4-step Alternating training**
+
+1. RPN 학습 >> 전체 네트워크에 대해서 학습을 진행한다.
+2. RPN에서 추출한 proposal을 이용해서 Fast R CNN학습
+   2단계까지는 conv layers가 공유되지 않는다. 
+3. RPN단계에서 포함되지 않는 conv layer는 완전히 고정한 상태로 RPN에 포함되어 있는 추가적인 conv에 대해서만 fine tunning을 하게 된다. 
+4.  conv layer는 완전히 고정한 상태로 Fast R CNN에서만 포함되어 있는 layer에 대해서만 학습을 진행하게 된다.
+
+==> 4번만 반복해도 충분하다고 말함
+
+
+
+- 이미지 바운더리를 크로스하는 anchor boxes들은 조심해서 다룰 필요가 있음
+- 이 논문에서는 loss에 영향이 가지 안도록 설정을 했음
+- 논문에서 anchor 박스가 20000을 만들었다면 각이미지당 6000개 정도의 anchor박스를 선택적으로 사용하게 된다.
+
+- 클라스가 같은 중복된 박스들을 처내기 위해서 non-maximum suppression(NMS)를 사용하게된다. ==> 굉장히 많이 사용되는 방법 중 하나이다.
+- 그리고 NMS를 위한 IoU= 0.7를 사용함 ==> anchor 박스 2000개로 줄음
+- 6000개에서 2000개로 줄었다고 해서 NMS가 정확도에 영향을 주진 않았음
+- NMS 이후에 top-N 개에 proposal regions만 사용된다.
+- 즉 학습을 진행 할 떄 2000개 사용하더라도 실제 evolation을 진행할 때는 유동적으로 갯수를 정하게 된다.
+
+
+
+#### 4. Experiments (실험결과)
+
+4.1 pascal voc 2007 과 12년
+
+이 데이터 셋이 많이 사용된다.
+
+conv 을 공유할 때 더 좋은 값
+
+
+
+성능은 VGG가 더 높지만 속도는 ZE가 더 가볍기 떄문에 빠르다
+
+anchor box = > 3scale 3ratio ==> 가장 좋은 값이 나왔음
+
+
+
+2.4 MS COCO에 대한 실험 결과
+
+
+
+
 
 
 
