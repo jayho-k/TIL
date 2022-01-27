@@ -1,3 +1,4 @@
+
 y, x = map(int, input().split())
 
 if y == 1:
