@@ -33,12 +33,12 @@ for i in range(num+1):
         if lnum < 0:
             break
         lst.append(lnum)
-        
+        c += 1
+
         if mx_len < len(lst):
             mx_len = len(lst)
             rlst = lst
-        c += 1
-
+        
 print(mx_len)
 print(' '.join(map(str,rlst)))
 
