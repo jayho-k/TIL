@@ -37,6 +37,7 @@ for i in range(num+1):
         if mx_len < len(lst):
             mx_len = len(lst)
             rlst = lst
+            
         c += 1
 
 print(mx_len)
