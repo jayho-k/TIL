@@ -2,37 +2,20 @@
 
 Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
+코드 주소:
+
+https:// github.com/rbgirshick/py-faster-rcnn
+
+
+
 - RPN을 이용 = 물체가 있을 것 같은 것을 찾음, GPU를 이용 
 - detection network???
   - 물체 탐색을 위해서 정보를 주고받는 그러한 그룹이다
-
 - CPU에 넣는 것과 GPU에 넣는 것에 차이가 무엇??
   - gpu: 병열로 계산을 하기 때문에 많은 양의 정보를 동시에 처리할 수 있다.
-  - cpu: 직열로 계산을 하기 떄문에 하나하나의 계산속도가 굉장합니다.
+  - cpu: 직열로 계산을 하기 떄문에 하나하나의 계산속도가 굉장합니다
 
-- network?
-  - 디바이스를 서로 연결시켜주는 것
-  - 컴퓨터 네트워크: 정보와 하드웨어 데이터 소프트웨어 등을 서로 공유, 의사소통하게끔 연결하는 그룹
-- superpixel?
-  - 비슷한 벨류들 끼리 그룹화를 시킴으로써 복잡도를 줄이는 것
-  - 이유: 분석을 더욱 간단하게 하기 위해서
 
-- downstream in networking
-  - 네트워크 서비스 제공자에서 고객에서 보내는 데이터를 의미한다
-  - 예를 들어 다운로드와 같은 것을 의미한다
-- fully convolutional network(FCN)
-  - 
-
-- enumerate
-  - 열거하다
-- scale of an image?
-  - 이미지를 resizing하는 것
-  - When scaling a raster graphics image, a new image with a higher or lower number of pixels must be generated. In the case of decreasing the pixel number (scaling down) this usually results in a visible quality loss.
-  - 픽셀수를 낮출 경우에는 퀄리티가 안좋아진다
-- raster:
-  - 컴퓨터에서 화상 정보를 표현하는 한 가지 방법. 
-  - 이미지를 2차원 배열 형태의 픽셀로 구성하고, 이 점들의 모습을 조합, 일정한 간격의 픽셀들로 하나의 화상 정보를 표현하는 것이다.
-  -  즉 한 줄에서 연속된 픽셀들의 집합을 래스터라고 한다
 
 ### 초록:
 
@@ -85,14 +68,27 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 
 
+총 2개의 모듈이 있음
+
+1. deep fully convolution network : 지역을 제안
+2. fast R-CNN : 제안된 region을 이용하는 역할
+
+
+
 #### 3.1 Region Proposal Networks
 
+: 어디를 집중적으로 봐야할지를 제시해준다. 
+
 - (zeiler and ergus model )ZF(2013년도 논문 VGG 이전에 많이 사용했었음) 또는 (Simonyan and Zisserman model) VGG와같은 CNN 아키텍쳐를 사용하게 된다.
+
+
+
+그것을 어떻게 진행되는지를 설명
 
 1. feature map을 n x n 크기의 윈도우를 슬라이딩하는 방식으로 prediction을 진행하게 된다.
 
 2. 각각의 sliding window는 더 작은 차원 feature로 mapping을 진행하게 된다.
-3. 이때 이 feature들은 2가지(box regression layer와 box classification layer)로 넣게 된다. (?)
+3. 이때 이 feature들은 2가지(box regression layer(위치)와 box classification layer(분류)로 넣게 된다. (?)
 
 ![image-20220123175741665](C:\Users\장호\AppData\Roaming\Typora\typora-user-images\image-20220123175741665.png)
 
