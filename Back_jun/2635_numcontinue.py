@@ -13,6 +13,10 @@
 
     초기 값: 100
     next 값: i 
+    이것을 리스트에 담아서 해결을 할 것이다
+    두개에 값을 포함한 초기값을 설정해준 뒤 진행
+    lst = [num, i]
+
     초기, next = next, 초기 - next
 
 3. 마이너스가 나오면 스탑
@@ -20,26 +24,64 @@
 5. 그것을 센것이 mx보다 크면 그것으로 넘어감
 6. 멕스와 리스트를 출력
 '''
+
 num = int(input())
+
 rlst = []
-mx_len = 0
 
 for i in range(num+1):
 
-    lst = [num,i]
+    lst = [num, i]
     c = 0
     while 1:
-        lnum= lst[c] - lst[c+1]
-        if lnum < 0:
+        
+        lnum = lst[c] - lst[c+1]
+        if lnum <= 0:
             break
+
         lst.append(lnum)
         c += 1
 
-        if mx_len < len(lst):
-            mx_len = len(lst)
-            rlst = lst
+    if len(rlst) < len(lst):
+        rlst = lst
+
+print(len(rlst))
+print(' '.join(map(str, rlst)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+# num = int(input())
+# rlst = []
+# mx_len = 0
+
+# for i in range(num+1):
+
+#     lst = [num,i]
+#     c = 0
+#     while 1:
+#         lnum= lst[c] - lst[c+1]
+#         if lnum < 0:
+#             break
+#         lst.append(lnum)
+#         c += 1
+
+#         if mx_len < len(lst):
+#             mx_len = len(lst)
+#             rlst = lst
         
-print(mx_len)
-print(' '.join(map(str,rlst)))
+# print(mx_len)
+# print(' '.join(map(str,rlst)))
+
+
 
 
