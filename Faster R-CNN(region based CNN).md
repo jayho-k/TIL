@@ -3,9 +3,36 @@
 Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 - RPN을 이용 = 물체가 있을 것 같은 것을 찾음, GPU를 이용 
-
 - detection network???
+  - 물체 탐색을 위해서 정보를 주고받는 그러한 그룹이다
+
 - CPU에 넣는 것과 GPU에 넣는 것에 차이가 무엇??
+  - gpu: 병열로 계산을 하기 때문에 많은 양의 정보를 동시에 처리할 수 있다.
+  - cpu: 직열로 계산을 하기 떄문에 하나하나의 계산속도가 굉장합니다.
+
+- network?
+  - 디바이스를 서로 연결시켜주는 것
+  - 컴퓨터 네트워크: 정보와 하드웨어 데이터 소프트웨어 등을 서로 공유, 의사소통하게끔 연결하는 그룹
+- superpixel?
+  - 비슷한 벨류들 끼리 그룹화를 시킴으로써 복잡도를 줄이는 것
+  - 이유: 분석을 더욱 간단하게 하기 위해서
+
+- downstream in networking
+  - 네트워크 서비스 제공자에서 고객에서 보내는 데이터를 의미한다
+  - 예를 들어 다운로드와 같은 것을 의미한다
+- fully convolutional network(FCN)
+  - 
+
+- enumerate
+  - 열거하다
+- scale of an image?
+  - 이미지를 resizing하는 것
+  - When scaling a raster graphics image, a new image with a higher or lower number of pixels must be generated. In the case of decreasing the pixel number (scaling down) this usually results in a visible quality loss.
+  - 픽셀수를 낮출 경우에는 퀄리티가 안좋아진다
+- raster:
+  - 컴퓨터에서 화상 정보를 표현하는 한 가지 방법. 
+  - 이미지를 2차원 배열 형태의 픽셀로 구성하고, 이 점들의 모습을 조합, 일정한 간격의 픽셀들로 하나의 화상 정보를 표현하는 것이다.
+  -  즉 한 줄에서 연속된 픽셀들의 집합을 래스터라고 한다
 
 ### 초록:
 
@@ -26,11 +53,14 @@ Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks
 
 ### 1. introduction
 
+- selective search:
+  - 
+
 - 그래서 Regon proposal을 GPU로 올리게 되었음
 - 하지만 이때 어떻게 sharing computation(같이 계산)이 가능할 것인가에 대한 논의가 필요
 - 따라서 알고리즘을 변경함 ==> 사실상 공짜로 이용
-
 - 앞쪽에 몇 가지 layer들만 추가해주면 되기 때문이다
+  - region bounds 와 objectness scores를 동시에 회귀시킨다
 
 - RPN은 다양한 크기와 측면비율을 예측할 수 있음(다양한 박스 형태)
 - 다양한 anchor 박스를 사용함으로써 예측 ==> 본 논문 9개를 사용
