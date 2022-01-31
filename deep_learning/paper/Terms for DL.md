@@ -72,6 +72,13 @@
 
 
 
+#### initialize
+
+- 변수에 대한 프로그램 중에서 그것을 사용하기 위해서 초기값을 세팅하는 것
+- 
+
+
+
 ### CNN
 
 - 구성:
@@ -118,6 +125,72 @@
 - Actvation map이 나온 뒤에 pooling을 진행하게 된다.
 - Pooling 레이어를 통과하면 행렬의 크기 감소
 - Pooling 레이어를 통해서 채널 수 변경 없음
+
+
+
+
+
+### Translation-Invariant VS Translation Equivariance
+
+Translation Equivariance
+
+![image-20220131163838586](Terms for DL.assets/image-20220131163838586.png)
+
+- 인풋에 변화가 있으면 아웃풋에도 변화생긴단 소리임
+  - 즉 위치가 이동을 하면 계산 결과의 위치도 같이 변함
+  - 이미지 내에 물체의 위치가 변해도 변화한 곳에 같은 값을 내게 된다.
+  - 이 아이는 위치가 변해도 똑같은 값을 보여주는 것
+- if f(g(x)) = g(f(x))  ==> 이해가 더 필요함
+
+- 특성
+  - the concept of weight sharing을 하면서 특성을 얻을 수 있다
+
+
+
+Translation-Invariant
+
+- 인풋에 변화를 줘도 CNN은 여전히 class를 분류할 수 있음
+  - 분류를 할 수 있다는 것
+- 진행 단계 : conv layer => activation => pooling
+- pooling과정에서 max로 진행을 하기때문에 input에 약간의 변화를 주더라도 pooled ouput에 크게 영향을 끼치지 않는다. 
+- 특징:
+  - 정확한 물체의 location이 요구되지 않음
+    - 예를 들어서 너가 모델의 얼굴을 인식할때 눈이 존재하는지 안하는지만 따지면 되지 얼굴에 정확히 어느 위치에 눈이 존재하는지 인식할 필요는 없다는 말임
+
+ex)
+
+max _pooling ==> Translation-Invariant하다
+
+왜냐하면   k x k 필터에서 max값을 뽑아온다
+
+즉  k x k 필터 내에서 값이 변해도 동일한 output을 내기때문이다
+
+어차피 max값을 뽑아낼 것이기 때문에
+
+- input(이미지)에 변화를 주더라도 input이 속해있는 class를 얻어낼수 있다라는 뜻
+  - 물체가 이동하더라도 detect할 수 있다.
+
+
+
+반면에 이건 여담인데
+
+segementation tasks은 정확한 position을 요구함
+
+
+
+data agumentation
+
+- Translation Equivariance랑 Translation-Invariant는 data agumentation이라고 불리는 기술로 사용이 된다
+
+- 데이터 별로 없을 때 rotation, flipping, zooming, translating등등을 해서 샘플을 만들어 내서 데이터를 충분하게 만드는 것이다.
+
+
+
+
+
+
+
+
 
 
 
