@@ -1,5 +1,9 @@
 # Terms for DL
 
+- 논문 읽는 법
+
+
+
 ### fine tuning
 
 언제 사용함?
