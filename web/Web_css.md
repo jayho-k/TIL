@@ -257,18 +257,34 @@
 
 - sticky
   - 스크롤 같은 것
+- 그림 정중앙에 위치하게 만들기
+  -  그림은 좌측 상단을 기준으로 하기때문에 잘 확인을 해주어야한다.
+
+
+![image-20220204154011957](Web_css.assets/image-20220204154011957.png)
 
 
 
+- 박스 원형으로 만들기
+  -  border-radius: 50% 로하면 원형으로 바뀌게 된다
 
 
 
+ul> li*3
+
+ol >li*3 
+
+이라고 하면 한번에 나온다
+
+ul # fruit-list>li.fruit-item*3
+
+이라고 하면 fruit itme class 인 리스트 세개와 id fruit-list가 나오게 된다
 
 
 
+테이블 (한번에 만들기)
 
-
-
+![image-20220204155849072](Web_css.assets/image-20220204155849072.png)
 
 
 
