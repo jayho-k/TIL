@@ -1,5 +1,3 @@
-from pprint import pprint
-
 x , y = map(int, input().split())
 
 num = int(input())
@@ -22,8 +20,8 @@ for i in range(num):
 garo.sort()
 sero.sort()
 
-print(garo)
-print(sero)
+# print(garo)
+# print(sero)
 
 mx_g_cm = 0
 for i in range(len(garo)-1):
@@ -32,7 +30,7 @@ for i in range(len(garo)-1):
     if mx_g_cm < g_cm:
         mx_g_cm = g_cm
 
-print(mx_g_cm)
+# print(mx_g_cm)
 
 mx_s_cm = 0
 for i in range(len(sero)-1):
@@ -41,6 +39,6 @@ for i in range(len(sero)-1):
     if mx_s_cm < s_cm:
         mx_s_cm = s_cm
 
-print(mx_s_cm)
+# print(mx_s_cm)
 
 print(mx_s_cm * mx_g_cm)
