@@ -49,15 +49,44 @@
 # word = input().split()
 # print(len(word))
 
-a, b = list(input().split())
+# a, b = list(input().split())
 
-rev_a = list(reversed(a))
-rev_b = list(reversed(b))
+# rev_a = list(reversed(a))
+# rev_b = list(reversed(b))
 
-ra = ''.join(rev_a)
-rb = ''.join(rev_b)
+# ra = ''.join(rev_a)
+# rb = ''.join(rev_b)
 
-if ra > rb:
-    print(ra)
-else:
-    print(rb)
+# if ra > rb:
+#     print(ra)
+# else:
+#     print(rb)
+
+tc = int(input())
+
+mx = 0
+mn = 0
+for _ in range(tc):
+
+    n = int(input())
+    lst = list(map(int, input().split()))
+    lst2 = lst[:]
+
+    for number in lst:
+        if mx < number:
+            mx = number
+
+    for number in lst:
+
+        if mn > number:
+            mn = number
+            print(mn)
+            print(number)
+
+
+
+    # print(mx)
+    # print(mn)
+    # diff = mx - mn
+
+    # print(diff)

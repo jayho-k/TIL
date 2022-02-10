@@ -48,40 +48,6 @@ for i in range(2, len(x)-1):
 
 
 print(sum(lst))
-
-
-
-
-#     else:
-#         shrt1 = 0
-#         mx1 = []
-
-#     if shrt1 ==2:
-#         shrt1 = 0
-#         shrt2 = 0
-
-#         for j in range(i+1, i+3):
-#             if x[i] > x[j]:
-#                 shrt2 += 1
-#                 mx2.append(x[j])
-
-#             else:
-#                 mx2 = []
-
-#             if shrt2 ==2:
-#                 shmx1 = max(mx1)
-#                 shmx2 = max(mx2)
-#                 imx1 = x[i] -shmx1
-#                 imx2 = x[i] -shmx2
-#                 if imx1 <= imx2:
-#                     lst.append(imx1)
-
-#                 else:
-#                     lst.append(imx2)
-
-                
-# print(sum(lst))
-
                 
 
 

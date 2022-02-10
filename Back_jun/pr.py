@@ -45,7 +45,7 @@ def counting_sort(arr, k):
         # result[c_arr[arr[i]]- 1] = arr[i] 4번째야 라고 말하는 것
     print(c_arr)
     for i in arr:
-        c_arr[i] -= 1
+        c_arr[i] -= 1  # 여기 이미 -1한 값이 들어가는 것임
         result[c_arr[i]] = i
         print(result)
     print(c_arr)
