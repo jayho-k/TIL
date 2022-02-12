@@ -65,7 +65,7 @@
 tc = int(input())
 
 mx = 0
-mn = 0
+mn = mx
 for _ in range(tc):
 
     n = int(input())

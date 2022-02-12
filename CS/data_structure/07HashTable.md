@@ -100,6 +100,34 @@ additive(아스키 넘버 그담에 나눔), rotating, universal
 
 
 
+#### cluster size
+
+- 차있는 슬롯들이 뭉쳐있는 사이즈
+- 중요한 이유
+  - set, remove, search의 속도에 영향을 주게 된다
+  - 왜?
+    - search등을 할 때 클러스터의 길이 끝까지 찾아줘야하기 때문에
+    - 그래서 이 size를 분산 시켜줄수록 좋다
+
+- 그럼 cluster size는 어떤것에 영향을 미치나???
+  - hash function
+  - collision resolution method
+  - load factor
+    - n/m   ==> 저장된 아이템 개수 / 전체 슬롯 개수
+    - n/m이 1에 가까울수록 많이 차있다는 뜻
+    - n/m이 0에 가까울수록 조금 차있다는 뜻
+    - 1에 가까울수록 수행시간이 길어지게 된다.
+
+
+
+- 빈 테이블이 50프로 이상으로 항상 테이블을 유지 시켜줘야 한다.
+  - 이렇게 하면 이사비용을 지불하더라도
+  - cluster 평균 사이즈 =O(1) 를 유지할 수 있다.
+
+
+
+
+
 - #### chaining
 
 ![image-20220211000138356](07HashTable.assets/image-20220211000138356.png)
@@ -110,30 +138,11 @@ additive(아스키 넘버 그담에 나눔), rotating, universal
 - search => O(충돌 키의 평균 개수)
   - 하지만 hash function을 잘 사용했을 시 O(1) 가능
   - 그 hash function 중 하나는  c-universal
+    -  c-universal : Pr(f(x) == f(y)) = c/m
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- 빈 테이블이 50프로 이상으로 항상 테이블을 유지 시켜줘야 한다.
 
 
 
