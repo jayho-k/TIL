@@ -2,7 +2,9 @@
 
 - 논문 읽는 법
 
+​	https://media-ai.tistory.com/7
 
+![image-20220202180826324](Terms for DL.assets/image-20220202180826324.png)
 
 ### fine tuning
 
