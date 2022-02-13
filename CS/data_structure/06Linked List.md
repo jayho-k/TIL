@@ -13,7 +13,7 @@
 - 그 다음의 주소가 저장되어 있어서 연결이 되는 느낌
 
 - 다음 주소가 None(Null)이라면 다음이 없구나 2가 마지막 값이구나
-- 하나당 2개의 수조를 가지고 있음
+- 하나당 2개의 주소를 가지고 있음
   - data(key값)
   - link
   - (key, link) 이 둘을 합친 것 ==> node
@@ -30,7 +30,7 @@
 - list 에서 insert(2,5)를 하고 싶다면 나머지가 옆으로 한칸씩 이동하고 5를 집어 넣어야한다.
 - 만약에 오른쪽에 n개의 값이 있다면 최악의 경우 시간이 n만큼 걸리게 된다
 - 하지만 연결리스트의 경우=> 9와 1의 링크를 끊고 5를 9와 연결시키고 -1과 연결시키면 되다
-- 그러면 시간인 단축된다
+- 그러면 시간이 단축된다
 
 ![image-20220207194919739](06Linked List.assets/image-20220207194919739.png)
 
@@ -49,16 +49,19 @@
 class Node:
     
     def __init__(self, key=None):
-        self.key = key
-        self.next = None
+        self.key = key # 키를 생성 해주고
+        self.next = None # 다음 것은 끝이라는 표현을 해준다
     
     def __str__(self):
         return str(self.key)
-    
+
+    # 노드 3개를 생성
 a = Node(3)
 b = Node(9)
 c = Node(-1)
 
+# a의 다음은 b
+#b의 다음은 c 라고 해줌으로써 서로 연결시켜준다
 a.next = b
 b.next = c
 # 아무런 값을 취하지 않아도 c값은 None이 된다. 
@@ -75,9 +78,9 @@ class SinglyLinkedList:
     # def __len__(self)
     def pushFront(self, key):
         new_node = Node(key) # 새로운 노드가 생성
-        new_node.next = L.head # 새로운 노드의 다음은 head와 연결
-        L.head = new_node # 그리고 그 새로운 노드가 head가 되고나서
-        L.size += 1 # 사이즈를 + 1 해준다
+        new_node.next = self.head # 새로운 노드의 다음은 head와 연결
+        self.head = new_node # 그리고 그 새로운 노드가 head가 되고나서
+        self.size += 1 # 사이즈를 + 1 해준다
             
     def pushBack(self, key):
         v = Node(key)
@@ -119,7 +122,7 @@ class SinglyLinkedList:
 	  		#따라서 특수한 경우를 생각해 주어야한다
                 self.head = None
             else:
-                prev.next = tail.next # 이때 tail.next가 None임 while문 참고
+                prev.next = None # 이때 tail.next가 None임 while문 참고 # 이부분은 필요 없을지도
         	key = tail.key
             del tail
             self.size -= 1
