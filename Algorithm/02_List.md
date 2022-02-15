@@ -82,7 +82,9 @@ for i in range(len(lst)):
     
 # 위아래 왼쪽 -> 오른쪽
 for i in range(len(lst)):
-    print(lst[i][-i-1])    
+    print(lst[i][-i-1])  
+    
+    
 # 대각선 합
 
 total = 0
@@ -303,6 +305,7 @@ for i in range(2):
     -  T T => True
     - 10110 & 11011 => 하나씩 비교해 주겠어
     - 둘이 같으면 1 , 다르면 0이 나오게 된다.
+    - 이렇게 되면 어떻게 되는거임? 
 
   ![image-20220214164552976](02_List.assets/image-20220214164552976.png)
 
@@ -438,7 +441,7 @@ while i < n and a[i] != key:
 
 ```python
 # 이진검색
-def binarySearcg(a, n, key):
+def binarySearch(a, n, key):
 
     start = 0
     end = n-1

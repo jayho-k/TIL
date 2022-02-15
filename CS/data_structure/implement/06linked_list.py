@@ -69,11 +69,11 @@ class Node:
     def __str__(self):
         return str(self.key)
 
-a = Node(3)
-b = Node(9)
-c = Node(-1)
-a.next = b
-b.next = c
+# a = Node(3)
+# b = Node(9)
+# c = Node(-1)
+# a.next = b
+# b.next = c
 
 class SingleLinkedList:
 
@@ -139,8 +139,8 @@ class SingleLinkedList:
 
     def search(self, key):
         var = self.head
-        print(type(var)) # 타입이 __main__.Node이다 따라서 int 값이 아니기 때문에 key와 비교를 해주어야함
-        print(type(var.key)) # 타입이 int값이다
+        # print(type(var)) # 타입이 __main__.Node이다 따라서 int 값이 아니기 때문에 key와 비교를 해주어야함
+        # print(type(var.key)) # 타입이 int값이다
 
         location = 0
         while var != None:
@@ -151,6 +151,25 @@ class SingleLinkedList:
             location += 1
         # 못찾음
         return None
+
+    def get_node(self, index):
+        cnt = 0
+        lst = self.__iterator__()
+        for i in lst:
+            if cnt == index:
+                return i
+
+            cnt += 1
+            
+    
+    def insert(self, index, node):
+        new = Node(node) # 새로운 값
+        prev = self.get_node(index-1) # 지정한 곳의 전 값
+        new.next = prev.next
+        prev.next = new
+        
+
+
 
     def __iterator__(self):
         var = self.head
@@ -165,6 +184,10 @@ class SingleLinkedList:
 
     
 s = SingleLinkedList()
+s.pushFront(4)
+s.pushFront(1)
+s.pushFront(9)
+s.pushFront(7)
 s.pushFront(3)
 print('s.pushFront(3)')
 print('size', s.size)
@@ -194,6 +217,25 @@ print('-'*30)
 lst = s.__iterator__()
 for i in lst:
     print(i)
+
+print('-'*30)
+print('s.get_node(4)')
+print(s.get_node(4))
+
+print('-'*30)
+print('s.insert(4,10)')
+lst = s.__iterator__()
+for i in lst:
+    print(i)
+
+
+
+# lst = s.__iterator__()
+# for i in lst:
+#     print(i)
+
+
+# insert(self, var ,key):
 
 
 # print(s.popFront())

@@ -4,14 +4,17 @@ dy
 dx
 잡아서 움직일것임
 
-1. 일단 [0] n x n 으로 판을 깔아줌
+1. 일단 [0] n x n 으로 판을 깔아줌 [[],[],[].......]
 2. 오른쪽으로 움직임
-
 3. 갈 곳이 없음 ==> 밑으로
 4. 갈곳없음 => 왼쪽
 5. => 위로 가는데 그전에 있던곳 전에까지 가야함
 6. 반복
 오 -> 아래 -> 왼 -> 위
+dx[] 4
+dy[] 4
+
+dir += 1    0 1 2 3 ->  1 2  
 
 행 순회
 
@@ -38,6 +41,11 @@ else로 방향을 바꿔
     # num = list(range(1,n2+1))
     # print(num)
 #
+1   2  3   4   0
+12  13 14  5   0
+11  16 15  6   0
+10  9  8   7   0
+
 '''
 
 
@@ -51,7 +59,6 @@ for tc in range(1, T+1):
     y = 0
     dirc = 0
     
-    # 동 남 서 북
     dx = [1,0,-1,0]
     dy = [0,1,0,-1]
     i = 1
@@ -76,7 +83,7 @@ for tc in range(1, T+1):
 
         grid[y][x] = i
 
-        x += dx[dirc]
+        x += dx[dirc] # 방향에 마다 (0,0)  ==> (0, 1) => (0, 2)
         y += dy[dirc]
         i += 1
 
@@ -87,11 +94,38 @@ for tc in range(1, T+1):
     for g in grid:
         print(' '.join(map(str, g)))
 
+
             
 
-    
-    
-
+# 예슬님 코드
+# T = int(input())
+# for test_case in range(1,T+1):
+#     N = int(input())
+ 
+#     snail = [[0]*N for _ in range(N)]
+#     di = [0, 1, 0, -1]
+#     dj = [1, 0, -1, 0]
+ 
+#     n = d = i = j = 0 #(n: 박스 표시 수, d: 방향, (i,j): 현 위치)
+#     for _ in range(N**2):
+#         n += 1
+#         snail[i][j] += n
+ 
+#         i += di[d%4]
+#         j += dj[d%4]
+ 
+#         if 0 <= i < N and 0 <= j < N and snail[i][j] == 0:
+#             continue
+#         else:
+#             i -= di[d%4]
+#             j -= dj[d%4]
+#             d += 1
+#             i += di[d%4]
+#             j += dj[d%4]
+ 
+#     print(f'#{test_case}')
+#     for k in snail:
+#         print(*k)
                 
 
 
