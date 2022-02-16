@@ -152,20 +152,30 @@ class BST:
             return None
 
     def deleteByMerging(self, x):
-        a = x.left
-        b = x.right
-        p = x.parent
+        a = x.left # 왼쪽 노드
+        b = x.right # 오른쪽 노드
+        p = x.parent # parents
+
         # c는 x자리를 대체할 노드
         # m = L 에서 가장큰 노드
-        if a != None:
-            c = a
+
+        if a != None: #왼쪽 노드가 존재 할때
+
+            c = a # 대체할 것임
             m = a # m은 a부터 시작
-            while m.right:
+
+            while m.right:  # L에서 가장 큰 노드를 찾는 중
                 m = m.right
+                # --> m이 L에서 제일 큼 
+
             # m의 오른쪽 자식노드로 b를 연결한다
-            if b != None:
+
+            if b != None: # R이 존재 할때
                 b.parent = m
-            m.right = b
+
+            m.right = b 
+            # b가 None이어도 상관이 없는게
+            # m right가 none이면 되기 때문
 
         else: # a == none일때
             c = b
@@ -175,14 +185,26 @@ class BST:
             if c:
                 c.parent = p
 
+            if p.key < c.key:
+                p.right = c
+
+            else:
+                p.left = c
+
 
         else: # p == None: ==> root ==> root를 지워달라는 뜻
             self.root = c
             if c:
                 c.parent = None
             
+        self.size -= -1
 
-            pass
+
+    def deleteByCopying(self):
+
+
+        
+        pass
 
 
 # t = BST()

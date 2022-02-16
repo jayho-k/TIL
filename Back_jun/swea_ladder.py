@@ -13,9 +13,40 @@
 탐색 => 이동
 
 '''
+# 짧은 버전 ==> 이게 키포인트는 지나온 길을 0으로 만들어 준다
+T = 10
+for tc in range(1, T+1):
+    n = int(input())
+    grid = []
+    for _ in range(100):
+        g = list(map(int, input().split()))
+        grid.append(g)
+    
+    y = 99
+    x = grid[99].index(2)
 
+    dx = [-1, 1, 0]
+    dy = [0, 0, -1]
+    # x값과 y값이 정해짐
 
+    stor = [(y,x)]
+    cnt = 0
+    while y > 0:
 
+        for dirc in range(3):
+            nx = x + dx[dirc]
+            ny = y + dy[dirc]
+
+            if 0 <= nx < 100 and 0 <= ny < 100 and grid[ny][nx]==1:
+                # 외쪽 보고 오른쪽 봐 ==1 이 있으면 ==> 그쪽으로가/ 조건 하나 추가해주면 된다(저장해놓은 값이 아닐때)
+                grid[ny][nx] = 0 # 지나온길은 0으로 만들어준다
+                y, x = ny, nx # 업데이트
+
+        cnt += 1
+    ans = x
+    print(f'#{tc} {ans}')
+
+########### 내가 짠 코드
 T = 10
 
 for tc in range(1, T+1):
@@ -24,14 +55,11 @@ for tc in range(1, T+1):
     for _ in range(100):
         g = list(map(int, input().split()))
         grid.append(g)
+    2
     
     c = -1
     for strt in grid[99]: # 오른쪽으로 이동
-        c += 1
-        if strt == 0 or strt == 1:
-            continue
-
-        elif strt ==2:
+        if strt ==2:
             x = c
             y = 99
             break
@@ -43,7 +71,6 @@ for tc in range(1, T+1):
     stor = [(y,x)]
     cnt = 0
     while y > 0:
-
         for dirc in range(2):
             nx = x + dx[dirc]
             ny = y + dy[dirc]
@@ -54,8 +81,6 @@ for tc in range(1, T+1):
                 y, x = ny, nx # 업데이트
                 stor.append((y,x))
                 break
-
-
         else:  # 왼쪽 오른쪽을 봤는데 아무것도 없음 ==> 위로가
             nx = x + dx[2]
             ny = y + dy[2]
