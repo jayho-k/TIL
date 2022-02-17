@@ -34,13 +34,13 @@ class Stack:
 
 # infix => postfix로 만들기
 # 입력
-inpt = '(2+5)*7'
+inpt = 'A*(B+C)'
 
 def postfix(s):
 
     oostack = []
     stack = Stack()
-    tokens = list(inpt)
+    tokens = list(s)
     oper = ['+','-','*','/','(',')']
 
     for token in tokens:
