@@ -42,11 +42,6 @@ for tc in range(1, T+1):
 
 
 
-    # for num in c_lst:
-    #     print(base[num], end =' ')
-
-    # print(f'#{tc} {ans}')
-
 
 
 
