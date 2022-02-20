@@ -261,6 +261,8 @@ class AVL(BST):
 
 ![image-20220220181747459](10Balanced Binary Tree.assets/image-20220220181747459.png)
 
+![image-20220220185739415](10Balanced Binary Tree.assets/image-20220220185739415.png)
+
 - 여기서는 None노드를 독립된 노드로 둘 것
 - 그리고 None이 leaf노드로 볼 것이다
 - 그리고 나머지를 내부 노드라고 불린다.
@@ -280,7 +282,7 @@ class AVL(BST):
 - bh(v) :  v에서 leaf node에서 블랙은 같아야한다
   - 이때 v를 제외한 black node 개수를 의미한다.
 
-
+![image-20220220185805019](10Balanced Binary Tree.assets/image-20220220185805019.png)
 
 - 사실1
 
