@@ -18,6 +18,8 @@ stack
 class Stack:
 
     def __init__(self):
+        # self.size = size
+        # self.top = -1
         self.items = []
 
     def push(self, var):
@@ -40,7 +42,13 @@ class Stack:
 
         return cnt
 
+    # def __str__(self):
+    #     return self.items
+
+
 a = Stack()
+print(a)
+
 a.push(3)
 a.push(4)
 a.push(8)
@@ -53,6 +61,6 @@ print(a.__len__())
 
 print(a.top())
 
-a.pop()
+print(a.pop())
 a.pop()
 a.pop()

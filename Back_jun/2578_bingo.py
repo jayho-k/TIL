@@ -21,19 +21,12 @@
 '''
 from pprint import pprint
 
-lst = []
-for _ in range(5):
-    s = list(map(int, input().split()))
-    lst.append(s)
-
+lst = [list(map(int, input().split())) for _ in range(5)]
 
 num_lst = []
 for _ in range(5):
     l = list(map(int, input().split()))
     num_lst = num_lst+ l
-
-# pprint(lst)
-
 
 cnt = 0
 

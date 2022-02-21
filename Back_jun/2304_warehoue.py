@@ -18,9 +18,6 @@ def test(lst):
         c_h = lst[i][1] 
         if temp1 < c_h:
             temp1 = c_h
-
-        if c_h == mx_h:
-            break
         lst1.append(temp1)
     return lst1
 
@@ -62,13 +59,6 @@ lst2 = test(lst)
 
 total_lst = lst1+lst2
 # print(total_lst)
-print(sum(total_lst)+(mx_h*mx_h_cnt))
-
-
-mx = 7
-lst = [(1,2), (1,2), (2,2), (3,7), (1,2)]
-print(lst.index((3,7)))
-
-
-for i in range(len(lst)):
-    lst[i]
+area = mx_h * ((end+1)-strt)
+# print(area)
+print(sum(total_lst)-area)

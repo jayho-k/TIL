@@ -232,8 +232,8 @@ for i in range(len(arr)):
 
 i = 0
 tri = run = 0 # 이부분 질문!!
-while i < 10:
-    if c[i] >= 3: 
+while i < 10: 
+    if c[i] >= 3: # 미리 각숫자의 개수를 센거임 그래서 똑같은 수 3개나오면 된거 
         c[i] -= 3
         tri += 1
         continue
