@@ -50,10 +50,17 @@
 - Push
 - Pop
 - Peek, Top
+- items = [None] * size
 
+### Memorization
 
+![image-20220221151646166](04_Stack.assets/image-20220221151646166.png)
 
+### DFS
 
+- 깊이 우선 탐색(DFS)
+
+- 너비 우선 탐색(BFS)
 
 
 
