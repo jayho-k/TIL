@@ -258,6 +258,8 @@ class AVL(BST):
 ## Red-Blck Tree
 
 - 가장 유명하고 많이 사용되는 균형이진 탐색 트리
+- 장점: AVL보다 좋은 것은 delete부분에서 회전수가 3번만 들어감 그래서 빠르게 delete를 빠르게 할 수 있다
+- 단점: 코딩하기가 복잡하다
 
 ![image-20220220181747459](10Balanced Binary Tree.assets/image-20220220181747459.png)
 
@@ -311,6 +313,8 @@ class AVL(BST):
 
 ![image-20220222191549188](10Balanced Binary Tree.assets/image-20220222191549188.png)
 
+![image-20220222192016750](10Balanced Binary Tree.assets/image-20220222192016750.png)
+
 1. bst의 insert연산을 호출해서 새로운 노드 삽입
 
 2. x.color = red
@@ -341,13 +345,36 @@ class AVL(BST):
 
 
 
-![image-20220222192016750](10Balanced Binary Tree.assets/image-20220222192016750.png)
+## 234 Tree
+
+- 이진트리가 아니다 즉, 자식노드가 2,3,4가 될 수 있다.
+- 조건:
+  - 자식노드 개수 = 2,3,4
+  - 모든 리프노드가 같은 level에 존재
+
+![image-20220222193930984](10Balanced Binary Tree.assets/image-20220222193930984.png)
+
+
+
+#### insert  개념
+
+- 항상 leaf노드에만 insert가 된다. 
 
 
 
 
 
+![image-20220222194747474](10Balanced Binary Tree.assets/image-20220222194747474.png)
 
+- 위 경우는 isnert를 했는데 그곳에 3개의 값이 모두 저장이 되었을 때를 의미한다
+  - 즉 삽입할 공간이 없을 때
+- 4노드를 만나면 split하면서 leaf노드까지 내려감!
+  - 새로운 공간을 만들면서 간다는 소리임
+  - how?
+    - 가운데 값을 부모로 올린다.
+    - 그럼 왼쪽값과 오른쪽값으로 나눈다 
+    - 또 3개로 가득 차있을 경우 ==> 하지만 4개 노드가 아님 그치만 위에는 공간이 있음
+    - 가운데를 올리고 오른쪽 왼쪽으로 노드가 나뉜다
 
 
 
