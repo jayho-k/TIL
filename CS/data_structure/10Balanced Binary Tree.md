@@ -307,11 +307,41 @@ class AVL(BST):
 
 
 
+#### Red-Black: 삽입연산 O(logN)
+
+![image-20220222191549188](10Balanced Binary Tree.assets/image-20220222191549188.png)
+
+1. bst의 insert연산을 호출해서 새로운 노드 삽입
+
+2. x.color = red
+
+3. 4가지 경우로 나뉜다.
+
+   - x = T.root 일 경우 => 아무것도 없는데 넣은것
+
+     - 색깔은 black으로 바꿔줘야한다. x.color = black
+
+   - x.parent.color == black이면 아무것도 안한다
+
+   - x.parent.color == red 이면
+
+     - 인접한 노드는 무조건 black이었을 것
+
+     1. x.uncle.color == red 인 경우 ==> 그림 1번
+        - grand를 red로, parent를 black으로 바꾼다
+        - 또하나 주의해줘야 하는점: leaf노드까지 black의 개수가 항상 같아야 한다. 
+        - grand의 balck을 양쪽 child node 즉 parent와 uncle에게 나누어 주었기 때문에 전체 black의 색깔은 바뀌지 않는다.
+     2. x.uncle.color == black인 경우 ==> 그림 2,3
+        1. x, x.parent, x.grand : linear ==> 그림 2
+           - right rotation 하고 ==> 색깔을 바꿔준다
+        2. x, x.parent, x.grand : triangle==> 그림 3
+           - 두번의 회전을 시키고 색을 그림과 같이 재배치 한다
 
 
 
 
 
+![image-20220222192016750](10Balanced Binary Tree.assets/image-20220222192016750.png)
 
 
 
