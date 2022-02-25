@@ -4,7 +4,6 @@
 '''
 
 r = int(input())
-# r = 1
 
 for _ in range(r):
     al = list(map(int, input().split()))

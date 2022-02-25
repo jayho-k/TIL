@@ -2,6 +2,8 @@
 10 2
 3 -2 -4 -9 0 3 7 13 8 -3
 
+
+
 '''
 import sys
 n, m = map(int, sys.stdin.readline().split())
@@ -14,3 +16,6 @@ for i in range(n-m):
 
 
 print(max(lst2))
+
+# 누적합
+
