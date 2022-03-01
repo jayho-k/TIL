@@ -19,12 +19,10 @@ class Queue:
         
     def dequeue(self):
         if self.fron_idx == len(self.items):
-            # 
             print("Q is empty")
             return None
         else:
             x = self.items[front_idx]
-            # 앞에 아이는 5를 x로 저장하고 지운다
             self.front_index += 1
             return x
   
