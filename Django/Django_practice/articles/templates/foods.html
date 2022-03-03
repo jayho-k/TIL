@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  this is  my food lst = {{ food_lst }}
+  <p>menu</p>
+  <ul>
+    {% for food in food_lst %}
+      {{ food }}<br>
+    {% endfor %}
+  </ul>
+  
+  {% for food in food_lst %}
+    {{ food }} <br>
+  {% endfor %}
+
+{% endblock content %}
