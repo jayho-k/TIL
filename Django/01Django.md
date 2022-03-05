@@ -82,7 +82,7 @@ url ==> view ==> template
 
 5. 앱 생성
 
-   - python manage.py startapp articles
+   - python manage.py startapp {  app 이름 }
    - settings.py에 애플리케이션을 등록한다
    - urls.py로 url과 view를 매핑한다
      - from articles import views
