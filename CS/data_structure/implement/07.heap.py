@@ -23,7 +23,7 @@ class Heap:
         if n == 0:
             return
         else:
-            while 2*k+1<n: # 이부분
+            while 2*k+1<n: # 왼쪽 자식노드가 n보다 작을때
                 m = k
                 l,r = 2*k+1, 2*k+2
                 if self.lst[l] > self.lst[m]:
@@ -41,8 +41,9 @@ class Heap:
     def heapify_up(self,k):
         # 아래서 부터 = 부모노드를 찾아줘야함
         p = (k-1)//2
-        if self.lst[p] < self.lst[k]:
+        while k>0 and self.lst[p] > self.lst[k]: #k가 0보다 같거나 작다는 뜻 = 루트노드
             self.lst[p],self.lst[k] = self.lst[k],self.lst[p]
+            k = p
         
     def make_heap(self):
         # heapify_down + for문이 필요하다
@@ -53,13 +54,20 @@ class Heap:
             self.heapify_down(k,n)
             print(k)
 
-    def insert():
-        pass
+    def insert(self, key):
+        self.lst.append(key)
+        self.heapify_up(len(self.lst)-1)
 
-    def delete():
-        pass
+    def delete(self):
+        root = self.lst[0]
+        leaf = self.lst[-1]
+        root, leaf = leaf, root
+        self.lst.pop()
+        self.heapify_down(0,len(self.lst))
+
 
 lst = [1,2,3,4,5,6,7,8,9,10]
 
 hlst = Heap(lst)
+
 print(hlst)
