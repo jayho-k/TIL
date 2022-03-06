@@ -9,7 +9,6 @@ max heap 구현
 heapq를 이용해서 min, max heap만들기
 '''
 
-from heapq import heapify
 class Heap:
 
     def __init__(self, L=[]):
@@ -70,4 +69,4 @@ lst = [1,2,3,4,5,6,7,8,9,10]
 
 hlst = Heap(lst)
 
-print(hlst)
+print(1)
