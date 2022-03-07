@@ -9,14 +9,14 @@ from collections import deque
 def bfs(graph,stp,n):
     visited = [0]*(n+1)
     q = deque([])
+
     for g in graph[stp]:
         q.append(g)
         visited[g] = 1
-    # q.append(graph[stp][0])
 
     while q:
-        # print(q)
         tmp = q.popleft()
+
         for i in graph[tmp]:
             if visited[i] == 0:
                 visited[i] = visited[tmp] + 1
@@ -26,21 +26,21 @@ def bfs(graph,stp,n):
 
 n = int(input())
 lst = [0]+list(map(int, input().split()))
-
 graph = deque([[] for _ in range(n+1)])
+
+
 # graph
 for i in range(len(lst)):
     for j in range(1,lst[i]+1):
         if i+j > n:
             break
         graph[i].append(i+j)
-# print(graph)
-# bfs
-v = bfs(graph,1,n)
-# print(v)
 
+
+v = bfs(graph,1,n)
 if n == 1:
     print(0)
+
 else:
     if v[-1] == 0:
         print(-1)
