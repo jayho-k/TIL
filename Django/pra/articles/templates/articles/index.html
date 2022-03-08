@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content1 %}
-<h1>test1</h1>
+  <h1>test1</h1>
+  <p>{{ articles }}</p><br>
 
+  <ul>
+    {% for article in articles %}
+      <p>제목: {{ article.title }}</p>
+      <p>내용: {{ article.content }}</p>
+      <hr>
+    {% endfor %}
+  </ul>
+  
 {% endblock content1 %}
 
 

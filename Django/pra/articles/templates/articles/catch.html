@@ -2,7 +2,9 @@
 
 {% block content1 %}
 <h1>test1</h1>
-<p>{{ data }}</p>
+
+<p>{{ title }}</p>
+<p>{{ content }}</p>
 
 <a href="{% url 'articles:throw' %}">뒤로</a>
 {% endblock content1 %}

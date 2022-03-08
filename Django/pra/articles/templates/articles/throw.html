@@ -3,8 +3,13 @@
 {% block content1 %}
 <h1>throw</h1>
 <form action="{% url 'articles:catch' %}">
-  <label for="content"></label>
-  <input type="text" id='content' name='content'><br>
+
+  <label for="title">제목입력 : </label>
+  <input type="text" id='title' name='title'>
+
+  <label for="content">내용입력 : </label>
+  <input type="text" id='content' name='content'>
+  <br>
   <input type="submit">
 
 </form>

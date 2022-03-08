@@ -27,7 +27,7 @@
   - 열 => field or 속성
   - 행 => recode or 튜플 ==> 즉 가로가 하나의 데이터
 
-![image-20220308100951039](02Django_crud.assets/image-20220308100951039.png)
+![image-20220308160646346](02Django_crud.assets/image-20220308160646346.png)
 
 
 
@@ -37,7 +37,7 @@
 - 장고와 sql은 전혀 다르다 ==> 하지만 ORM을 사용해서 장고에서 sql을 사용할 것 이다.
 - 간단하게 ==> 파이썬 이용해서 sql다룰께~ 
 
-![image-20220308101820991](02Django_crud.assets/image-20220308101820991.png)
+![image-20220308160907184](02Django_crud.assets/image-20220308160907184.png)
 
 - 장점
   - sql을 잘 알지 못해도 DB조작 가능
@@ -166,6 +166,40 @@ filter를 사용해서 모아서 전체를 지울 수 있다.
 ![image-20220308145106555](02Django_crud.assets/image-20220308145106555.png)
 
 - title과 content를 두개로 나눠주게 만들 수 있다.
+
+
+
+### crud를 view에서?
+
+##### create
+
+- 
+
+
+
+##### read
+
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
