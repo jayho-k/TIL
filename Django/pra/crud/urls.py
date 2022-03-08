@@ -1,4 +1,4 @@
-"""prac URL Configuration
+"""crud URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -14,17 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from articles import views
-from pages import views as vp
+from django.urls import path,include
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('index/', views.index),
-    # path('greeting/',views.greeting),
-    # path('foods/',views.foods),
-    # path('throw/',views.throw),
-    # path('catch/',views.catch),
-    # path('hello/<name>/<int:age>',views.hello),
-    path('lotto/',vp.lotto),
+    path('admin/', admin.site.urls),
+    
+    # articles를 너가 관리해!
+    path('articles/', include('articles.urls')),
 ]

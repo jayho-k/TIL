@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content1 %}
+<h1>throw</h1>
+<form action="{% url 'articles:catch' %}">
+  <label for="content"></label>
+  <input type="text" id='content' name='content'><br>
+  <input type="submit">
+
+</form>
+
+
+{% endblock content1 %}
+
+
