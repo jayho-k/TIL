@@ -46,101 +46,123 @@
 ![image-20220207195400244](06Linked List.assets/image-20220207195400244.png)
 
 ```python
+ 노드 생성
 class Node:
     
-    def __init__(self, key=None):
-        self.key = key # 키를 생성 해주고
-        self.next = None # 다음 것은 끝이라는 표현을 해준다
-    
+    def __init__(self, key= None):
+        self.key = key
+        self.next = None
+
     def __str__(self):
         return str(self.key)
 
-    # 노드 3개를 생성
-a = Node(3)
-b = Node(9)
-c = Node(-1)
+# a = Node(3)
+# b = Node(9)
+# c = Node(-1)
+# a.next = b
+# b.next = c
 
-# a의 다음은 b
-#b의 다음은 c 라고 해줌으로써 서로 연결시켜준다
-a.next = b
-b.next = c
-# 아무런 값을 취하지 않아도 c값은 None이 된다. 
+class SingleLinkedList:
 
-# 또 다른 클래스에 한방향 연결리스트의 객체를 headNode로 만든다
-
-class SinglyLinkedList:
-    
     def __init__(self):
-        self.head = None  # 빈 리스트일때
-        self.size = 0 # 빈 리스트일때
-    
-    # 삽입 method와 삭제 methods가 필요함
-    # def __len__(self)
+        self.head = None
+        self.size = 0
+
     def pushFront(self, key):
-        new_node = Node(key) # 새로운 노드가 생성
-        new_node.next = self.head # 새로운 노드의 다음은 head와 연결
-        self.head = new_node # 그리고 그 새로운 노드가 head가 되고나서
-        self.size += 1 # 사이즈를 + 1 해준다
-            
+        new_node = Node(key)
+        new_node.next = self.head
+        self.head = new_node
+        self.size += 1
+
     def pushBack(self, key):
-        v = Node(key)
-        if len(self) == 0:  #길이가 0이면 (아무것도 없으면)
-            self.head = v
-    	else:
-            # 앞에 head Node부터 쫒아갈 수 밖에 없음
-            # tail인지 알기 위해서는 Next가 None인 것
+        new = Node(key)
+
+        if self.size == 0:
+            self.head = new
+
+        else: 
+            # 새로운 노드가 tail로 가주어야 함/ 
+            # tail을 찾아야하고/ 그전에 초기화 해줘야함
             tail = self.head
-            while tail.next != None: # head부터 하나씩 tail을 찾고 있음
+            while tail.next != None:
                 tail = tail.next
-                
-            tail.next = v
+            
+            tail.next = new
             self.size += 1
-            
-    def popFront(self): #지울때 중요한점: 지우고 싶은 값이 없을 수도 있다
-        if len(self) == 0:
+
+    def popFront(self): # 맨 앞에 값 삭제
+        if self.size == 0:
             return None
-            
-        else: # 최소한 하나의 Node가 존재한다.
-            x = self.head
-            key = x.key
-            self.head = x.next
-            self.size -= 1
-            del x
-            return key
-        
-    def popBack(self): # tail의 전(prev)를 None이라고 하면된다 ==> prev가 None
-        if len(self) == 0:
-            return None
+
         else:
-            # running technique
-            prev, tail = None, self.head  # None인 이유는 초기값을 None으로 잡음
+            de = self.head
+            de_key = de.key
+            self.head = de.next
+            del de
+            self.size -= 1
+
+            return de_key
+
+    def popBack(self):
+        if self.size == 0:
+            return None
+
+        elif self.size == 1:
+            self.head = None
+            self.size -= 1
+            return self.head
+
+        else:
+            # prev값과 tail값을 동시에 저장하면서 가주어야 한다.
+            # tail = 삭제, prev값 = tail
+            # 초기화
+            prev, tail = None, self.head
             while tail.next != None:
                 prev = tail
                 tail = tail.next
-            if len(self) ==1:
-      		# 만약에 길이가 1밖에 없으면 그 값은 head이면서 tail이다. 
-	  		#따라서 특수한 경우를 생각해 주어야한다
-                self.head = None
-            else:
-                prev.next = None # 이때 tail.next가 None임 while문 참고 # 이부분은 필요 없을지도
-        	key = tail.key
+
+            prev.next = None
+            key = tail.key
             del tail
-            self.size -= 1
             return key
 
-    def __len__(self):
-        return self.size
-    
+    def search(self, key):
+        var = self.head
+        # print(type(var)) 
+        # 타입이 __main__.Node이다 따라서 int 값이 아니기 때문에 
+        # key와 비교를 해주어야함
+        # print(type(var.key)) # 타입이 int값이다
 
-    
-    
-    
-L =SinglelyLinkedList()
-L.pushFront(-1)  #  -1 => None
-L.pushFront(9)   #  9 => -1 => None
-L.pushFront(3)   #  3 => 9 => -1 => None
-L.pushFront(5)
-L.pushBack(4)
+        location = 0
+        while var != None:
+            if var.key == key:#주의할점은 var의 키값과 비교를 해주어야 한다. 
+                print('location' , location)
+                return var
+            var = var.next
+            location += 1
+        # 못찾음
+        return None
+
+    def get_node(self, index):
+        cnt = 0
+        lst = self.__iterator__()
+        for i in lst:
+            if cnt == index:
+                return i
+            cnt += 1
+            
+    def insert(self, index, node):
+        new = Node(node) # 새로운 값
+        prev = self.get_node(index-1) # 지정한 곳의 전 값
+        new.next = prev.next
+        prev.next = new
+        
+    def __iterator__(self):
+        var = self.head
+        while var != None:
+            yield var
+            var = var.next
+        return
 ```
 
 ![image-20220207201820894](06Linked List.assets/image-20220207201820894.png)
@@ -346,13 +368,7 @@ def remove(x):
     xp.next = x.next
     xn.prev = x.prev
     del x
-    
-def popFront  
-# 셀프.head.next = x 를 
-# 주의할 점은 비어있으면 아무것도 지울것이 없음 ==> 아무것도 하면 안됨
-
-def popBack
-
+   
 ```
 
 - 시간 복잡도

@@ -158,19 +158,14 @@ class SingleLinkedList:
         for i in lst:
             if cnt == index:
                 return i
-
             cnt += 1
             
-    
     def insert(self, index, node):
         new = Node(node) # 새로운 값
         prev = self.get_node(index-1) # 지정한 곳의 전 값
         new.next = prev.next
         prev.next = new
         
-
-
-
     def __iterator__(self):
         var = self.head
         while var != None:
