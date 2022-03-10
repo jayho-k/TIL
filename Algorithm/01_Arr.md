@@ -40,12 +40,6 @@
 
 
 
-![image-20220209092905369](C:\Users\JHK_ssafy\AppData\Roaming\Typora\typora-user-images\image-20220209092905369.png)
-
-![image-20220209092919596](C:\Users\JHK_ssafy\AppData\Roaming\Typora\typora-user-images\image-20220209092919596.png)
-
-
-
 ## 정렬
 
 - 키: 자료를 정렬하는 기준이 되는 특정 값
