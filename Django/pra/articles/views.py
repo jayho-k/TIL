@@ -5,7 +5,7 @@ from .models import Article
 def index(request):
 
     # 이렇게 사용함으로써 순서를 반대로해줄 수 있음
-    articles = Article.objects.all().order_by('-pk') 
+    articles = Article.objects.all().order_by('-pk')
     context ={
         'articles':articles
     }

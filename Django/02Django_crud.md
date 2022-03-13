@@ -49,7 +49,7 @@
 
 ##### Model 생성
 
-![image-20220308102713079](02Django_crud.assets/image-20220308102713079.png)
+![image-20220310171012316](02Django_crud.assets/image-20220310171012316.png)
 
 - CharField
   - 장고의 유효성 검사에서 활용
@@ -65,7 +65,7 @@
 
 ##### 순서
 
-1. models.py
+1. models.py에서 model생성
 
 2. python manage.py makemigrations
    - migrations파일 생성
@@ -98,10 +98,6 @@
 
 - Making Quries
   - Article.objects.all( )   ==> class name/ manager / QuerySet API
-
-
-
-
 
 
 

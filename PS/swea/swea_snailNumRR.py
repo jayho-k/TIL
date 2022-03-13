@@ -98,34 +98,34 @@ for tc in range(1, T+1):
             
 
 # 예슬님 코드
-# T = int(input())
-# for test_case in range(1,T+1):
-#     N = int(input())
+T = int(input())
+for test_case in range(1,T+1):
+    N = int(input())
  
-#     snail = [[0]*N for _ in range(N)]
-#     di = [0, 1, 0, -1]
-#     dj = [1, 0, -1, 0]
+    snail = [[0]*N for _ in range(N)]
+    di = [0, 1, 0, -1]
+    dj = [1, 0, -1, 0]
  
-#     n = d = i = j = 0 #(n: 박스 표시 수, d: 방향, (i,j): 현 위치)
-#     for _ in range(N**2):
-#         n += 1
-#         snail[i][j] += n
+    n = d = i = j = 0 #(n: 박스 표시 수, d: 방향, (i,j): 현 위치)
+    for _ in range(N**2):
+        n += 1
+        snail[i][j] += n
  
-#         i += di[d%4]
-#         j += dj[d%4]
+        i += di[d%4]
+        j += dj[d%4]
  
-#         if 0 <= i < N and 0 <= j < N and snail[i][j] == 0:
-#             continue
-#         else:
-#             i -= di[d%4]
-#             j -= dj[d%4]
-#             d += 1
-#             i += di[d%4]
-#             j += dj[d%4]
+        if 0 <= i < N and 0 <= j < N and snail[i][j] == 0:
+            continue
+        else:
+            i -= di[d%4]
+            j -= dj[d%4]
+            d += 1
+            i += di[d%4]
+            j += dj[d%4]
  
-#     print(f'#{test_case}')
-#     for k in snail:
-#         print(*k)
+    print(f'#{test_case}')
+    for k in snail:
+        print(*k)
                 
 
 
