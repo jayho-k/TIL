@@ -1,7 +1,9 @@
-# '''
-# 4 방향을 보고 0이 있으면 삭제
+'''
+bfs이용
+1. (0,0)부터 점점 버지기 시작하면서 겉에만 표기
+2. 그리고 표시한 부분을 한번에 제거한다
 
-# '''
+'''
 from pprint import pprint
 from collections import deque
 
@@ -36,6 +38,7 @@ ch_lst = []
 while 1:
     lst = []
     search(0,0)
+
     ch = 0
     for y in range(n):
         lst += grid[y]

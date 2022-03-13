@@ -1,6 +1,5 @@
 '''
-
-벽을 세워서 막아야한다. 
+벽을 세워서 막아야한다. ==> 부분집합의 합을 이용한다
 '''
 from pprint import pprint
 from collections import deque
@@ -15,11 +14,11 @@ def stp(grid):
                 stp_lst.append((y,x))
     return stp_lst
 
+
 def bfs(grid,stp_lst):
     global c_grid
     q = deque(stp_lst)
     c_grid = deepcopy(grid)
-    # visited = [[-1]*m for _ in range(n)]
 
     dy = [0,0,1,-1]
     dx = [1,-1,0,0]
@@ -35,6 +34,7 @@ def bfs(grid,stp_lst):
                 c_grid[ny][nx] = 2
                 q.append((ny,nx))
 
+
 def w(d):
     global mx_cnt
     if d==3:
@@ -45,7 +45,6 @@ def w(d):
 
         if mx_cnt < cnt:
             mx_cnt = cnt
-
         return
 
     for y in range(n):
@@ -55,6 +54,7 @@ def w(d):
                 w(d+1)
                 grid[y][x] = 0
                 
+
 n,m = map(int, sys.stdin.readline().split())
 grid = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
 stp_lst = stp(grid)

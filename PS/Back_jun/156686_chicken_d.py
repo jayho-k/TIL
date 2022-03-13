@@ -43,31 +43,10 @@ for c in list(combinations(chicken,m)):
 print(min(r))
 
 
-
-# for hy,hx in home:
-#     d_lst = []
-#     for c in combinations(chicken,m):
-
-#         for cy, cx in c:
-#             d=abs(cy-hy)+abs(cx-hx)
-#             d_lst.append(d)
-
-#     if m == 1:
-#         sm = sum(d_lst)
-#         if mn > sm:
-#             mn = sm
-#     else:
-#         total += min(d_lst)
-
-# if m == 1:
-#     print(mn)
-# else:
-#     print(total)
-
-
-
-
-
+'''
+bfs
+하지만 시간 초과가 뜨게 된다.
+'''
 # def stp(grid):
 #     lst = []
 #     h_lst = []
