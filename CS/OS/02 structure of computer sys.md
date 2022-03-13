@@ -235,3 +235,50 @@
 
 
 
+#### 10. 메모리load
+
+![image-20220313154342091](02 structure of computer sys.assets/image-20220313154342091.png)
+
+- virtual memory
+  - 독자적인  메모리
+  - 당장 필요한 부분은 물리메모리에 올라감
+  - 그것이 아닌곳에는 Swap area로 넘어감
+  - 각 프로세스만에 메모리가 주어지는 것
+  - 물리메모리의 주소와 virtual에 주소는 다르다
+  - 그래서 address translation이 필요하게 된다.
+- virtual memory에는 code, data, stack으로 구성이 된다.
+  - stack: 함수의 호출과 리턴일떄 스택에 쌓아놓게 된다.
+- 구성
+
+![image-20220313154947848](02 structure of computer sys.assets/image-20220313154947848.png)
+
+
+
+![image-20220313155722895](02 structure of computer sys.assets/image-20220313155722895.png)
+
+- 사용자 정의
+  - 프로그램 안에 있는 함수
+- 커널 함수
+  - 커널 안에 있는 함수
+  - 커널 함수의 호출 => 시스템 콜이라는 뜻이다
+
+
+
+프로그램 실행
+
+![image-20220313160016473](02 structure of computer sys.assets/image-20220313160016473.png)
+
+- system call을 하게 되면 kernel mode로 바뀜
+- 그리고 return을 하게 되면 다시 user mode로 바뀌게 된다. 
+- mode bit을 말하고 있는 것임
+  - mode bit이 1일떄 => user mode => 제한된 기계어만 실행 할 수 있음
+  - mode bit이 0일 때 => kernel mode => 모든 기계어를 사용할 수 있음
+
+
+
+
+
+
+
+
+
