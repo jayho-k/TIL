@@ -16,7 +16,7 @@ def mk_tree(lst, s):
         return
 
     mk_tree(lst[:m],s+1)
-    mk_tree(lst[m+1:],s+1)
+    mk_tree(lst[m+1:],s+1) 
 
 mk_tree(lst,0)
 

@@ -2,8 +2,6 @@
 +,-,*,/
 
 '''
-from attr import validate
-
 
 lst = []
 def dfs(d,p,m,t,div,v):
@@ -40,18 +38,3 @@ print(min(lst))
 
 
 
-
-
-# from itertools import permutations
-# operator = ['+','-','*','/']
-# n = int(input())
-# n_lst = list(map(int, input().split()))
-
-# o = list(map(int, input().split()))
-# o_n = sum(o)
-
-# operator_lst = []
-# for i in range(4):
-#     operator_lst += operator[i] * o[i]
-
-# permu_lst = list(permutations(operator_lst,o_n))
