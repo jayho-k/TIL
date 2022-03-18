@@ -6,6 +6,7 @@
 # 3 0 0
 # 2 3 2
 # '''
+# 맞는 코드
 from collections import deque
 
 def stp():
@@ -24,11 +25,13 @@ def bfs(st_lst):
     dy = [-1,1,0,0]
     dx = [0,0,-1,1]
 
-    if cnt == s:
-        return
-    
     while q:
-        for i in range(len(q)):
+        nq = len(q)
+
+        if cnt == s:
+            return
+
+        for i in range(nq):
             num, y, x = q.popleft()
             for d in range(4):
                 ny = y + dy[d]
@@ -40,8 +43,6 @@ def bfs(st_lst):
         else:
             cnt += 1
 
-
-
 n,k = map(int, input().split())
 grid = [[-1]*(n+1)] + [[-1]+list(map(int, input().split())) for _ in range(n)] 
 s,ty,tx = map(int, input().split())
@@ -50,9 +51,6 @@ st_lst.sort()
 bfs(st_lst)
 
 print(grid[ty][tx])
-
-
-
 
 
 # def stp():
@@ -75,7 +73,6 @@ print(grid[ty][tx])
 
 #         num, y, x = q.popleft()
 
-        
 #         for d in range(4):
 #             ny = y + dy[d]
 #             nx = x + dx[d]

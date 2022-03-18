@@ -1,34 +1,21 @@
-T = int(input())
- 
-for tc in range(1, T+1):
-     
-    n = int(input())
-     
-    mx = 0
+'''
 
-    lsts = []
-    for _ in range(n):
-        imn,imx = map(int, input().split())
-        lsts.append(list(range(imn, imx+1)))
-        if mx < imx:
-            mx = imx
-     
-    c = int(input())
-    c_lst = [int(input()) for _ in range(c)]
- 
- 
-    base = [0] * (mx+1)
- 
-    for lst in lsts:
-        for l in lst:
-            base[l] += 1
 
-    ans = []
-    for i in c_lst:
-        ans.append(base[i]) 
-    s = ' '.join(map(str,ans))
-    print(f'#{tc} {s}')
-     
-    # ans = ' '.join(map(str, base[1:]))
- 
-    # print(f'#{tc} {ans}')
+
+
+
+'''
+from collections import deque
+
+lst = [1,2,3,4,5,6]
+
+q = deque(lst)
+nq = len(q)
+# for i in range(len(q)):
+#     q.popleft()
+#     print('q',i)
+
+
+for j in range(nq):
+    q.popleft()
+    print('nq',j)
