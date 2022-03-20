@@ -7,6 +7,7 @@
 # 2 3 2
 # '''
 # 맞는 코드
+
 from collections import deque
 
 def stp():
