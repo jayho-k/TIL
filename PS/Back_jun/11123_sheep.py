@@ -30,7 +30,7 @@ def bfs(y,x,num):
                 visited[ny][nx] = num
                 q.append((ny,nx))
 
-
+ 
 T = int(input())
 for tc in range(1,T+1):
 
@@ -46,3 +46,5 @@ for tc in range(1,T+1):
                 bfs(y,x,num)
     
     print(num)
+    for i in visited:
+        print(i)
