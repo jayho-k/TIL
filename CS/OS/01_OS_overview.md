@@ -2,7 +2,7 @@
 
 ### OS란?
 
-![image-20220305175026124](01. computer sys overview.assets/image-20220305175026124.png)
+![image-20220305175026124](01_OS_overview.assets/image-20220305175026124.png)
 
 - 컴퓨터 시스템 자원을 관리 ==> 효율을 높임 ==> 서비스를 제공
 - 목적
@@ -20,7 +20,7 @@
 
 ### 컴퓨터 구조
 
-![image-20220305175758069](01. computer sys overview.assets/image-20220305175758069.png)
+![image-20220305175026124](01_OS_overview.assets/image-20220305175026124.png)
 
 - ### 운영체제의 기능
   
@@ -44,7 +44,7 @@
       - 그럼 하던일 바로 끝내고 interrupt가 있는지 확인하게 된다.
       - 그럼 다음 일이 있더라도 interrupt일을 하게 된다.
 
-![image-20220305175832607](01. computer sys overview.assets/image-20220305175832607.png)
+![image-20220305175832607](01_OS_overview.assets/image-20220305175832607.png)
 
 
 
@@ -53,15 +53,15 @@
 - 실행중인 프로그램을 프로세스라고 부른다
 - 운영체제는 큐를 만들어서 cpu가 어떤일을 할지 줄세워 놓는다.
 
-![image-20220305182137274](01. computer sys overview.assets/image-20220305182137274.png)
+![image-20220305182137274](01_OS_overview.assets/image-20220305182137274.png)
 
 
 
 ### cpu 스케줄링
 
-![image-20220306172618837](01. OS overview.assets/image-20220306172618837.png)
+![image-20220306172618837](01_OS_overview.assets/image-20220306172618837.png)
 
-![image-20220306172545555](01. OS overview.assets/image-20220306172545555.png)
+![image-20220306172545555](01_OS_overview.assets/image-20220306172545555.png)
 
 - FCFS(first come first served) => 먼저 온친구 먼저 처리함 = 큐
 - cpu에서 처리하고 IO에게 준다
@@ -79,7 +79,7 @@
 
 #### Round Robin
 
-![image-20220306173149660](01. OS overview.assets/image-20220306173149660.png)
+![image-20220306173149660](01_OS_overview.assets/image-20220306173149660.png)
 
 - 한번에 사용할 시간이 정해져 있다.
 - 정해진 시간이 지나게 되면 큐에 맨 뒤로 들어가야한다.
@@ -93,7 +93,7 @@
 
 #### 가상메모리
 
-![image-20220306174644110](01. OS overview.assets/image-20220306174644110.png)
+![image-20220306174644110](01_OS_overview.assets/image-20220306174644110.png)
 
 - 바로 물리적인 메모리에 들어가지 않고 자신만에 메모리 공간을 만든다.
 - 실제로 메모리를 만드는 것이 아니다.
@@ -111,7 +111,7 @@
   - LRU(가장 오래전에 참조 페이지 삭제) ==> 1번을 쫒아낸다
   - LFU(참조횟수가 가장 적은 페이지 삭제) ==> 4번을 쫒아낸다.
 
-![image-20220306174939283](01. OS overview.assets/image-20220306174939283.png)
+![image-20220306174939283](01_OS_overview.assets/image-20220306174939283.png)
 
 - 만약 전원이 꺼지면??
   - 메모리는 사라진다
@@ -122,7 +122,7 @@
 
 #### 디스크 스케줄링
 
-![image-20220306180314664](01. OS overview.assets/image-20220306180314664.png)
+![image-20220306180314664](01_OS_overview.assets/image-20220306180314664.png)
 
 - 디스크를 효율적으로 관리하기 위해서는 헤드를 효율적으로 움직이게 만들어야 한다.
 - 디스크 접근 시간
@@ -146,7 +146,7 @@
 
 - 계층도(오래된 자료 ==> 최근자료 찾아볼 것)
 
-![image-20220306181326802](01. OS overview.assets/image-20220306181326802.png)
+![image-20220306181326802](01_OS_overview.assets/image-20220306181326802.png)
 
 - 요즘은 디스크를 백업으로 쓰고 그 위에 flash memory를 쓰고 한다.
 - speed, cost, volatility

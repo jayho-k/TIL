@@ -30,7 +30,7 @@
 
 ## 2. 프로세스의 상태
 
-![image-20220313161657759](03ProcessManagement.assets/image-20220313161657759.png)
+![image-20220313161657759](03_Process_Management.assets/image-20220313161657759.png)
 
 - ##### Running: 
 
@@ -57,7 +57,7 @@
 
 - blocked 와 Suspended와 다른점은 ==> blocked는 실행중인 것이지만 Suspended는 일시정지가 되어있는 것
 
-![image-20220313162628173](03ProcessManagement.assets/image-20220313162628173.png)
+![image-20220313162628173](03_Process_Management.assets/image-20220313162628173.png)
 
 
 
@@ -87,7 +87,7 @@
 
 ## 3. 문맥교환( context switch)
 
-![image-20220313164302198](03ProcessManagement.assets/image-20220313164302198.png)
+![image-20220313164302198](03_Process_Management.assets/image-20220313164302198.png)
 
 - cpu를 한 프로세스에서 다른 프로세스로 넘겨주는 과정
 - 즉 뺏고 뺏기는 것
@@ -99,7 +99,7 @@
 
 ##### 문맥교환과 문맥교환이 일어나지 않을 때
 
-![image-20220313164526471](03ProcessManagement.assets/image-20220313164526471.png)
+![image-20220313164526471](03_Process_Management.assets/image-20220313164526471.png)
 
 - 문맥 교환이 아닐떄
 
@@ -113,7 +113,7 @@
 
 - 문맥 교환이 있을떄 overhead가 훨씬 크다 (cache memory flush)등등 때문에
 
-![image-20220313170355106](03ProcessManagement.assets/image-20220313170355106.png)
+![image-20220313170355106](03_Process_Management.assets/image-20220313170355106.png)
 
 
 
@@ -152,7 +152,7 @@
 
 - suspended가 추가된 프로세스 상태도
 
-![image-20220313192747021](03ProcessManagement.assets/image-20220313192747021.png)
+![image-20220313192747021](03_Process_Management.assets/image-20220313192747021.png)
 
 - 외부에서 뺴앗긴 값들은 외부에서 다시 active한 상태로 만들어줘야한다.
 - 어떤 프로세스가 자기 코드를 수행 중이면 user mode
@@ -166,7 +166,7 @@
 
 ## 5. Thread
 
-![image-20220313194548158](03ProcessManagement.assets/image-20220313194548158.png)
+![image-20220313194548158](03_Process_Management.assets/image-20220313194548158.png)
 
 - ##### Thread란?
 
@@ -246,7 +246,7 @@
 
 ### fork() 시스템 콜
 
-![image-20220314004637500](03ProcessManagement.assets/image-20220314004637500.png)
+![image-20220314004637500](03_Process_Management.assets/image-20220314004637500.png)
 
 - fork( )를 하게 되면 ==> 자기 함수가 그대로 똑같이 복사가 된다
 
@@ -267,7 +267,7 @@
     - 자식을 하나 만들어서 다른 프로그램을 돌리고 싶기 때문에
     - 즉 복사 하나 하고 거기에 새로운 프로그램을 돌리게 된다.
 
-![image-20220316100953442](03ProcessManagement.assets/image-20220316100953442.png)
+![image-20220316100953442](03_Process_Management.assets/image-20220316100953442.png)
 
 - exaclp에서 date로 넘어가게됨
   - 하지만 그 밑어 다른 명령어가 있다고 하더라도 작동되지 않음
@@ -302,7 +302,7 @@
 
 
 
-![image-20220316102636863](03ProcessManagement.assets/image-20220316102636863.png)
+![image-20220316102636863](03_Process_Management.assets/image-20220316102636863.png)
 
 - ##### message passing
 
@@ -319,7 +319,7 @@
 
 
 
-![image-20220316102753322](03ProcessManagement.assets/image-20220316102753322.png)
+![image-20220316102753322](03_Process_Management.assets/image-20220316102753322.png)
 
 - ##### shared memory
 

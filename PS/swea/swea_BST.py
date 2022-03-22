@@ -30,7 +30,6 @@ for tc in range(1, T+1):
                 tree[p].append(ch2)
             else:
                 tree[p].append(0)
-
         else:
             tree[p].append(0)
             tree[p].append(0)

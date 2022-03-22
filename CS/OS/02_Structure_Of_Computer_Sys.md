@@ -91,13 +91,13 @@
 
 ### 운영체제의 구조
 
-![image-20220308203029752](02 structure of computer sys.assets/image-20220308203029752.png)
+![image-20220308203029752](02_Structure_Of_Computer_Sys.assets/image-20220308203029752.png)
 
 
 
 ## System structure
 
-![image-20220309153409247](02 structure of computer sys.assets/image-20220309153409247.png)
+![image-20220309153409247](02_Structure_Of_Computer_Sys.assets/image-20220309153409247.png)
 
 #### 1. local buffer
 
@@ -107,7 +107,7 @@
 
 #### 2. mode bit
 
-![image-20220309154314476](02 structure of computer sys.assets/image-20220309154314476.png)
+![image-20220309154314476](02_Structure_Of_Computer_Sys.assets/image-20220309154314476.png)
 
 - 1 : 사용자 모드 : 사용자 프로그램 수행(제한된 기계어만 실행)
 - 0 : 모니터 모드 : os 코드 수행
@@ -193,7 +193,7 @@
 
 #### 8. synchronous I/O, asynchronous I/O
 
-![image-20220309170441596](02 structure of computer sys.assets/image-20220309170441596.png)
+![image-20220309170441596](02_Structure_Of_Computer_Sys.assets/image-20220309170441596.png)
 
 - ##### synchronous I/O
 
@@ -217,7 +217,7 @@
 
 #### 9. DMA(Direct Mnemory Access)
 
-![image-20220309172719394](02 structure of computer sys.assets/image-20220309172719394.png)
+![image-20220309172719394](02_Structure_Of_Computer_Sys.assets/image-20220309172719394.png)
 
 - 만약 interrput가 너무 많이 걸리면 어떻게 함??
   - 그럼 cpu한테 좀 비효율적이다
@@ -231,13 +231,13 @@
 
 - block 단위로 인터럽트를 발생시킨다.
 
-![image-20220309173105333](02 structure of computer sys.assets/image-20220309173105333.png)
+![image-20220309173105333](02_Structure_Of_Computer_Sys.assets/image-20220309173105333.png)
 
 
 
 #### 10. 메모리load
 
-![image-20220313154342091](02 structure of computer sys.assets/image-20220313154342091.png)
+![image-20220313154342091](02_Structure_Of_Computer_Sys.assets/image-20220313154342091.png)
 
 - virtual memory
   - 독자적인  메모리
@@ -250,11 +250,11 @@
   - stack: 함수의 호출과 리턴일떄 스택에 쌓아놓게 된다.
 - 구성
 
-![image-20220313154947848](02 structure of computer sys.assets/image-20220313154947848.png)
+![image-20220313154947848](02_Structure_Of_Computer_Sys.assets/image-20220313154947848.png)
 
 
 
-![image-20220313155722895](02 structure of computer sys.assets/image-20220313155722895.png)
+![image-20220313155722895](02_Structure_Of_Computer_Sys.assets/image-20220313155722895.png)
 
 - 사용자 정의
   - 프로그램 안에 있는 함수
@@ -266,7 +266,7 @@
 
 프로그램 실행
 
-![image-20220313160016473](02 structure of computer sys.assets/image-20220313160016473.png)
+![image-20220313160016473](02_Structure_Of_Computer_Sys.assets/image-20220313160016473.png)
 
 - system call을 하게 되면 kernel mode로 바뀜
 - 그리고 return을 하게 되면 다시 user mode로 바뀌게 된다. 

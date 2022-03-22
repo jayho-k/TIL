@@ -15,11 +15,13 @@
 7 170
 '''
 def search(p_i):
+    
     if p_i > n_num:
         return 0
 
     if tree[p_i] == 0:
         return search(p_i*2)+search(p_i*2+1)
+
     else:
         return tree[p_i]
 
@@ -33,7 +35,6 @@ for tc in range(1,T+1):
     for _ in range(l_num):
         leaf, leaf_v = map(int, input().split())
         tree[leaf] = leaf_v
-    print(tree)
 
     ans = search(t)
     print(ans)
