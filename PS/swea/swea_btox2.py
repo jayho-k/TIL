@@ -29,16 +29,3 @@ for tc in range(1,T+1):
 
         ans = ''.join(map(str,ans_lst))
         print(f'#{tc} {ans}')
-
-
-    # if lst[-1] == 1:
-    #     print(f'#{tc} overflow')
-
-    # else:
-    #     for i in range(len(lst)-1,-1,-1):
-    #         if lst[i] == 1:
-    #             ans_lst = lst[:i+1]
-    #             break
-
-    #     ans = ''.join(map(str,ans_lst))
-    #     print(f'#{tc} {ans}')

@@ -44,6 +44,7 @@ def dst(st):
 
         # 방문처리 안한 곳 갈것임 => 테이블 값보다 작거나 같을 경우
         if d <= table[nw]:
+            
             for dd, nxt in graph[nw]:
                 nd = d + dd
 
@@ -57,7 +58,9 @@ input = sys.stdin.readline
 inf = 1e9
 v, e = map(int,input().split())
 st = int(input())
+
 graph = [[] for _ in range(v+1)]
+
 table = [inf]*(v+1)
 
 # 그래프 생성

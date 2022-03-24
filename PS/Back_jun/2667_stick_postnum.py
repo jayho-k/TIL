@@ -1,15 +1,15 @@
-'''
-grouping
+# '''
+# grouping
 
-7
-1010100
-0110101
-1110101
-0000111
-0100000
-0111110
-0111000
-'''
+# 7
+# 1010100
+# 0110101
+# 1110101
+# 0000111
+# 0100000
+# 0111110
+# 0111000
+# '''
 from collections import deque
 from pprint import pprint
 
@@ -20,9 +20,7 @@ def bfs(y,x):
     dx = [1,-1,0,0]
     visited[y][x] = num
 
-
     while q:
-
         y,x = q.popleft()
 
         for d in range(4):
@@ -32,8 +30,6 @@ def bfs(y,x):
             if 0<=ny<n and 0<=nx<n and visited[ny][nx] == 0 and grid[ny][nx] != 0:
                 visited[ny][nx] = num
                 q.append((ny,nx))
-
-
 
 n = int(input())
 grid = [list(map(int, input())) for _ in range(n)]
@@ -45,8 +41,6 @@ for y in range(n):
         if not visited[y][x] and grid[y][x]:
             num += 1
             bfs(y,x)
-
-
 
 ans_lst = []
 for v in visited:
