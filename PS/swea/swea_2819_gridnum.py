@@ -10,8 +10,7 @@
 def dfs(y,x,s,dp):
 
     if dp == 7:
-        if s not in lst:
-            lst.append(s)
+        lst.add(s)
         return 
 
     dy = [0,0,1,-1]
@@ -24,26 +23,18 @@ def dfs(y,x,s,dp):
         if 0<=ny<n and 0<=nx<n:
             dfs(ny,nx,s+str(grid[ny][nx]),dp+1)
 
-
 T = int(input())
 for tc in range(1,T+1):
     grid = [list(map(int, input().split())) for _ in range(4)]
     n = 4
 
-    lst = []
+    lst = set([])
     for y in range(n):
         for x in range(n):
             dfs(y,x,str(grid[y][x]),1)
 
 
     print(f'#{tc} {len(lst)}')
-
-
-
-
-
-
-
 
 
 
