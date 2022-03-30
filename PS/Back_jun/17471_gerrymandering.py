@@ -81,17 +81,21 @@ for i in range(1,n+1):
 # 시작
 for i in range(1,n//2+1):
     c_lst = list(map(list,combinations(n_lst, i)))
-    
+    print(c_lst)
+
+
     # combination + visited처리
     for cc1 in c_lst:
         visited = [2]+[0]*n
         for c in cc1:
             visited[c] = 1
         
+        print(visited)
 
         a = 0
         b = 0
         cc = []
+
         # combination 반대 만들기
         for vi in range(len(visited)):
             if visited[vi] == 0:
@@ -99,11 +103,14 @@ for i in range(1,n//2+1):
 
         # 1차 연결 확인
         bfs(cc, visited, 0)
+        print(visited)
         
         if 0 not in visited: # 연결 ok
 
             #2차 연결확인
             bfs(cc1, visited, 1)
+            print(visited)
+            print('*'*30)
 
             if 1 not in visited: # 연결 ok
                 for i in cc:
@@ -112,7 +119,7 @@ for i in range(1,n//2+1):
                     b += ppl[j]
 
                 mn = min(mn, abs(a-b))
-
+                
 
 if mn == 1e9:
     print(-1)
@@ -223,8 +230,8 @@ else:
 #     #     return
 
 #     if d == fin:
-    #     sma = 0
-    #     smb = 0
+#         sma = 0
+#         smb = 0
 #         cc1 = []
 #         cc2 = []
 #         for vi in range(1,n+1):
