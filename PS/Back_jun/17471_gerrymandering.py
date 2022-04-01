@@ -103,7 +103,6 @@ for i in range(1,n//2+1):
 
         # 1차 연결 확인
         bfs(cc, visited, 0)
-        print(visited)
         
         if 0 not in visited: # 연결 ok
 

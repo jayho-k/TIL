@@ -26,15 +26,14 @@ import heapq
 import sys
 input = sys.stdin.readline
 
-
 def dsk(strt):
 
+    table[strt] = 0
     q = []
     heapq.heappush(q,(0,strt))
-    table[strt] = 0
 
     while q:
-        d, nw= heapq.heappop(q)
+        d, nw = heapq.heappop(q)
 
         if d <= table[nw]:
 
@@ -61,13 +60,12 @@ for _ in range(T):
         if (st == h and frm == g) or (st==g and frm==h):
             graph[st].append((float(cst),frm))
             graph[frm].append((float(cst),st))
-    
-        else:
-            graph[st].append((cst,frm))
-            graph[frm].append((cst,st))
 
-    inf = int(1e9)
-    table = inf*(n+1)
+        graph[st].append((cst,frm))
+        graph[frm].append((cst,st))
+
+    inf = 1e9
+    table = [inf]*(n+1)
 
     goals = [int(input()) for _ in range(t)]
 
@@ -75,10 +73,11 @@ for _ in range(T):
 
     ans = []
     for g in goals:
-        if table[g] < inf and isinstance(table[g],float):
+        if table[g] != inf and isinstance(table[g],float):
             ans.append(g)
 
     ans.sort()
 
     print(*ans)
 
+import bisect
