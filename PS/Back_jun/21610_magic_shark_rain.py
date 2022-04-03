@@ -20,11 +20,8 @@
 범위로 넘어가면 다음자리로 넘겨줌
 '''
 from collections import deque
-from pprint import pprint
 n,m = map(int, input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
-
-pprint(grid)
 dy = [0,0,-1,-1,-1,0,1,1,1]
 dx = [0,-1,-1,0,1,1,1,0,-1]
 
@@ -41,9 +38,8 @@ for d,s in move:
 
     while c:
         cy, cx = c.popleft()
-    # for cy,cx in clud:
-        ncy = (cy + dy[d]*(s)+n)%n
-        ncx = (cx + dx[d]*(s)+n)%n
+        ncy = (cy+dy[d]*(s)+n)%n
+        ncx = (cx+dx[d]*(s)+n)%n
 
         grid[ncy][ncx] += 1.0
         nc.append((ncy,ncx))
