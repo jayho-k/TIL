@@ -22,6 +22,7 @@
 from collections import deque
 n,m = map(int, input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
+
 dy = [0,0,-1,-1,-1,0,1,1,1]
 dx = [0,-1,-1,0,1,1,1,0,-1]
 
@@ -29,11 +30,9 @@ dy2 = [-1,1,1,-1]
 dx2 = [1,1,-1,-1]
 move = [list(map(int, input().split())) for _ in range(m)]
 
-
-
-
 c = deque([(n-1,0),(n-1,1),(n-2,0),(n-2,1)])
 for d,s in move:
+
     nc = []
 
     while c:

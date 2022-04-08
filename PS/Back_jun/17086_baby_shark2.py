@@ -8,6 +8,8 @@
 
 '''
 from collections import deque
+import sys
+input = sys.stdin.readline
 
 def bfs(y,x):
 
@@ -43,11 +45,9 @@ def bfs(y,x):
 n,m = map(int,input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
 
-
 mx = 0
 for y in range(n):
     for x in range(m):
-        tmp = []
         t = bfs(y,x)
         mx = max(mx,t)
 
