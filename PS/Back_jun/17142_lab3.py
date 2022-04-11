@@ -28,6 +28,7 @@ def vi(grid):
 
 def bfs(stp):
 
+    # 비있는게 다 채워지기만 하면 된다
     global zero
 
     mx = 0
@@ -69,7 +70,6 @@ def bfs(stp):
 n,m = map(int,input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
 vi_lo, z = vi(grid)
-
 ch_vi = list(map(list,combinations(vi_lo,m)))
 
 mn = 1e9
