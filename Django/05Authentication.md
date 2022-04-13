@@ -134,30 +134,26 @@ HTTP특징
 
 ## 로그인
 
-#### 로그인이란?
+- #### form
 
-- 세션을 Create하는 로직과 같음
+  - #### AuthenticationForm
+
+- ##### 코드 특이점
+
+  - valid 밑에
+
+  - ##### auth_login(request,form.get_user())
+
+    - 로그인을 하기 위해서 필요함
+
+  - ##### return redirect(request.GET.get('next') or 'articles:index')
+
+    - 어디 갔다가 빠꾸당하고 로그인 함 ==> next  실행
+    - 아님 ==> index로 감
+
+![image-20220411165048678](05Authentication.assets/image-20220411165048678.png)
 
 
-
-##### Authentication Form
-
-- 사용자 로그인을 위한 form
-- request를 첫번째 인자로 취함
-
-
-
-##### login 함수
-
-- user의 ID를 저장한다 (세션에) 
-
-- 인증을 받을 때만 보거나 접근할 수 있게 만들어주는 방법 2가지
-
-  1. is_authenticated
-
-  2. @login_reqiured
-
-![image-20220411164512993](05Authentication.assets/image-20220411164512993.png)
 
 ![image-20220411164726931](05Authentication.assets/image-20220411164726931.png)
 
@@ -173,15 +169,46 @@ HTTP특징
 
 ## Logout
 
+##### 인증을 받을 때만 보거나 접근할 수 있게 만들어주는 방법 2가지
+
+1. is_authenticated
+
+2. @login_reqiured
+
+
+
+- #### form
+
+  - 없음
+
+- ##### 코드 특징
+
+  - 없음
+
+![image-20220411164512993](05Authentication.assets/image-20220411164512993.png)
+
+![image-20220411165238330](05Authentication.assets/image-20220411165238330.png)
+
 
 
 
 
 ## 회원가입
 
-- username
-- password 1
-- password 2
+- 회원가입
+
+  - #### form
+
+    - #### UserCreationForm
+
+  - ##### 코드 특이점
+
+    - ##### auth_login(request,user)
+
+      - save 밑에 씀
+      - 회원가입하고 로그인 된 상태로 만들기 위함
+
+  
 
 ![image-20220411143915057](05Authentication.assets/image-20220411143915057.png)
 
@@ -195,6 +222,18 @@ HTTP특징
 
 ## 회원탈퇴
 
+- #### form
+
+  - 없음
+
+- ##### 특이
+
+  - ##### if request.user.is_authenticated:
+
+  - #####  auth_logout(request)
+
+
+
 ![image-20220411144841458](05Authentication.assets/image-20220411144841458.png)
 
 ![image-20220411144903325](05Authentication.assets/image-20220411144903325.png)
@@ -205,11 +244,115 @@ HTTP특징
 
 ## 회원 수정
 
+- 따로 form을 만들어 주어 필요한 정보만 제공하도록 해야한다.
 
+- #### form
+
+  - ##### UserChangeForm
+
+  - 하지만 필요한 정보만 써야하기 때문에 따로 Form을 만든다
+
+  - 그리고 UserChangeForm에서 상속 받음
+
+  - from django.contrib.auth import **get_user_model**
+
+  - 모델: get_user_model ( )
+
+  - field = (설정)
+
+##### 코드 특징
+
+- ##### form = CustomUserChangeForm(request.POST,instance=request.user)
+
+  - 인스턴스 사용함 (정보를 기본으로 세팅 해놓는 다는 말)
+
+![image-20220412002742530](05Authentication.assets/image-20220412002742530.png)
+
+![image-20220412002707056](05Authentication.assets/image-20220412002707056.png)
 
 
 
 ## 비밀번호 변경
+
+- #### Form
+
+  - ##### PasswordChangeForm
+
+- 코드
+
+  - 특징점
+
+    - save 밑에
+
+    - ##### update_session_auth_hash(request, user)
+
+    - 바꾸고 나면 로그아웃되어 있는 상태가 된다, 이를 해결하기 위함
+
+![image-20220412003155118](05Authentication.assets/image-20220412003155118.png)
+
+
+
+## 정리
+
+#### 데코
+
+@require_safe => 인덱스
+
+##### @login_required :
+
+- 로그인이 되어 있는지를 확인하는 것
+- 사용되는 함수
+  - create
+  - update
+  - 사실은 delete도 하지만 성향이 맞지 않음
+
+##### @require_POST
+
+- POST값인지 확인하는 데코
+- 사용되는 함수
+  - delete
+  - logout
+  - delete
+
+
+
+##### @require_http_methods(['GET','POST'])
+
+- GET하고 POST 두개 받아오는 
+- 사용되는 함수
+  - create
+  - update
+  - login
+  - signup
+  - chage_password
+
+
+
+#### html
+
+![image-20220412005301454](05Authentication.assets/image-20220412005301454.png)
+
+- 권한이 필요한 것
+  - 로그아웃, 수정, 삭제
+- 필요없는 것
+  - 로그인
+  - 회원가입
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -372,8 +372,6 @@ MEDIA_ROOT에서 제공되는 미디어를 처리하는 URL
 
 ![image-20220408111538319](04Form.assets/image-20220408111538319.png)
 
-- 
-
 
 
 
