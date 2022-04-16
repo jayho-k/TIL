@@ -24,15 +24,13 @@ for tc in range(1,T+1):
 
             if order == 'L':
                 d -= 1
-
             elif order == 'R':
                 d += 1
-
             else:
                 if order == 'F':
                     ny = y + dy[d%4]
                     nx = x + dx[d%4]
-
+                    
                 elif order == 'B':
                     ny = y - dy[d%4]
                     nx = x - dx[d%4]

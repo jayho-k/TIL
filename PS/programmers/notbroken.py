@@ -38,8 +38,6 @@ for a,y1,x1,y2,x2,pwr in skill:
         v[y2+1][x1] -= pwr
         v[y2+1][x2+1] += pwr
 
-pprint(v)
-
 # 행 기준
 for y in range(n):
     for x in range(m):
@@ -50,7 +48,6 @@ for x in range(m):
     for y in range(n):
         v[y+1][x] += v[y][x]
 
-pprint(v)
 ans = 0
 for y in range(n):
     for x in range(m):
@@ -58,7 +55,6 @@ for y in range(n):
         if board[y][x] > 0:
             ans += 1
 
-pprint(board)
 print(ans)
 
 
