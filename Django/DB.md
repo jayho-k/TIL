@@ -184,6 +184,170 @@ User 모델 대체하기
 
 
 
+## Many to Many
+
+- 좋아요 기능
+- Profile Page
+- Follow
+
+
+
+### 1:N의 한계
+
+- 여러 의사에게 진료 받은 기록을 환자 한 명에 저장할 수 없음
+  - 외래 키에 1, 2를 테이블에 넣을 수 없기 때문에
+
+
+
+### 중개 모델
+
+- 둘다 역참조
+
+- doctor1.reservation_set.all()
+
+  patient1.reservation_set.all()
+
+![image-20220418103555251](DB.assets/image-20220418103555251.png)
+
+
+
+### many to many field
+
+![image-20220418105238519](DB.assets/image-20220418105238519.png)
+
+- 닥터 입장에서 역차조
+- patent는 참조
+
+- 닥터에다가 manytomany를 만들어도 상관없음 단 ==> 참조 역참조 역할이 바뀔 것임
+
+  
+
+![image-20220418105452983](DB.assets/image-20220418105452983.png)
+
+- patient가 닥터에게 예약함 (add라는 새로운 구문이 생김)
+
+
+
+![image-20220418105625567](DB.assets/image-20220418105625567.png)
+
+- 의사입장에서 역참조이기 때문에 ==> set을 사용해줘야한다.
+
+
+
+![image-20220418105835966](DB.assets/image-20220418105835966.png)
+
+- 의사 입장에서 삭제
+- 환자가 삭제
+
+
+
+#### relate_name
+
+- target model (관계 필드를 가지지 않은 모델) : 의사 (역참조)
+- source model (관계필드를 가진 모델): 환자 (참조)
+
+![image-20220418110227496](DB.assets/image-20220418110227496.png)
+
+- 이런식으로 함으로써 set을 사용하지 않을 것
+
+  - 즉 참조와 역참조에 대해서 신경쓰지 않게 하기 위해서 이다
+
+- 코딩
+
+  - doctor1.patients.all()
+
+  - patient1.doctors.all()
+  - 이런식으로 사용할 수 있다
+
+
+
+#### through
+
+- 중개 테이블을 직접 작성하는 경우에 사용한다.
+- 중개 테이블에 추가 데이터를 사용할때 그리고 다대다 관계와 연결하려는 경우
+
+![image-20220418111439944](DB.assets/image-20220418111439944.png)
+
+- Resevation이 부활
+- many to many field가 Resevation 모델을 가르키게 된다
+
+![image-20220418112041373](DB.assets/image-20220418112041373.png)
+
+
+
+### 중개 테이블의 필드 생성 규칙
+
+![image-20220418112453564](DB.assets/image-20220418112453564.png)
+
+
+
+
+
+
+
+#### add
+
+- 지정된 객체를 관련 객체 집합에 추가
+- 관계가 복제 되지 않음
+  - 즉 환자가 닥터 1에 추가
+  - 닥터1이 환자 예약?? 안됨
+- 모델 인스턴스 필드 값 PK을 인자로 허용
+
+
+
+
+
+## 좋아요
+
+- html
+
+![image-20220418143028721](DB.assets/image-20220418143028721.png)
+
+- view
+
+![image-20220418143049582](DB.assets/image-20220418143049582.png)
+
+
+
+- models
+  - related_name이 필수적으로 필요하다
+  - 왜냐하면 user에서도 settings. AUTH_USER_MODEL이라고 되어 있고 like_users에도 그렇다
+  - 그렇기 때문에 user입장에서는 똑같은 이름이 두개나 있다 ==> 따라서 하나를 바꿔줘야함
+
+![image-20220418143116138](DB.assets/image-20220418143116138.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

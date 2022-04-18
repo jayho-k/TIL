@@ -163,7 +163,7 @@ https:// github.com/rbgirshick/py-faster-rcnn
 
 ![image-20220123184611568](C:\Users\장호\AppData\Roaming\Typora\typora-user-images\image-20220123184611568.png)
 
-![image-20220125144703588](Faster R-CNN(region based CNN).assets/image-20220125144703588.png)
+![image-20220125143346077](Faster_R-CNN(region_based_CNN).assets/image-20220125143346077.png)
 
 i = anchor의 index//
 
@@ -184,7 +184,7 @@ Ncls 와 Nreg를 이용하여 normalization을 진행 할 것임
 
 그리고 람다로 가중치 변화
 
-![image-20220131174653250](Faster R-CNN(region based CNN).assets/image-20220131174653250.png)
+![image-20220131174653250](Faster_R-CNN(region_based_CNN).assets/image-20220131174653250.png)
 
 
 
@@ -259,7 +259,7 @@ how to share?  3가지
 
 
 
-![image-20220131183225599](Faster R-CNN(region based CNN).assets/image-20220131183225599.png)
+![image-20220131183225599](Faster_R-CNN(region_based_CNN).assets/image-20220131183225599.png)
 
 1. RPN 학습 >>( 전체 네트워크에 대해서 학습을 진행한다.)
 2. RPN에서 추출한 proposal을 이용해서 Fast R CNN학습 
@@ -302,22 +302,6 @@ anchor box = > 3scale 3ratio ==> 가장 좋은 값이 나왔음
 
 
 2.4 MS COCO에 대한 실험 결과
-
-
-
-
-
-
-
-
-
-공식코드는 이미 deprecated되었다고 하고 detectron2나 mmdection을 통해 참고하면 될 것 같다.
-
-**[출처]** [Faster RCNN](https://blog.naver.com/younho9468/222299548384)|**작성자** [윤호](https://blog.naver.com/younho9468)
-
-
-
-
 
 
 
