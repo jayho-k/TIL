@@ -416,6 +416,31 @@ Confidence 임계값 높게 설정
 
 
 
+#### mean AP?
+
+- 여러 object들의 AP 평균한 값
+- IOU >= 0.5
+
+
+
+#### COCO challenge
+
+![image-20220418232624043](01_object_detection.assets/image-20220418232624043.png)
+
+- IOU를 다양한 범위로 설정
+- IOU를 0.5 부터 0.05씩 증가시켜 0.95까지 해당하는 IOU별로 mAP를 계산
+- Object가 소, 중, 대로도 나눔 ==> 이것을 보고 어느 model을 사용할지 참고할 수 있음
+
+
+
+
+
+
+
+
+
+
+
 
 
 
