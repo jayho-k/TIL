@@ -78,6 +78,8 @@ OpenCV : C++기반이나 python도 지원
 
 #### 주의할 점
 
+![image-20220420231050102](02_Dataset_of_OpenCV.assets/image-20220420231050102.png)
+
 ##### imread()
 
 - 이미지가 RGB형태가 아닌 ==> BGR형태로 로딩 ==> 즉 원본이미지와 다르게 나타난다
@@ -148,7 +150,7 @@ cap.read() #읽음
 
 ### Object Detection네트워크
 
-
+![image-20220420231141015](02_Dataset_of_OpenCV.assets/image-20220420231141015.png)
 
 ##### 전체 흐름
 
@@ -181,13 +183,13 @@ cap.read() #읽음
 
 When stacked on top of each other, convolutional layers can detect a hierarchy of visual patterns. For instance, the lower layers will produce feature maps for vertical and horizontal edges, corners, and other simple patterns. The next layers can detect more complex patterns such as grids and circles. As you move deeper into the network, the layers will detect complicated objects such as cars, houses, trees, and people.
 
-![img](https://i0.wp.com/bdtechtalks.com/wp-content/uploads/2021/06/convolutional-neural-network-architecture.jpg?ssl=1)
 
 
 
 
+### image Resolution / FPS / Detection성능 상관관계
 
-### image Resolution FPS Detection성능 상관관계
+![image-20220420231443085](02_Dataset_of_OpenCV.assets/image-20220420231443085.png)
 
 - 높음 image Resolution => Detection성능 높아짐 ==> FPS (판단하는 속도) 작아짐 (배열크기가 큼)
 - FPS 가 빨라야 하는 상황 ==>  Detection성능 낮아짐

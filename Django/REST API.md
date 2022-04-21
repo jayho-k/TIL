@@ -27,11 +27,11 @@
 
 #### 응답 상태 코드
 
-- informational 1
-- successful 2
-- redirection 3
-- client 4
-- server 5
+- informational 1xx
+- successful 2xx
+- redirection 3xx
+- client 4xx
+- server 5xx
 
 
 
@@ -252,15 +252,51 @@ DRF( Django REST framework )를 제공한다. ==> 따라서 이 방법을 사용
 
 ## 1 : N Relation
 
+![image-20220420213031388](REST API.assets/image-20220420213031388.png)
+
+- comment create부분에서 시리얼 유효성 검사
+- 이떄 모든 데이터를 다 검사하게 된다
+- 이때 어떤 게시글에 작성하는 댓글인지에 대한 정보를 form-data로 넘겨주지 않는다(즉 article_pk 이부분의 코드가 valid이후 부터 시작하기 때문에 밖으로 빼주어야 한다는 뜻이다)
+- 하지만 serializer는 유효성 검사를 하고 DB에 저장을 해야하는데? 하나의 코드로 되어 있다
+- 따라서 read_only를 통하여 article부분은 유효성 검사를 하지 않는 것이다 .
+
+![image-20220420213050589](REST API.assets/image-20220420213050589.png)
+
+![image-20220420213102425](REST API.assets/image-20220420213102425.png)
+
+![image-20220420213113328](REST API.assets/image-20220420213113328.png)
 
 
 
+### 역참조 하기 (article에서 댓글 보여주기)
+
+#### 방법 1 (PK related field를 만들어서 하기)
+
+![image-20220420214646943](REST API.assets/image-20220420214646943.png)
+
+- read_only를 추가해 주어야한다. => 조회만 할 것이기 때문에
+
+- comment_set의 이름을 다른거로 바꾸고 싶으면 models.py에서 related_name을 추가해서 바꿔줘야한다.
+- pk정보만 가져오게 한다
 
 
 
+#### 방법2 (Nested relationships)
+
+![image-20220420215203781](REST API.assets/image-20220420215203781.png)
+
+- 위에 있는 아이를 그냥 그대로 가져오는 방법
+- 그러기 위해서는 CommentSerializer가 위에 있어야한다. 
+- 그대로 가져왔기 때문에 pk만 가져오는게 아니라 \__all__ 의 모든 정보를 가져오게 된다.
 
 
 
+### 특정 게시글에 작성된 댓글의 개수 구하기
+
+![image-20220420215718087](REST API.assets/image-20220420215718087.png)
+
+- article.comment_set.count ==> 이부분을 source로 해서 보낸다
+- read_only는 똑같은 이유때문
 
 
 

@@ -2,7 +2,9 @@
 
 
 
-## Object_detection and Segmentation??
+## Localization / object_detection / segmentation
+
+![image-20220420221858940](01_object_detection.assets/image-20220420221858940.png)
 
 #### Localization 
 
@@ -85,27 +87,60 @@
 
 ## Object Detection
 
-#### 구성 요소
+### 구성 요소
 
-1. ##### Region Proposal
+#### 1. Region Proposal
 
-   - object가 있음직한 곳을 찾는 것 ==> 힌트
-   - 그리고 나서 bounding box를 친다
+- object가 있음직한 곳을 찾는 것 ==> 힌트
+- 그리고 나서 bounding box를 친다
 
-2. ##### Detection을 위한 deep learning network 구성
+#### 2. Detection을 위한 deep learning network 구성
 
-   - Feature Extraction(backborn)
-     - 이미지에서 중요한 부분들을 뽑아 낸다라는 의미
-     - Feature map을 만든다(크기 감소, 채널수 증가)
-   - FPN(Feature Pyrimid Network) (neck)
-   - Network Prediction(head )
+![image-20220420222309316](01_object_detection.assets/image-20220420222309316.png)
 
-3. ##### Detection을 구성하는 기타 요소
+- ##### Feature Extraction(backborn)
+  
+  - 이미지에서 중요한 부분들을 뽑아 낸다라는 의미
+  
+  - Feature map을 만든다(크기 감소, 채널수 증가)
+  
+    
+  
+- ##### FPN(Feature Pyramid Network) (neck)
 
-   - IOU
-   - NMS
-   - mAP
-   - Anchor box
+  -  **FPN(Feature Pyramid Network)**을 통해 컴퓨팅 자원을 적게 차지하면서 다양한 크기의 객체를 인식하는 방법을 제시합니다.  ==> 작은거 큰거 등등을 구별하기 위함?
+
+    
+
+  - bottom-up pathway : 
+    conv에 인풋  => 2배씩 작아지는 stage마다 feature map 추출(같은크기 = 같은 stage)
+
+    
+
+  - top-down pathway : 
+    2배씩 upsampling (크기를 키운다는 소리) => 각각 1x1 conv사용해서 채널 256으로 맞춤
+
+    
+
+  - lateral connection:
+    이후 각각 3x3 conv 적용 해서 뽑애낸다
+
+    
+
+- ##### Network Prediction(head )
+
+  - classification
+
+  - bbox regression
+
+    
+
+#### 3. Detection을 구성하는 기타 요소
+
+- IOU
+- NMS
+- mAP
+- Anchor box
 
 
 
@@ -130,7 +165,6 @@
 
   - 정확성 높음? ==> 복잡 ==> 시간 오래걸림
   - 시간 줄임 ==> 단순? ==> 정확성 떨어짐
-  - 망함
 
 
 
@@ -153,13 +187,15 @@
 
 ## Object Localization개요
 
+![image-20220420224359533](01_object_detection.assets/image-20220420224359533.png)
 
+![image-20220420224628081](01_object_detection.assets/image-20220420224628081.png)
 
 annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
 - (x,y) * 2
-- feature map에서 Bounding nox Regression layer가 따로 나옴
-  - Bounding nox Regression => 있음직한 곳을 찾는 것 
+- feature map에서 Bounding box Regression layer가 따로 나옴
+  - Bounding box Regression => 있음직한 곳을 찾는 것 
 - 어차피 물체 하나 ==> 그래서 그때 그때마다 regression해주면 된다.
 
 
@@ -180,7 +216,8 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 - 그럼? ==> 1번 째 이미지일땐 오른쪽 ==> 2번 째 이미지일떈 왼쪽??
 - 아니 내가 보기엔 둘다 똑같길래 ==> 그냥 아무곳에다가 박스침
 - 그래서 있을만한 곳을 먼저 찾아주는 것임
-  - 비유:
+  - ##### 비유:
+    
     - 이탈리아를 감
     - 사람이 다 똑같이 생김
     - 알렉스(수염 + 안경)를 찾아야하는데 이사람도 알렉스 저 사람도 알렉스인거 같음
@@ -189,11 +226,23 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
 
 
-#### 슬라이딩 원도우
+
+
+## Region Proposal(영역 추정) 방식
+
+- ##### object가 있을만한 후보 영역을 찾는 것!
+
+
+
+### 슬라이딩 원도우(이전 방식)
+
+![image-20220420225046800](01_object_detection.assets/image-20220420225046800.png)
+
+![image-20220420225101133](01_object_detection.assets/image-20220420225101133.png)
 
 - 이미지의 어느위치에서 object를 찾아야 하는가?? = 슬라이딩 원도우
 
-- 방법
+- #### 방법
 
   - 슬라이딩을 하면서 윈도우 내에서만 object를 찾는다
 
@@ -207,7 +256,8 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
     - 이미지 자체를 여러 모양으로 만들고 슬라이딩을 시킴
     - 사진이 많이 줄임 ==> 한 슬라이드 안에 많은 object들이 존재 할 수 있음
 
-- 문제
+- #### 문제
+
   - 이렇게 하다보니 시간이 오래걸리게 된다.
     - 그냥 무작정 왼쪽 위에부터 찾게 되는 것이기 때문
     - 약간 알고리즘에서 브루트포스같은 느낌
@@ -215,15 +265,11 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
 
 
-## Region Proposal(영역 추정) 방식
-
-- object가 있을만한 후보 영역을 찾는 것!
-
-
-
 ### SS (selective search)
 
-- 개념
+![image-20220420225349438](01_object_detection.assets/image-20220420225349438.png)
+
+- #### 개념
 
   - 이게 막 사람하고 벽이 있음 ==> 사진에서 사람과 벽의 경계의 밝기, 무늬, 질감 등등 다름
 
@@ -236,7 +282,7 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
     
 
-- 특징
+- #### 특징
 
   - 빠른 Detection과 높은 Recall 예측 성능을 동시에 만족
 
@@ -244,18 +290,18 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
     - 즉 SS 알고리즘 돌려서 있음 직한 곳 찾음 ==> 분류 ==> RCNN
 
-      
 
-- 프로세스
 
-  1. 개별 segment된 모든 부분들을 Bounding box로 만듦 => Region Proposal 리스트로 추가
-  2. 각각의 픽셀마다 다른 값을 준다 ==> 컬러, 무늬 크기, 형태에 따라 유사한 Region 그룹핑한다.
-     - 처음에는 over하게 segmentation함
-     - 그다음에 비슷한거 같은거 합침 
-  3. 반복
 
-```python
-```
+- #### 프로세스
+
+![image-20220420225419492](01_object_detection.assets/image-20220420225419492.png)
+
+1. 개별 segment된 모든 부분들을 Bounding box로 만듦 => Region Proposal 리스트로 추가
+2. 컬러, 무늬 크기, 형태에 따라 유사한 Region 그룹핑한다.
+   - 처음에는 over하게 segmentation함
+   - 그다음에 비슷한거 같은거 합침 
+3. 반복
 
 
 
@@ -263,7 +309,9 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
 ### IoU(Intersection over Union)
 
-IoU = 교집합 / 합집합
+![image-20220420225823734](01_object_detection.assets/image-20220420225823734.png)
+
+##### IoU = 교집합 / 합집합
 
 - 모델이 예측한 결과와 실제 측정 box가 얼마나 겹치는가에  대한 지표
 
@@ -284,27 +332,29 @@ IoU = 교집합 / 합집합
 
 ### NMS(Non Max Suppression)
 
-##### 개념
+![image-20220420225949598](01_object_detection.assets/image-20220420225949598.png)
+
+#### 개념
 
 - 비슷한 위치에 있는 box를 제거하고 가장 적합한 box를 선택하는 기법
 -  => max가 아닌것을 눌러준다
 
 
 
-왜 여러개의 박스들이 겹칠까?
+#### 왜 여러개의 박스들이 겹칠까?
 
 - object가 있을 법한 곳을 계속 추천을 해주기 때문에
 
 
 
-##### 수행로직
+#### 수행로직
 
 confidence score 높은 순으로 정렬 ==> 겹치는 애 찾음 ==> 많이 겹쳐? ==> 제거
 
 1. detected된 bounding box별로 특정 confidence threshold(기준)이하 bounding box는 먼저 제거
 2. 가장 높은 confidence score순으로 정렬
    높은 confidence score를 가진 box와 겹치는 다른 box를 모두 조사
-   IOU가 특정 threshold이상인 box 모두 제거
+   IOU(점수 큰애랑 작은 애들)가 특정 threshold이상인 box 모두 제거
 3. 반복( 0.9 봤으니 ==> 0.8봄 ==> 순차적으로)
 
 
@@ -321,8 +371,6 @@ confidence score 높은 순으로 정렬 ==> 겹치는 애 찾음 ==> 많이 겹
 
 - 재현율의 변화에 따른 정밀도의 값을 평균한 성능 수치
 
-
-
 inference time이 작을 수록 좋음 (빨리 detect했다는 뜻)
 
 높은 AP일수록 좋음(정확도가 좋음)
@@ -332,6 +380,8 @@ inference time이 작을 수록 좋음 (빨리 detect했다는 뜻)
 #### 정밀도(Precision)과 재현율(Recall)
 
 정밀도(Precision)과 재현율(Recall)은 주로 이진 분류에서 사용되는 성능 지표
+
+![image-20220420230642415](01_object_detection.assets/image-20220420230642415.png)
 
 - ##### 정밀도
 
@@ -368,7 +418,9 @@ inference time이 작을 수록 좋음 (빨리 detect했다는 뜻)
 
 
 
-##### 오차행렬
+#### 오차행렬
+
+![image-20220420230617198](01_object_detection.assets/image-20220420230617198.png)
 
 TP : 사물이 존재 + 정답을 맞춤
 
@@ -381,6 +433,8 @@ TN: 사물이 없음 + 정답을 맞춤
 
 
 #### Confidence 임계값에 따른 정밀도- 재현율 변화
+
+![image-20220420230716283](01_object_detection.assets/image-20220420230716283.png)
 
 Confidence 임계값 작게 설정
 
