@@ -169,7 +169,7 @@ plt.imshow(img_rgb)
 
 ### MS-coco Dataset소개
 
-특징
+##### 특징
 
 - 80개 object category
 - 300k 이미지, 1.5M object
