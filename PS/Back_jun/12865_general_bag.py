@@ -39,7 +39,7 @@ for i in range(1,n+1):
         else:
             table[i][j] = max(table[i-1][j], v+table[i-1][j-w])
 
-pprint(table)
+print(table[n][k])
 
 
 

@@ -305,6 +305,32 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
 
 
 
+### 코드
+
+```python
+import selectivesearch
+
+# img_rgb : 아까 저장했던 사진 변수 이름
+# scale : 스케일을 크게하면 큰 object위주로 알고리즘이 돌아라 라는 뜻
+# min_size : 적어도 사이즈 2000이상 object만 추천 해줘라
+_, regions = selectivesearch.selective_search(img_rgb, scale=100, min_size=2000)
+
+[{'labels': [0.0], 'rect': (0, 0, 107, 167), 'size': 11166},
+ {'labels': [7.0, 11.0], 'rect': (0, 91, 183, 175), 'size': 12312},
+ 
+ ...
+ 
+ {'labels': [17.0,18.0,14.0,16.0,7.0,
+   11.0,9.0,
+   12.0,2.0,6.0,10.0,15.0,19.0,8.0,13.0],'rect': (0, 0, 374, 449),
+  'size': 127680},
+...
+ 
+ # 이런식으로 라벨들이 점점 합쳐지게 되는 것을 볼 수 있다
+ # 즉 비슷한 것들 끼리 묶는 것이다.
+
+```
+
 
 
 ### IoU(Intersection over Union)
