@@ -19,16 +19,13 @@ ans = 1e9
 for cost,cus in lst:
 
     table[cus] = cost
-    for i in range(0,101+c, cus):
+    for i in range(0,101+c):
         table[i] = min(table[i], table[i-cus]+cost)
-
 
         if c <= i:
             ans = min(table[i],ans)
 
     print(table[:c+5])
-
-
 
 
 # print(table)

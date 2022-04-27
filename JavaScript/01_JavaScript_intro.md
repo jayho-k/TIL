@@ -270,11 +270,54 @@ for (let fruit of fruits){
 
 ## 함수
 
+- 이런 식으로 시용
+
+```javascript
+// 방법 1
+function add(num1, num2){
+    return num1 + num2
+}
+
+// 방법 2 ==> 이것을 많이 사용 한다. 이유: hoist를 막기 위해
+const add = function(num1,num2){
+    return num1 + num2
+}
+
+
+// 많은 배열 넣기
+const manyArr = function(num1,...ar2){
+    return [num1,ar2]
+}
+
+
+```
 
 
 
+##### 콜백 함수
+
+- 함수의 인자로 함수를 사용할 수 있다
+- 그냥 함수에다가 함수 넣을 수 있음
 
 
+
+#### Arrow Function
+
+```javascript
+// 방법 1
+const arrow1 = function(name){
+    return 'hello, ${name}'
+}
+
+// 방법 2
+const arrow2 = (name) => { return 'hello, ${name}' }
+
+// 방법 3
+const arrow3 = name => { return 'hello, ${name}' }
+
+// 방법4
+const arrow4 = name => return 'hello, ${name}'
+```
 
 
 

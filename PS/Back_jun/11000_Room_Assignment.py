@@ -63,7 +63,6 @@ for i in range(1,n):
     # 즉 지금강의 끝나는 시간보다 다음강의 시작시간이 더 작아? ==> 그럼 시간 겹친다는 뜻
     # 6,15 와 15,16은 안겹친다 그럼 이 둘은 하나로 합쳐주면 된다 즉 : 6,15   15,16  ==> 6,16
 
-
     # 겹쳐
     if end[0] > lst[i][0]:
         cnt += 1
@@ -72,6 +71,7 @@ for i in range(1,n):
     else:
         heapq.heappop(end)
 
+print(lst)
 print(cnt)
     
 

@@ -42,7 +42,6 @@ def bfs(sy,sx):
     return i_cnt
 
 
-
 from pprint import pprint
 from collections import deque
 

@@ -2,8 +2,14 @@
 
 ## Process
 
-- stage1
-- stage2
+- ##### stage1
+
+  - object가 있음직한 곳을 먼저 보고 이미지를 뽑아온다
+
+- ##### stage2
+
+  - CNN
+
 
 ![image-20220425165909411](03_R-CNN.assets/image-20220425165909411.png)
 
@@ -11,14 +17,22 @@
 
 ![image-20220425170005240](03_R-CNN.assets/image-20220425170005240.png)
 
-- ##### Region Proposa( Selecticve Search )
+#### Region Proposal( Selecticve Search )
 
-  - 2000개의 object가 있을 법한 위치를 제안해준다
-  - 즉 2000개의 이미지를 뽑은 것이다(다양한 크기에 사진들이 포함되어 있을 것임) = FPN?
-  - 그 2000개를 동일한 사이즈로 맞춘다
-    - 모델에 들어가려면 이미지의 사이즈가 동일해야하기 때문이다
-    - FC(Fully Connected) : 사이즈가 몇인지 명시가 되어있어야 한다.
-  - stage2 (CNN network)에 집어 넣는다
+- 2000개의 object가 있을 법한 위치를 제안해준다
+- 즉 2000개의 이미지를 뽑은 것이다(다양한 크기에 사진들이 포함되어 있을 것임)
+- 그 2000개를 동일한 사이즈로 맞춘다
+  - 모델에 들어가려면 이미지의 사이즈가 동일해야하기 때문이다
+  - FC(Fully Connected) : 사이즈가 몇인지 명시가 되어있어야 한다.
+- stage2 (CNN network)에 집어 넣는다
+
+
+
+#### why  does FC layer only accepts a fixted size?
+
+Input size determines the overall number of parameters of the Neural Network. During training, each parameter of the model specializes to "learn" some part of the signal. This implies that once you change the number of parameters, the whole model must be retrained. That's why we can't afford to let the input shape change.
+
+
 
 
 
@@ -39,10 +53,10 @@
 ##### CNN Detection
 
 - 2000개의 이미지에 대해서 학습을 시키게 되는 것이다
-- 각각의 2000개의 이미지를 하나하나 크기를 동일하게 맞춘뒤에 conv Net에 집어넣게 되는것
-- 즉 Conv Net가 2000번 일하게 되는 것이다.
+  - 각각의 2000개의 이미지를 하나하나 크기를 동일하게 맞춘뒤에 conv Net에 집어넣게 되는것
+  - 즉 Conv Net가 2000번 일하게 되는 것이다.
 
-- 그리고 Bounding box reg로 feature map( W와 같은 역할을 하는 것 )을 뽑아낸다
+- 그리고 Bounding box reg로 feature map을 뽑아낸다
 
 
 
@@ -68,7 +82,13 @@
 
 ##### 3. GT(실제값)으로만 학습을 시킨다
 
-- 이렇게 뽑힌 Feature Map을 1차원으로 만들어준다 (이유가 뭐였지??)
+- 이렇게 뽑힌 Feature Map을 1차원으로 만들어준다
+  - 이유
+  - Requiring a fully connected layer to only accept one dimensional (a vector) makes for a consistent interface between layers. Strict inputs makes the the code more straightforward. Otherwise a fully interconnected layer might have to accept arbitrary inputs (e.g., n-dimensional).
+
+
+
+
 - 이것을 또 SVM으로 학습을 시켜준다. (GT값으로만)
   - 0.3 IOU이하는 background로 설정  (별로 안겹치는거 배경으로 할 것임)
   - 0.3이상이지만 GT가 아닌 경우는 무시 ==> 학습대상에서 빼버린다는 뜻이다
@@ -130,7 +150,7 @@
 
 ##### 장점
 
-- 높은 Dtection 정확도
+- 높은 Dtection 정확도 (과거보다)
 
 
 
