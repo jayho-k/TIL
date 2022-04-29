@@ -96,6 +96,8 @@
 
 #### 2. Detection을 위한 deep learning network 구성
 
+![image-20220427224027849](01_object_detection.assets/image-20220427224027849.png)
+
 ![image-20220420222309316](01_object_detection.assets/image-20220420222309316.png)
 
 - ##### Feature Extraction(backborn)
@@ -103,6 +105,8 @@
   - 이미지에서 중요한 부분들을 뽑아 낸다라는 의미
   
   - Feature map을 만든다(크기 감소, 채널수 증가)
+  
+  - 
   
     
   
