@@ -27,7 +27,7 @@
 
 #### object_detection
 
-- Image = 1 ,  Object = n
+- Image = 1 ,  Object = n (n>1)
 
 - bounding box로 detect 하는 것
 
@@ -125,6 +125,10 @@
   - lateral connection:
     이후 각각 3x3 conv 적용 해서 뽑애낸다
 
+    
+    
+  - 작은 object들을 정리한다? 
+    
     
 
 - ##### Network Prediction(head )
@@ -413,15 +417,23 @@ inference time이 작을 수록 좋음 (빨리 detect했다는 뜻)
 
   - 예측한 결과가 실제 Object들과 얼마나 일치하는지 나타내는 지표
     - 검출을 정확히 Bird로 함
+    
   - TP / (TP + FP)   ==> 물체가 있다고 **판단 한 것들 중** => 정답을 맞춘 비율
+
   - 정밀도가 좋아지기 위해서 FP(분모)가 작아야 함
+
+    
 
 - ##### 재현율
 
   - 실제 object들을 빠뜨리지 않고 얼마나 정확히 검출 예측하는지를 나타내는 지표
     - 새가 두마리 있는데 한마리만 예측함 ==> 50%
+    
   - TP / (TP + FN)  ==>  물체가 **실제로** 있는 것들 중 => 정답을 맞춘 비율
+
   - 재헌율이 좋지 위해선 FN(분모)가 작아야함
+
+    
 
 - 예시)
 
