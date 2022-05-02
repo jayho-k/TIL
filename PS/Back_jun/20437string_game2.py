@@ -24,13 +24,13 @@ for _ in range(t):
     mn = 1e9
 
     total = 0
-    end = 0
+    end = 1
     for strt in range(n):
         stnd = st[strt]
         cnt = 1
+
         while end < n:
             com = st[end]
-
             if com==stnd:
                 cnt += 1
                 if cnt == k:
@@ -38,7 +38,9 @@ for _ in range(t):
                     mx = max(mx, total)
                     mn = min(mn, total)
                     break
+
             end += 1
+
         cnt -= 1
 
     if mn != 1e9 or mx != 0:
@@ -46,82 +48,6 @@ for _ in range(t):
     else:
         print(-1)
 
-
-
-
-
-# import sys
-# input = sys.stdin.readline
-
-# t = int(input())
-
-# for _ in range(t):
-#     st = list(input())
-#     n = len(st)
-#     k = int(input())
-
-#     mx = 0
-#     mn = 1e9
-
-#     for i in range(n):
-#         stnd = st[i]
-
-#         for j in range(i+1,n):
-#             com = st[j]
-#             com_lst = st[i:j+1]
-#             leng = len(com_lst)
-#             cnt = com_lst.count(stnd)
-
-#             if cnt > k:
-#                 continue
-#             elif cnt == k:
-#                 mn = min(mn,leng)
-
-#                 if com_lst[0] == com_lst[-1]:
-#                     mx = max(mx,leng)
-
-#     if mn != 1e9 or mx != 0:
-#         print(mn, mx)
-#     else:
-#         print(-1)
-
-
-
-
-# import sys
-# input = sys.stdin.readline
-
-# t = int(input())
-
-# for _ in range(t):
-#     st = list(input())
-#     n = len(st)
-#     k = int(input())
-
-#     mx = 0
-#     mn = 1e9
-
-#     for i in range(n):
-#         stnd = st[i]
-
-#         for j in range(i+1,n):
-#             com = st[j]
-#             com_lst = st[i:j+1]
-#             leng = len(com_lst)
-#             cnt = com_lst.count(stnd)
-
-#             if cnt > k:
-#                 continue
-#             elif cnt == k:
-#                 mn = min(mn,leng)
-
-#                 if com_lst[0] == com_lst[-1]:
-#                     mx = max(mx,leng)
-
-#     if mn != 1e9 or mx != 0:
-#         print(mn, mx)
-#     else:
-#         print(-1)
 
 
 
@@ -162,5 +88,91 @@ for _ in range(t):
 #         print(mn, mx)
 #     else:
 #         print(-1)
+
+
+
+# import sys
+# input = sys.stdin.readline
+
+# t = int(input())
+
+# for _ in range(t):
+#     st = list(input())
+#     n = len(st)
+#     k = int(input())
+
+#     mx = 0
+#     mn = 1e9
+
+#     for i in range(n):
+#         stnd = st[i]
+
+#         for j in range(i+1,n):
+#             com = st[j]
+#             com_lst = st[i:j+1]
+#             leng = len(com_lst)
+#             cnt = com_lst.count(stnd)
+
+#             if cnt > k:
+#                 break
+#             elif cnt == k:
+#                 mn = min(mn,leng)
+
+#                 if com_lst[0] == com_lst[-1]:
+#                     mx = max(mx,leng)
+
+#     if mn != 1e9 or mx != 0:
+#         print(mn, mx)
+#     else:
+#         print(-1)
+
+
+
+
+
+
+
+
+# import sys
+# input = sys.stdin.readline
+
+# t = int(input())
+
+# for _ in range(t):
+#     st = list(input())
+#     n = len(st)
+#     k = int(input())
+
+#     mx = 0
+#     mn = 1e9
+
+#     for i in range(n):
+#         stnd = st[i]
+
+#         for j in range(i+1,n):
+#             com = st[j]
+#             com_lst = st[i:j+1]
+#             leng = len(com_lst)
+#             cnt = com_lst.count(stnd)
+
+#             if cnt > k:
+#                 continue
+#             elif cnt == k:
+#                 mn = min(mn,leng)
+
+#                 if com_lst[0] == com_lst[-1]:
+#                     mx = max(mx,leng)
+
+#     if mn != 1e9 or mx != 0:
+#         print(mn, mx)
+#     else:
+#         print(-1)
+
+
+
+
+
+
+
 
 
