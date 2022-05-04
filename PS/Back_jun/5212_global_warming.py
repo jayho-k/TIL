@@ -1,10 +1,6 @@
 
 from pprint import pprint
 
-n,m = map(int, input().split())
-grid = [list(input()) for _ in range(n)]
-dy = [0,0,1,-1]
-dx = [1,-1,0,0]
 
 def trans(grid):
     return list(map(list,zip(*grid)))
@@ -29,6 +25,12 @@ def mxmn(grid):
 
     return mn,mx
 
+
+n,m = map(int, input().split())
+grid = [list(input()) for _ in range(n)]
+dy = [0,0,1,-1]
+dx = [1,-1,0,0]
+
 chck = [[0]*m for _ in range(n)]
 for y in range(n):
     for x in range(m):
@@ -52,7 +54,6 @@ for y in range(n):
 y_min, y_max = mxmn(grid)
 grid = grid[y_min:y_max]
 t_grid = trans(grid)
-
 
 x_min, x_max = mxmn(t_grid)
 t_grid = t_grid[x_min:x_max]
