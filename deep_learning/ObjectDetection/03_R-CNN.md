@@ -46,6 +46,8 @@ Input size determines the overall number of parameters of the Neural Network. Du
 
 ​	SVM을 쓴 이유? 해봤더니 좋아서
 
+​	왜>//SVM 서로간의 차이가 가장 큰 중간값을 넣어주는 것 ==> 즉 
+
 : 즉 딥러닝 모델을 FC layer까지라는 뜻 => feature extraction으로만 CNN을 활용한 부분
 
 
@@ -117,12 +119,20 @@ Input size determines the overall number of parameters of the Neural Network. Du
 ##### Predicted가 정답이려면 어떤 모양을 가지고 있어야 하나? 
 
 1. Predicted의 중심값과 GT의 중심값이 가까울 수록 좋아야 한다. 
+
 2. 너비의 값이 똑같아야 한다. (최대한 같아야 한다.)
    - 즉 d(P)값을 구해서 수정 시킨 g의 값이 정답이 되게 만들어야 한다는 뜻이다.
+   
    - d(P)값을 학습시켜준다.
+   
    - 손실 함수에 넣어준다
+   
+     
+   
 3. 높이의 값도 똑같아야 한다. (최대한 같아야 한다.)
    - 지수함수에 넣어주고 p값을 곱해준다.
+
+- 정규화를 하기 위해서 pw값을 곱해준것
 
 
 
