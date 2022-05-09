@@ -296,15 +296,24 @@ HTTP특징
 
 #### 데코
 
-@require_safe => 인덱스
+##### @require_safe 
+
+- GET, HEAD만 접근이 가능
+
+  
 
 ##### @login_required :
 
 - 로그인이 되어 있는지를 확인하는 것
+
 - 사용되는 함수
   - create
+  
   - update
+  
   - 사실은 delete도 하지만 성향이 맞지 않음
+  
+    
 
 ##### @require_POST
 
