@@ -24,19 +24,21 @@ for s in lst:
         can_num.append(s)
 
     # 사진틀 부족
-    # if (101-stu.count([0,0])) == case+1:
     if len(can_num)  == case+1:
 
+        # 후보중 작은 값 찾기
         mn = 1e9
         for m in range(101):
             if mn>stu[m][0] and stu[m][0] != 0:
                 mn = stu[m][0]
 
+        # remove list (2명 이상일 수 있어서)
         rmv_lst =[]
         for j in range(101):
             if stu[j][0] == mn:
                 rmv_lst.append(j)
 
+        # 2명 이상? ==> 오래된 애들을 찾는다
         old = 0
         old_i = 0
         if len(rmv_lst) >= 2:
@@ -45,14 +47,11 @@ for s in lst:
                     old = stu[r][1]
                     old_i = r
         else:
-            # print(rmv_lst)
             old_i = rmv_lst[0]
 
-        # print(stu)
+        # 삭제
         stu[old_i] = [0,0]
-
         can_num.remove(old_i)
-
 
     # 후보 올리기
     stu[s][0] += 1
@@ -69,4 +68,3 @@ for a in range(101):
 
 # print(stu)
 print(*ans)
-
