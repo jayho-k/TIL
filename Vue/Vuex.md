@@ -67,9 +67,17 @@
 
 
 
+#### 로컬에 저장하기
 
+3rd party없이
 
+index
 
+![image-20220512092707864](Vuex.assets/image-20220512092707864.png)
+
+app
+
+![image-20220512094130156](Vuex.assets/image-20220512094130156.png)
 
 
 

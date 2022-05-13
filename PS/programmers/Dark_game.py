@@ -29,9 +29,7 @@ for i in range(1,len(lst)):
         n_lst.append(lst[i])
 
 lst = n_lst
-
 b = {'S':1,'D':2,'T':3}
-
 n = len(lst)
 
 bonus = 0
@@ -42,15 +40,12 @@ shap = 0
 
 for i in range(n-1,-1,-1):
     v = lst[i]
-
     if v == '*':
         stack += 2
 
     elif v == '#':
         shap += 1
-
     else:        
-
         if v in b:
             bonus = b[v]
 

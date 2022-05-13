@@ -20,7 +20,6 @@ def dfs(d):
 
     if d == n:
         cnt += 1
-        
         return
 
     elif d > n:
