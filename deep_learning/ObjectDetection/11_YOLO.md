@@ -85,6 +85,8 @@
 	- 람다 :  책임지지 않는 애들도 책임이 있다고 말하는 것 (적당히 값을주어서 감소시킴)
 	- 계산 대상(예측 바운딩 박스가)이 아닌데 계산을 해버림
 
+- 
+
 
 
 4번째
@@ -99,7 +101,14 @@
 
 - 각 셀별로 예측을 하기 시작한다.
 - NMS를 하기 시작한다.
-- 
+
+
+
+NMS의 종류
+
+- soft nms
+
+  
 
 
 
@@ -148,6 +157,14 @@ v2
 - Batch Normalization (cnn => b.n => ReLU)
 - Head쪽만 w를 업데이트 하게 된다.
   - 즉 앞쪽의 것들은 freezen시켜서 w업데이트를 못하도록 한다.
+  - 이유:
+    - 앞에 backbone부분은 pretraining이 이미 되어 있다
+    - 그렇기 때문에 굳이 backbone까지 학습을 시키지 않아도 된다.
+    - 학습에 대한 추가
+      - backbone부분을 왠만하면 안건들이는게 좋음
+      - 왜냐하면 dataset들은 이미 정제된 데이터들로 학습이 되어있는 것
+      - 하지만 내 data들은 보통 raw한 데이터임 ==> 그렇기 때문에 좋은 성능이 나오기 힘듦
+      - ==> 즉 그냥 train을 하지않고 pretrain이 되어있는 것을 그대로 쓰는 것이 좋음
 - 13x13 feature map기반 ==> 각 grid별로 5개의 anchor box에서 object detection
 - 예측 bbox의 x,y좌표가 중심 cell내에서 벗어나지 않도록 **Direct Location Prediction** 적용
   - 벗어날때가 많았기 때문에 조정이 필요했음
@@ -162,9 +179,13 @@ v2
 ![image-20220518193344627](11_YOLO.assets/image-20220518193344627.png)
 
 - 한 셀당 5개 anchor box를 사용
-
 - K-means Clustering으로 5개의 군집화 분류를 진행함 
   ==> 그리고 이것에 맞게 anchor box의 크기를 정해주었다
+- 그럼 언제 K-means Clustering을 해야하나? 
+  - training을 시작하기 전에 해야 할 것 같음
+  - 왜냐하면 anchor box의 크기는 고정이 되어 있어야하기 때문
+  - 따라서 train을 시작하기 전에 clustering을 진행 ==> anchor box의 크기 결정
+
 
 
 
