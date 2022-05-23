@@ -1,6 +1,6 @@
 # 11_YOLO
 
-- YOLO : Real-Time Object Dection
+- YOLO : Real-Time Object Detection
   - You only look once
 
 
@@ -20,6 +20,14 @@
 
 
 ## YOLO v-1
+
+다시 공부
+
+- googlenet
+- Confidence score = 오브젝트일 확률 * IOU값 ( 분류가 아님 물체일 확률임 )
+- Loss
+
+
 
 
 
@@ -45,7 +53,7 @@
 
 - 마지막 7x7x30으로 만든다
 
-  - 30? ==> 
+  - 30?
   - 각 셀별로 30에 대한 정보를 가지고 있음
   - 5 , 5, 20 : (둘중에 하나 IOU높은 걸 뽑는다 ==> 그리고 클래스 확률을 짜게 된다.)
   - 개별 예측 bbox별로 정보를 5개(x, y, w, h + confidence Socre)(정규화된 값) 가지고 있음 (각 셀이 담당하는 예측 bbox = 2개씩)
@@ -114,6 +122,53 @@
 
 
 ## YOLO v-2
+
+- 왜 head 쪽만 업데이트를 시켰는지
+- 
+
+
+
+
+
+##### k-means clustering
+
+- 각 군집이 하나의 중심을 가진다
+- SSE를 최소화 하는 Partition을 찾는 것이 목표
+
+![image-20220505164345791](11_YOLO.assets/image-20220505164345791.png)
+
+- k의 개수에 따라 결과가 달라짐
+- 감으로 k를 찾을 것인가?? ==> Nope ==> 룰이 존재
+
+![image-20220505164527896](11_YOLO.assets/image-20220505164527896.png)
+
+- x축 = K , y축 = SSE
+- K의 개수가 많아질 수록 하나씩 군집을 하는 것이기 때문에 ==> SSE는 0이 된다. ==> 오차라는 것이 존재하지 않기 때문에(차이)
+- 그 중에서 완만하게 줄어드는 지점을 찾는다 = elbow point
+
+
+
+##### Process
+
+- Assignment 초기화
+  - 각 데이터에 랜덤하게 K개중 하나의 군집을 할당
+- Assignment 가 변하지 않을때 까지 다음을 반복
+  - 각각의 군집에서 중심을 계산
+  - 각 데이터에서 가장 가까운 중심에 해당하는 군집으로 Assignment 를 update
+
+![image-20220505165006606](11_YOLO.assets/image-20220505165006606.png)
+
+
+
+##### 한계점
+
+- k개를 미리 정해줘야함
+- 초기 Assignment에 따라서 결과가 달라진다.
+- 각 군집의 크기, 밀도가 다르거나 구형이 아닌경우 어려움이 발생
+
+
+
+
 
 
 
@@ -385,6 +440,76 @@ class가 20개면 20개 다 적용시킨 것이다.
 ##### 절차
 
 ![image-20220518222826506](11_YOLO.assets/image-20220518222826506.png)
+
+
+
+
+
+### 대량의 이미지 학습 시 메모리 문제 발생
+
+cnn을 할떄 object detection에 대해서 조금더 주의 할 점
+
+- cnn 이미지를 학습시키려면 ==> 배열(tensor)로 변환 시켜야 한다.
+- Batch size를 정해서 한번에 보내줌 ==> 메모리 하드웨어가 버티질 못함
+
+
+
+이래서 나온 방법
+
+#### Python Generator
+
+![image-20220520013750625](11_YOLO.assets/image-20220520013750625.png)
+
+##### def A (왼쪽)
+
+- 함수 수행이 끝나면 return 값을 caller에게 해주게 된다.
+- 문제
+  - if => return 값이 10만개 정도가 된다? 
+    => 너무 큼 => caller에게 가면 한꺼번에 처리해야할 값들이 너무 많음
+
+
+
+##### gen A (오른쪽)
+
+- caller를 호출
+- caller가 yield를 만남
+  - 1000개(일정한 수 만큼만) 정도만 caller에게 반환을 해준다.
+  - caller는 1000개만 일을 하게 된다.
+- 또 yield를 만남 ==> 반복
+
+
+
+#### Keras fit_generator()를 이용한 학습
+
+![image-20220520014508168](11_YOLO.assets/image-20220520014508168.png)
+
+- 1epoch에 1000장의 이미지를 학습 시켜야함
+  - 그럼 batch size 10으로 잡아서 10장의 이미지를 집어 넣음
+  - 그것을 100회 반복시킴
+  - batch size 를 100으로 늘린다고 해서 빨라지지 않음
+  - 왜냐하면 batch size 또한 하드웨어의 제약을 받기 때문이다.
+  - 그럼 batch size를 어떻게 정할것인가??
+    - 하드웨어에 따라 다르다
+
+
+
+##### Data Generator
+
+![image-20220520020416814](11_YOLO.assets/image-20220520020416814.png)
+
+![image-20220520020534681](11_YOLO.assets/image-20220520020534681.png)
+
+
+
+##### Object Detection 모델에서 CPU와 GPU의 역할
+
+![image-20220520021238033](11_YOLO.assets/image-20220520021238033.png)
+
+
+
+
+
+- CPU 4코어, GPU P100, batch size => 4~8이 적합한듯?
 
 
 
