@@ -133,3 +133,87 @@ chain rule
 
 - 첫번째 항
   - 실제로 
+
+
+
+
+
+### Optimizer
+
+일반적인 ML
+
+- closed form solution
+  - 데이터와 함수, 데이터와 objective(목적) ==> 최적화하는 solution을 바로 구할 수 있는 경우가 많음
+
+DL
+
+- iterative한 방법을 통해서 solution을 구하게 된다.
+  - 파라미터의 개수도 너무 많고 이것을 한번에 처리할 수 있는 방법이 없기 때문에
+  - 대표적인 예) gradient descent
+  - 차원이 3차원정도가 아닌 굉장히 깊은 차원을 다루게 된다
+  - 이때 하나의 값이 다른 파라미터에 어떤 영향(하나하나)을 끼치는지는 알수 없음
+
+
+
+Parameter space in Deep Learning
+
+- 실제 deep learning 모델의 parameter space는 차원이 굉장히 큼
+- globa optimal point를 찾는 것은 불가능
+- 따라서 단지 saddle points을 피하고 loca minimal를 찾는데 목표를 함
+  - saddle point가 굉장히 많음 (말 안장처럼 생긴 3차원 그래프 모양)
+  - 한쪽으로는 감소하고 한쪽으로는 증가하기 때문에 피해야함
+- 일반적으로 loca minima들은 비슷한 함수 값을 가짐
+
+
+
+
+
+#### Stochasitic Gradient Descent SGD
+
+![image-20220523213027062](socar4.assets/image-20220523213027062.png)
+
+- 본인지점에 가장 빠른 감소방향만 찾음
+- 거기에 lr을 곱함
+
+- 따라서 한번에 가운데로 가는 것이 아니라 왔다갔다 하면서 가게 된다.
+  
+
+
+
+#### Momentum
+
+- gradient가 빠르게 변하는 것을 막으면서 update유도 ( 방향을 확확바꾸지 않는다 ) 
+
+![image-20220523213250916](socar4.assets/image-20220523213250916.png)
+
+
+
+#### AdaGrad
+
+각각의 parameter별로 optimizer가 파라미터를 얼만큼 업데이트를 기억해주는 것
+
+- 전에 많이 업데이트를 해주었다면 다음에는 업데이트를 덜 해주게 된다.
+- 위에 알고리즘 같은 경우는 lr값이 일정한 반면 Ada같은 경우에는 그렇지 않는 것이 특징이다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
