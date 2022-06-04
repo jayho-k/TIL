@@ -3,7 +3,7 @@
 - facebook
 - 성능 저하 문제가 있었음
 - YOLO나 SSD보다 느림 그러나 Faster RCNN보다 빠름
--  Focal Loss + Feature Pyramid Network
+- Focal Loss + Feature Pyramid Network
 
 
 
@@ -20,6 +20,36 @@
 ### Object Detection의 Class imbalance이슈
 
 #### Class imbalance란?
+
+https://techblog-history-younghunjo1.tistory.com/74
+
+- 어떤 데이터에서 각 클래스가 갖고 있는 데이터의 양의 차이가 큰 경우
+  - 왜 균형이 필요한가?
+  - 소수의 의견에 귀를 기울이기 위해서
+
+**2가지 방법**
+
+1. **Weight balancing**
+   - Train 데이터에서 각 loss를 계산할 때 **특정 클래스에 대해서는 더 큰 loss를 계산해주는 것**
+   - 클래스의 비율에 대해 가중치를 두는 방법
+     - 두 개의 클래스 비율 ==> 1:9 이면  가중치를 9:1로 해줌으로써 전체 클래스의 loss에 비슷하게 기여하도록 하는 것
+   - Focal loss
+
+2. **Oversampling & Undersampling**
+
+   ![image-20220603220949015](13_RetinaNet.assets/image-20220603220949015.png)
+
+**Under sampling**
+
+- 양을 줄여버린 파란색 데이터들은 양이 많았던 원본 파란색 데이터의 대표성을 잘 지니고 있어야 하는 것이 중요
+
+**Oversampling**
+
+- 주황색 데이터의 양을 늘려줄 때 원본 주황색 데이터를 **복사하는 개념**이기 때문에 **양이 늘어난 주황색 데이터는 양이 적었던 주황색 원본 데이터의 성질과 동일**
+
+
+
+#### Class imbalance란? (deep learning에서)
 
 - 대부분의 영역이 background가 차지 하고 있음
 - 1stage 경우 anchor box를 사용 ==> 힌트 x ==> 다 쏴줘야함 ==> 즉 anchor box가 굉장히 많음
@@ -42,13 +72,15 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 - ##### 1 stage : 
 
-  - Resion Proposal과 Detection을 같이 수행함
+  - Region Proposal과 Detection을 같이 수행함
   - 매우 많은 object 후보들에 대해서 Detection을 수행해야 한다.
   - class imbalance로 인한 성능 저하 영향이 큼
 
 
 
 ##### Cross entropy의 문제점
+
+- 실제 값과 예측 값의 차이를 줄이기 위한 엔트로피
 
 ![image-20220603111506803](13_RetinaNet.assets/image-20220603111506803.png)
 
@@ -58,18 +90,20 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 
 
-해결방안
+##### 해결방안
 
 - 동적으로 Cross entropy를 조절할 방법을 찾자
 - Cross entropy의 가중치를 부여하는 것이다.
 
 ![image-20220603112518042](13_RetinaNet.assets/image-20220603112518042.png)
 
-- 파랑색 : 가중치 값
-  - 예측값 : 0.99 => 즉 굉장히 확실하다 라는 의미
-  - 그럼 1 - 0.99 = 0.01 ==> 그리고 감마승을 해준다 ==>  값이 굉장히 줄어들게 된다.
-  - 원래 가지고 있던 cross entropy값에 곱해지게 된다.
-  - 즉 확실하면 loss값을 그냥 더 줄여준다 ==> 이렇게 하면 많은 값들(background)가 모여도 전체 loss값이 작게 유지하기 때문에 이쪽에 신경을 덜 쓰게 된다. ==> 그럼 hard example의 loss값이 더 클 것이기 때문에 hard example의 loss값을 줄이는 방향으로 학습을 할 것이다.
+Ex)
+
+- 예측값 : 0.99 => 즉 굉장히 확실하다 라는 의미
+- 그럼 1 - 0.99 = 0.01 ==> 그리고 감마승을 해준다 ==>  값이 굉장히 줄어들게 된다.
+- 원래 가지고 있던 cross entropy값에 곱해지게 된다.
+- 즉 확실하면 loss값을 그냥 더 줄여준다 ==> 이렇게 하면 많은 값들(background)가 모여도 전체 loss값이 작게 유지하기 때문에 이쪽에 신경을 덜 쓰게 된다. ==> 그럼 hard example의 loss값이 더 클 것이기 때문에 hard example의 loss값을 줄이는 방향으로 학습을 할 것이다.
+- 예측하기 쉬운 example에는 0에 가까운 loss를 부여하고, 예측하기 어려운 negative example에는 기존보다 높은 loss를 부여합니다. 
 
 
 
@@ -101,6 +135,7 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 - 3x3 conv로 끄집어 낸다
 - 각 개별 포인트마다 9개의 anchor 박스를 가지고 있음 (anchor 박스 기반)
+- 
 
 
 
@@ -110,21 +145,38 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 3x3conv를 추가적으로 하는 이유??
 
-- 두개를 합치면 혼돈되어서 자신만에 특징을 잃어버리는 문제가 발생함
+- 두개를 합치면 혼돈되어서 자신만에 특징을 잃어버리는 문제가 발생함(aliasing effect)
 - 그것을 희석하기 위해서 3x3을 해줌
 
 
 
 #### anchor box
 
-- 9개의 anchor box가 P2 ~ P5의 개별 Layer의 개별 grid에 할당
+- 9개의 anchor box가 P2 ~ P5의 개별 Layer의 개별 포인트에 다 찍여 있음
 - 3개의 서로 다른 크기와 3개의 서로 다른 스케일을 가짐. 
+  - aspect ratio={1:2, 1:1, 2:1}, size={2의 0승 ,2 1/3승,2의 2/3승}을 사용하여 총 9개의 anchor를 할당합니다. 
 - 약 100K 의 anchor box들 
+  - anchor를 기반으로 prediction하게 되는 것
+  - anchor 박스가 많을 수 있는 이유는 imbalance문제에서 background부분을 조절 했기 때문에 anchor box를 많이 만들어도 된다.
 - 개별 anchor box는 Classification을 위한 K개의 클래스 확률값과 Bounding box regression을 위한 4개 좌표 값을 가짐. (똑같음)
 
 
 
 ## EfficientDet
+
+- width, resolution은 2배가 되면 FLOPS는 4배가 된다. ==> 그래서 제곱을 곱함 ??
+
+- EfficientDet Compound Scaling에서 cost란??
+
+- depth에서 7788 으로 고정 => 왜?
+
+- SILU
+
+- scale jittering
+
+- soft NMS
+
+  
 
 - Scalable and Efficient Object Detection
 
@@ -173,7 +225,7 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 ##### NAS-FPN 
 
 - Nas search(강화학습)를 이용해서 구한 모델
-- 하지만 왜 이런 구조를 띄는지 설명이 불가하다
+- 하지만 왜 이런 구조를 띄는지 설명이 불가하다 (explainable하지 않다)
 
 ![image-20220603153028810](13_RetinaNet.assets/image-20220603153028810.png)
 
@@ -201,15 +253,17 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 
 
-순서
+특징
 
-1. 가중치 값을 그냥 넣어줌
-2. 가중치 값은 정해진 것이 아님 ==> 학습시켜서 도출된 것임
+1. 가중치 값은 정해진 것이 아님 ==> 학습시켜서 도출된 것임
    - 일정한 계수만 곱하면 된다 하지만 그 계수를 학습함
-3. Fast normalized fusion
-   - softmax로 0~1사이 값 만들기 ==> 시간이 너무 오래 걸림 그래서 다르게 normalizing시킴
+2. Fast normalized fusion
+   - softmax로 0~1사이 값 만들기 ==>
+     -  시간이 너무 오래 걸림 그래서 다르게 normalizing시킴
+     - 미분이 너무 오래걸려서
    - 입실론 : 분모가 0이 되는 것을 막기위한 작은 값
    - 모든 가중치 값으로 나눔
+   - 이것을 하는이유 : 가중치값이 너무 커질 수 있기 때문에 
 
 ![image-20220603155718589](13_RetinaNet.assets/image-20220603155718589.png)
 
@@ -232,6 +286,7 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 - 이미지(Resolution), 필터 수 (Width), 네트웨크 깊이(Depth)
   - 이것들을 따로따로 최적화를 한다면 최적의 모델을 구축할 수 없겠다
   - 그래서 좋은 조합을 찾아야한다.
+  - Compound Scaling
 
 
 
@@ -254,11 +309,11 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 ![image-20220603170909790](13_RetinaNet.assets/image-20220603170909790.png)
 
 - 최초의 승수는 1로 고정 => grid search 기반으로 a,b,r값을 찾아낸다
-  - EfficientNetB0 = a=1.2, b=1.1, r=1.15가 나옴
+  - EfficientNetB0 :  a=1.2, b=1.1, r=1.15가 나옴
 - a,b,r을 고정하고 승수를 증가시켜가면서 Scale up 구성 
   - 이렇게 하면 함께 증가하고 함께 감소하게 된다. => 따로따로가 아님
 - 알파 * 베터 제곱 * 감마 제곱 == 2로 고정
-  - width, resolution은 2배가 되면 FLOPS는 4배가 된다. ==> 그래서 제곱을 곱함
+  - width(필터 수), resolution(이미지)은 2배가 되면 FLOPS는 4배가 된다. ==> 그래서 제곱을 곱함
   - 사진을 생각하면서 넓이이기 때문에 4배가 늘어남
 
 
@@ -275,7 +330,7 @@ Hard Example : 찾기 어려운 대상들 , 작고 불분명한 object
 
 ### EfficientDet Compound Scaling
 
-##### 성능을 높이는 방법
+##### 성능을 높이는 방법 (net)
 
 - 거대한 Back bone
 - 여러겹의 복잡한 FPN
@@ -337,23 +392,35 @@ EfficientDet 에서도 Backbone, BiFPN, Prediction layer, 입력이미지 크기
 
 ##### 기타 요소(SILU?, scale jittering? , soft NMS?)
 
-- activation : SILU
+- activation : SILU(Sigmoid Linear Unit)
+  - ![image-20220603235901977](13_RetinaNet.assets/image-20220603235901977.png)
+  - ![image-20220603235243918](13_RetinaNet.assets/image-20220603235243918.png)
+  - ![image-20220603235718558](13_RetinaNet.assets/image-20220603235718558.png)
+  - 논문에 따르면 2차원에서 확인했을 때, linear 또는 ReLU보다 훨씬 부드러운 형태를 가집니다.
+  - ![image-20220604000435504](13_RetinaNet.assets/image-20220604000435504.png)
+
+
 
 - loss : Focal Loss
 
+  
+
 - Augmentation: horizontal flip, scale jittering
+
+  - Standard Scale Jittering (SSJ) **resizes and crops(잘라내기) an image with a resize range of 0.8 to 1.25 of the original image size**. 
+
+  -  The resize range in Large Scale Jittering (LSJ) is from 0.1 to 2.0 of the original image size.
+
+  - If images are made smaller than their original size, then the images are padded with gray pixel values.
+
+    
 
 - NMS : soft NMS
 
   - hard NMS : bbox가 있으면 이 중에서 가장 크게 겹치는 것 빼고 나머지를 다 제거
-
   - soft NMS : 
-
     - 만약 object 주변에 여러 object들이 겹쳐있다면??
-
     - hard NMS에서는 다 지워버리게 된다.
-
-      
 
 
 
