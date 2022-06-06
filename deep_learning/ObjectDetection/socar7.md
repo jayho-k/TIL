@@ -265,19 +265,85 @@ Autoencoder의 학습
 
 
 
+## Semantic Segmentation
+
+- pixelwise classification
+- 성능지표 : mean IOU
+  - bounding box대신 pixel로 IoU계산 ==> class별로 IoU의 평균
 
 
 
 
 
+### FCN
+
+- 대표적인 CNN을 활용한 semantic segmentation 모델
+- Fully convolution network
+
+- backbone : VGG16
+
+![image-20220606210114713](socar7.assets/image-20220606210114713.png)
+
+- 줄인것 다시 upsampling 하여 크기를 키우게 된다.
+- 그렇다면 object들이 뭉개져서 나오게 될 것이다. => 32s처럼(32배를 한번에 해주었을때)
+
+![image-20220606210227444](socar7.assets/image-20220606210227444.png)
+
+![image-20220606210536079](socar7.assets/image-20220606210536079.png)
+
+- 중간 conv feature map의 정보를 사용하여 디테일을 추가하는 방식
 
 
 
 
 
+### DeconvNet
+
+![image-20220606210832978](socar7.assets/image-20220606210832978.png)
+
+![image-20220606210818636](socar7.assets/image-20220606210818636.png)
+
+- Deconv layer들도 Conv layer만큼 많이 쌓아보자!
+
+- max pooling을 대칭적으로 unpooling이라는 기법을 사용함
+  - map pooling을 할때 어디서 정보를 가지고 왔는지를 기억해놓음
+  - 그리고 Unpooling을 할때 어느 위치에 그 값을 넣어 줄 것인지 정하게 된다.
 
 
 
+### U-Net
+
+![image-20220606211326312](socar7.assets/image-20220606211326312.png)
+
+- Encoder의 feature map을 decoder에 직접 전달
+  - 약간 FPN과 비슷
+
+
+
+### DeepLab v-3
+
+- Atrous Conv
+  - receptive filter가 더 넓어지게 된다.
+  - spatial정보에 대한 손실을 줄일 수 있기 때문이다.
+- 왜사용?
+  - receptive field를 늘리고 멀리있는 feature와의 연관성을 만드는 pooling layer의 역할은 수행하기위해
+  - 정보손실을 줄이기 위해
+
+![image-20220606211653847](socar7.assets/image-20220606211653847.png)
+
+![image-20220606212324102](socar7.assets/image-20220606212324102.png)
+
+
+
+##### pooling후 upsampling 한 것과 atrous conv의 비교
+
+![image-20220606212421117](socar7.assets/image-20220606212421117.png)
+
+
+
+Atrous Spatial Pyramid Pooling(ASPP)
+
+- 
 
 
 
