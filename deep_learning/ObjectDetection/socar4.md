@@ -197,6 +197,110 @@ Parameter space in Deep Learning
 
 
 
+#### RMSprop
+
+![image-20220607145746944](socar4.assets/image-20220607145746944.png)
+
+- momentum을 적용하는 이유
+  - 최근에 history들만 기억을 하겠다라는 것
+  - 너무 먼 과거의 gradient의 효과는 줄이겠다
+
+
+
+#### Adam
+
+RMSprop과 momentum의 조합
+
+- b1 = 0.9 , b2 = 0.999를 일반적으로 사용한다. 
+  - 따라서 이렇게 되면 초기값에대한 영향을 크게 받게된다.
+  - 이를 막기위해서 bias correction이라는 기법을 사용한다.
+
+- bias correction이라는 기법을 통해 각 momentum이 초반에 불안정하게 작동하는 것을 막음
+
+![image-20220607150001823](socar4.assets/image-20220607150001823.png)
+
+- m은 gradient의 스케일, s는 gradient의 제곱의 스케일을 가진다.
+- 분모 ==> 방향을 정해주는 느낌, 값을 정해주는 느낌이 아님
+
+- 실제 adam의 업데이트는 gradient가 방향만을 정해주는 느낌이다(다른 것들과 조금 다름)
+  - learning step크기로 거의 업데이트를 진행하게 된다.
+  - 따라서 그만큼 learning rate가 더 중요해진다.
+
+
+
+#### Learning Rate Scheduling
+
+- parameter가 학습이 진행될 수록 최적 값으로 다가가게 된다.
+  - learning rate을 점점 줄여 더 정확한 수렴을 시도하게 된다.
+  - adaptive learning rate의 개념이 없는 SGD와 momentum method에서 중요
+  - AdaGrad, RMSProp, Adam에서 추가적으로 많이 사용하게 된다.
+- Linear decay
+- step decay
+- exponential decay
+- 1/t decay
+
+
+
+#### Parameter Initialization
+
+- 초기값 설정 또한 중요
+
+  - Xavier initialization
+
+  - He initialization
+
+
+
+
+
+## Regularization
+
+#### Norm Regularizations
+
+- L1 norm이나 L2 norm을 포함시켜 loss function 모델 parameter에 대한 restriction하는 것
+  - ML에서 많이 사용된다\
+  - DL에서는 많이 사용안됨
+
+
+
+#### Early Stopping
+
+- validation loss가 증가하는 시점이 온다
+  - overfitting이 일어나는 구나
+- 성능 향상이 더 이상 나타나지 않을 때 학습을 멈춤
+- validation 성능이 한참동안 오르지 않다가 갑자기 오르는 경우가 있어서 주의해야한다.
+  - 데이터에 noise가 많아서 그러기도 함
+  - 일반적인 분포와 다른 경우가 많아서 이런일이 벌어지게 된디.
+
+
+
+#### Ensemble Methods
+
+- deep learning 모델들은 다양한 hyper-parameter를 조절할 뿐만 아니라 다양한 이유에 의해 randomness가 포함
+  - 이로인해 같은 데이터로 학습을 진행하여도 모두 다른 모델이 학습 ==> 성능에 도움을 줌
+  - 일반적으로 2% 정도 성능 향상을 기대
+
+- 성능을 최대한 끌어내야할 상황에서는 항상 사용하는 기법이다.
+
+
+
+#### dropout
+
+- batch normalization을 사용하면서 drop out을 잘 사용하지 않는다.
+- 앙상블 효과를 내기 위해서 사용한다.
+  - 딥러닝같은 경우에는 모델을 각각 학습시키기에는 시간이 너무 많이 들기 때문이다.
+- 역수로 해서 output을 키워주는 것이 일반적이다 왜냐하면 절반만(p=0.5)학습하는것이기 때문
+
+
+
+
+
+## Batch Normalization(알아보기)
+
+- 여러번 학습해도 비슷한 성능이 나오게 보장해주는 척도
+- 학습속도에 굉장히 많은 영향을 준 알고리즘
+- 보통 activation function이 적용되기 전에 사용
+
 
 
 
