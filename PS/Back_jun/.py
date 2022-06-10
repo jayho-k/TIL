@@ -1,45 +1,39 @@
-'''
-1 1 2 2 3 3 4 4 
 
-돌리는 것을 언제 돌려야함??
-계속 돌려야함
-
-두번 계산 하고 num +=1 
 
 
 '''
+60
+100
+
+10,000이하
+'''
+n = int(input())
+m = int(input())
+
+tmp = [0,0]+ [1]*10001
+
+prime = []
+for i in range(2,10001):
+
+    for j in range(i*2, 10001, i):
+        if tmp[j]:
+            tmp[j] = 0
+
+total = 0
+mn = 1e9
+for a in range(n,m+1):
+    if tmp[a] == 1:
+        total += a
+
+        if mn > a:
+            mn = a
+
+if total == 0:
+    print(-1)
+
+else:
+    print(total)
+    print(mn)
 
 
 
-from pprint import pprint
-
-n = 7
-grid = [[0]*n for _ in range(n)]
-y= x = n//2
-
-grid[y][x] = 1
-
-# 서 남 동 북
-dy = [0,1,0,-1]
-dx = [-1,0,1,0]
-d = 0
-time = 0
-
-while 1:
-
-    if 0<=y<n and 0<=x<n:
-        
-        if not d%2:
-            time += 1
-
-        for _ in range(time):
-            ny = y+dy[d%4]
-            nx = x+dx[d%4]
-            grid[ny][nx] = time
-            y,x = ny, nx
-        d+=1
-
-    else:
-        break
-
-pprint(grid)
