@@ -65,7 +65,7 @@ Pixel Wise Classification
 
 
 
-Fully Connected Layer vs Fully Convolutional layer
+**Fully Connected Layer vs Fully Convolutional layer**
 
 ![image-20220610233226047](15_Segmentation-Mask_RCNN.assets/image-20220610233226047.png)
 
@@ -156,7 +156,6 @@ Fully Connected Layer vs Fully Convolutional layer
 
 - RPN
 - ROI Align
-  - 
 
 
 
