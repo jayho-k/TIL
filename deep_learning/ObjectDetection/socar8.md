@@ -201,29 +201,83 @@ pretask? task? supercvision? downstream task?
 
 
 
+## Grad-CAM
+
+CNN 딥러닝 모델의 예측 설명
+
+예측을 해석해야하는 이유는??
+
+==> 안정성 문제,  ==> 하지만 아직 명쾌하게 예측하는 해석방법은 없다
 
 
 
+#### Grad-CAM
 
 
 
+Gradient-weighted class Activation Mapping ( Grad-CAM )
+
+인공신경망을 시각적으로 설명하는 기법
+
+![image-20220613002330520](socar8.assets/image-20220613002330520.png)
+
+- node에 대해서 영향을 많이 준 feature들이 activation된 위치에 표시함
 
 
 
+원리
+
+![image-20220613003109658](socar8.assets/image-20220613003109658.png)
+
+gradient
+
+ : class C node에 대해서 feature map A^k의 픽셀이 가지는 영향력을 뜻함
+
+a_k^c 
+
+: 평균 값은 ==> 그 feature map에서 찾고자 하는 feature가 class node와 얼마나 연관이 있나
+
+  그 영향력을 나타내는 값이라고 해석됨
 
 
 
+![image-20220613003446233](socar8.assets/image-20220613003446233.png)
+
+- 각 픽셀에서 그 위치의 feature map들의 activation 값들을 a_k^c 라는 가중치를 주어서 더한 값이다
+- 즉 픽셀의 위치에서 c에 대해서 영향력을 많이 가지는 feature의 값이 클수록 (activate 됐을수록) 해당 위치의 grad-cam값이 커지는 구조
 
 
 
+==> 위 사진 처럼 개 얼굴이 나타나는 feature들이 있었을 것임 ==> 그래서 개 얼굴에 많이 표시가 나게 되었음
 
 
 
+응용
+
+![image-20220613004610782](socar8.assets/image-20220613004610782.png)
+
+- 학습된 CNN의 layer에 따른 feature 분석
+- CNN의 예측이 틀린 원인 분석
+  - 위 사진을 보면 GT : volcano ==> 하지만 답이 틀림
+  - 답은 틀렸지만 그럴싸한 오답을 내고 있음
+  - 따라서 이런 분석을 통해서 이 모델이 학습이 안되는 것인지 아니면 제대로 되고 있지만 틀릴수 밖에 없었는지?(그럴싸한 오답을 내고 있는지)를 사람이 판단 할 수 있다.
+- high level로 갈수록 더 좋은 activation이 가능해진다.
 
 
 
+데이터 셋의 bias 파악
+
+![image-20220613005219616](socar8.assets/image-20220613005219616.png)
+
+- 처음 grad-cam ==> 예측을 제대로 하지 못함 ==> 이유? ==> activation들이 여자인지 아닌지 즉 얼굴이나 머리길이 등을 통해서 학습하고 있었음
+- 문제? ==> 의사 data중에서 남여 비율이 달랐음 ==> 비율을 맞춰주고 다시 train함 ==> 잘 예측 함
 
 
+
+![image-20220613005747502](socar8.assets/image-20220613005747502.png)
+
+- Weakly-supervised locallization/ segmentation에 활용
+  - Grad-CAM을 함 ==> activation된 부분을 spatial한 정보들을 알게 됨 ==> 그것을 이용해서 sementic segmentation을 함 ==> expensive한 segmentation label 대신에 classification label만으로도 segmentation을 할 수 있음
 
 
 

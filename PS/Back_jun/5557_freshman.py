@@ -31,14 +31,14 @@ for y in range(1,n):
             # 전에꺼 더하기
             if 0<=x+lst[y]<=20:
                 # dp[y][x+lst[y]] += dp[y-1][x+lst[y]]+1
-                dp[y][x+lst[y]] += 1
+                dp[y][x+lst[y]] += dp[y-1][x]
 
             # 전에꺼 빼기 위치
             if 0<=x-lst[y]<=20:
                 # dp[y][x-lst[y]] += dp[y-1][x-lst[y]]+1
-                dp[y][x-lst[y]] += 1
+                dp[y][x-lst[y]] += dp[y-1][x]
 
-print(sum(dp[n-1]))
+print(dp[-2][lst[-1]])
 
 
 
