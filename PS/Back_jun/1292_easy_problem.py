@@ -12,6 +12,7 @@ for i in range(50):
         lst.append(i)
 
 ans = lst[n1:n2+1]
+print(ans)
 print(sum(ans))
 
 

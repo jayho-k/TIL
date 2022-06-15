@@ -1,3 +1,54 @@
+'''
+20
+7
+23
+19
+10
+15
+25
+8
+13
+
+140
+40 두명
+
+'''
+
+total = 0
+lst = []
+for i in range(9):
+    tmp = int(input())
+    total += tmp
+    lst.append(tmp)
+
+lst.sort()
+lier = total -100
+strt = 0
+end = len(lst)-1
+
+while strt <= end:
+
+    if lst[strt]+lst[end] < lier:
+        strt += 1
+    
+    elif  lst[strt]+lst[end] > lier:
+        end -= 1
+    
+    else:
+        lst[strt]
+        lst[end]
+        break
+
+
+for i in range(len(lst)):
+    if i == strt or i == end:
+        continue
+    print(lst[i])
+
+
+
+
+
 # heights = []
 # answer_height = []
 # for i in range(9):
@@ -42,25 +93,25 @@
 
 
 
-heights = [20, 7, 23, 19, 10, 15, 25, 8, 13]
+# heights = [20, 7, 23, 19, 10, 15, 25, 8, 13]
 
-test = []
-total_heights = sum(heights)
+# test = []
+# total_heights = sum(heights)
 
-cnt = 0
-for i in range(len(heights)):
-    cnt += 1
-    test.append(heights[i])
+# cnt = 0
+# for i in range(len(heights)):
+#     cnt += 1
+#     test.append(heights[i])
 
-    for j in range(cnt, len(heights)):
-        test.append(heights[j])
-        sum_height = sum(test)
+#     for j in range(cnt, len(heights)):
+#         test.append(heights[j])
+#         sum_height = sum(test)
 
-        if sum_height == total_heights - 100:
-            lier = test
-            print(lier)
-            break
+#         if sum_height == total_heights - 100:
+#             lier = test
+#             print(lier)
+#             break
 
-        test.remove(heights[j])
+#         test.remove(heights[j])
         
-    test = []
+#     test = []

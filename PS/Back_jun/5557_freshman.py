@@ -38,6 +38,7 @@ for y in range(1,n):
                 # dp[y][x-lst[y]] += dp[y-1][x-lst[y]]+1
                 dp[y][x-lst[y]] += dp[y-1][x]
 
+pprint(dp)
 print(dp[-2][lst[-1]])
 
 

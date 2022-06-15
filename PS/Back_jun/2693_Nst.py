@@ -10,9 +10,9 @@ n
 
 T = int(input())
 for tc in range(1,T+1):
-    
+
     lst = list(map(int,input().split()))
-    
+
     tmp = [0]*1001
     for i in lst:
         tmp[i] += 1
@@ -22,10 +22,13 @@ for tc in range(1,T+1):
     
     ans = [0]*tmp[-1]
 
+# 338 304 619 95 343 496 489 116 98 127
     for num in lst:
         idx = tmp[num]
         ans[idx-1] = num
         tmp[num] -= 1
 
+    # print(tmp)
+    # print(ans)
     print(ans[-3])
 

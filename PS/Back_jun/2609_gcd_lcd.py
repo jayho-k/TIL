@@ -19,6 +19,7 @@ while 1:
     if n > n1 or n>n2:
         lcd_sub = n1*n2
         break
+    
 lcd = lcd_sub*gcd
 
 print(gcd)

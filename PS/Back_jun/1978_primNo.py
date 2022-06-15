@@ -9,11 +9,11 @@ lst = list(map(int,input().split()))
 
 tmp = [0,0]+[1]*1001
 
-primes = []
-
+# primes = []
+m = int(1001**0.5)
 for i in range(2,1001):
     if tmp[i] == 1:
-        primes.append(i)
+        # primes.append(i)
 
         for j in range(2*i,1001,i):
             tmp[j] = 0
