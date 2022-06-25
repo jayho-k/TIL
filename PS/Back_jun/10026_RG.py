@@ -5,7 +5,7 @@ GGBBB
 BBBRR
 BBBRR
 RRRRR
-
+ 
 '''
 def new_grid(grid):
     n_grid= [[0]*n for _ in range(n)]

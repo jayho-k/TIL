@@ -40,56 +40,76 @@ def extrt(lock,lock_n,pn):
     new_lock = []
     for i in range(pn,lock_n-pn):
         new_lock.append(lock[i][pn:lock_n-pn])
+    
+    # pprint(lock)
+    print(new_lock)
 
     return new_lock
 
-
-def solution(key):
-    ans = False
-    for py in range(lock_n-kn+1):
-        for px in range(lock_n-kn+1):
-
-            # 이부분 수정 !!! (key로 넣는 것이 아니라 ==> 확인을 lcok padding지운 곳으로 해줘야함)
-            new_lock = [[0]*(lock_n) for _ in range(lock_n)]
-            for y in range(kn):
-                for x in range(kn):
-                    new_lock[y+py][x+px] = key[y][x] + lock[y+py][x+px]
-
-            new_lock = extrt(new_lock,lock_n,pn)
-            print(new_lock)
-
-            ans  = check(new_lock)
-
-            if ans == True:
-                return ans
-    return False
-
-
 from pprint import pprint
+import copy
 
-key = [[0, 0, 0], [1, 0, 0], [0, 1, 1]]	
-lock = [[1, 1, 1], [1, 1, 0], [1, 0, 1]]
+
+def solution(key,lock):
+
 # 키가 항상 더 작음
+    def solution2(key):
+        ans = False
+        for py in range(lock_n-kn+1):
+            for px in range(lock_n-kn+1):
 
-kn = len(key)
-pn = kn-1
+                # 이부분 수정 !!! (key로 넣는 것이 아니라 ==> 확인을 lcok padding지운 곳으로 해줘야함)
+                # new_lock = [[0]*(lock_n) for _ in range(lock_n)]
+                new_lock = copy.deepcopy(lock)
 
-for _ in range(pn):
 
-    plock = padding(lock)
-    lock = plock
+                for y in range(kn):
+                    for x in range(kn):
+                        new_lock[y+py][x+px] = key[y][x] + lock[y+py][x+px]
 
-lock_n = len(lock)
-ans = solution(key)
-if ans == False:
-    for _ in range(3):
+                new_lock = extrt(new_lock,lock_n,pn)
+                # print(new_lock)
+
+                ans  = check(new_lock)
+
+                if ans == True:
+                    return ans
+
+        return ans
+
+    kn = len(key)
+    pn = kn-1
+
+    for _ in range(pn):
+
+        plock = padding(lock)
+        lock = plock
+
+    lock_n = len(lock)
+
+
+    ans = False
+    for _ in range(4):
         r_key = rotation(key)
-        ans = solution(r_key)
+        ans = solution2(r_key)
         if ans == True:
             break
 
-print(ans)
+    # ans = solution2(key)
+    # if ans == False:
+    #     for _ in range(3):
+    #         r_key = rotation(key)
+    #         ans = solution2(r_key)
+    #         if ans == True:
+    #             break
+    
+    answer = ans
+
+    return answer
 
 
-
+key = [[0, 0, 0], [1, 0, 0], [0, 1, 1]]	
+lock = [[1, 1, 1, 1], [1, 1, 0, 1], [1, 0, 1, 1],[1,1,1,1]]
+a = solution(key,lock)
+print(a)
 
