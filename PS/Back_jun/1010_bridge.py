@@ -8,26 +8,58 @@
 3 7
 '''
 from pprint import pprint
+
 T = int(input())
 for tc in range(1,T+1):
-    
-    st,fr = map(int,input().split())
-    dp = [[0]*31 for _ in range(31)]
-    
-    for s in range(1,31):
-        for f in range(1,31):
-            if s == 1:
-                dp[s][f] = f
-                continue
+    n,m = map(int,input().split())
 
-            if s == f:
-                dp[s][f] = 1
+    dp = [[0]*(m+1) for _ in range(n+1)]
 
-            elif s < f:
-                dp[s][f] = dp[s-1][f-1] + dp[s][f-1]
+    for y in range(1,n+1):
+        for x in range(1,m+1):
+            if y == 1:
+                dp[y][x] = x
+
+            elif y == x:
+                dp[y][x] = 1
+
+            else:
+                dp[y][x] = dp[y][x-1]+dp[y-1][x-1]
+
+    print(dp[-1][-1])
+
+
+
+
+
+
+
+
+
+
+
+
+# from pprint import pprint
+# T = int(input())
+# for tc in range(1,T+1):
+    
+#     st,fr = map(int,input().split())
+#     dp = [[0]*31 for _ in range(31)]
+    
+#     for s in range(1,31):
+#         for f in range(1,31):
+#             if s == 1:
+#                 dp[s][f] = f
+#                 continue
+
+#             if s == f:
+#                 dp[s][f] = 1
+
+#             elif s < f:
+#                 dp[s][f] = dp[s-1][f-1] + dp[s][f-1]
 
             
-    print(dp[st][fr])
+#     print(dp[st][fr])
     
     
 
