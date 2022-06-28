@@ -12,7 +12,7 @@
 from pprint import pprint
 from itertools import combinations
 
-def Loc(grid):
+def Loc(n):
     loc = []
     for y in range(n):
         for x in range(n):
@@ -20,40 +20,52 @@ def Loc(grid):
     
     return loc
 
-def check(flower_loc):
-    mn = 1e9
+def check(fl):
+    
+    total = 0
+    visited = [[0]*n for _ in range(n)]
+    for y,x in fl:
+        if visited[y][x] == 0:
+            visited[y][x] = 1
+            total += grid[y][x]
 
-    for fl in flower_loc:
-        total = 0
-        visited = [[0]*n for _ in range(n)]
-        for y,x in fl:
-            if visited[y][x] == 0:
-                visited[y][x] = 1
-                total += grid[y][x]
-                for d in range(4):
-                    ny = y+dy[d]
-                    nx = x+dx[d]
-                    if visited[ny][nx] == 0:
-                        visited[ny][nx] = 1
-                        total += grid[ny][nx]
-                    else:
-                        return
-            else:
-                return
+            for d in range(4):
+                ny = y+dy[d]
+                nx = x+dx[d]
+
+                if 0<=ny<n and 0<=nx<n and visited[ny][nx] == 0:
+                    visited[ny][nx] = 1
+                    total += grid[ny][nx]
+                    
+                else:
+                    return
         else:
             return
+    
+    return total
 
 
 n = int(input())
 grid = [list(map(int,input().split())) for _ in range(n)]
 visited = [[0]*n for _ in range(n)]
-loc = Loc(grid)
+loc = Loc(n)
 
 dy = [0,0,1,-1]
 dx = [1,-1,0,0]
 
-# print(loc)
 flower_loc = list(map(list,combinations(loc,3)))
+
+mn = 1e9
+for fl in flower_loc:
+    total = check(fl)
+    if total == None:
+        continue
+
+    else:
+        mn = min(mn,total)
+
+print(mn)
+
 
 
 
