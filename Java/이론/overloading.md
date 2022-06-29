@@ -1,188 +1,4 @@
-## overloading
-
-한 클래스 안에 같은 이름의 메서드 여러 개 정의
-
-==> 하나의 매서드 이름에 여러개 매서드가 들어갈때
-
-==> 오버로딩이 가능하기 때문에 println( ) 괄호 안에 여러가지 변수타입을 넣을 수 있다
-
-==> 만약 오버로딩을 지원하지 않았다면 각각 다른 명령어를 쳐줬어야 한다. (printSting 이런식으로)
-
-
-
-오버로딩이 성립하기 위한 조건
-
-![image-20220627144809921](overloading.assets/image-20220627144809921.png)
-
-1. 메서드 이름이 같아야 함
-2. 매개변수의 개수 또는 타입이 달라야 한다.
-3. 반환 타입은 영향 없다.
-
-- 하지만 위와 같은 예시에서 add(3,3)을 넣으면 에러가 발생
-  - 이유 : 둘다 가능하기 때문에
-  - if (3,3L)이라고 했다면 첫번째꺼가 됐을 것임
-
-
-
-## 생성자
-
-- 인스턴스가  생성될 때마다 호출되는 인스턴스 초기화 메서드
-
-- 객체 만들고 원하는 값을 넣는 것
-- 생성자를 추가해야 ``Time t = new Time(12,34,56);``이런식을 사용할 수 있음
-
-
-
-생성자 작성 규칙
-
-![image-20220627151638879](overloading.assets/image-20220627151638879.png)
-
-- 생성자의 이름은 클래스의 이름과 같아야한다.
-- return 값이 없음 (void를 붙이지 않는다.)
-- 모든 클래스는 반드시 생성자를 가져야 한다.
-  - Card c = new Card();  ==> 여기서 new Card부분이 생성자를 호출하는 것이었음
-  - 만들어준적이 없는데 어떻게 생성한 것일까?
-    - 기본생성자이기 때문
-    - 생성자가 하나도 없을때는 compiler가 스스로 추가를 해준다.
-
-
-
-#### 기본 생성자
-
-```java
-public class Ex6_11 {
-    public static void main(String[] args) {
-        Data1 d1 = new Data1();
-        Data2 d2 = new Data2(3);
-    }
-}
-
-class Data1{
-    int value;
-}
-
-class Data2{
-    int value;
-    Data2(){} // 기본 생성자
-
-    // 매개변수가 있는 생성자
-    Data2(int x){
-        value = x;
-    }
-}
-```
-
-- 매개변수가 없는 생성자
-- 하는일이 아무것도 없음
-- 생성자가 하나도 없을 때만 컴파일러가 자동으로 추가해줌
-  - 이때 생성자가 하나도 없을때의 뜻
-  - 진짜 생성자가 아예없을때를 의미
-  - 즉 매개변수가 있는 생성자를 만들었을 경우에 컴파일러가 생성자 추가를 안해줌
-    - 따라서 에러가 뜨게 된다.
-
-
-
-## 생성자 this( )
-
-![image-20220627162700357](overloading.assets/image-20220627162700357.png)
-
-- 괄호 붙은 것이 생성자
-
-- 생성자에서 다른 생성자 호출할 때 사용
-
-- 다른 생성자 호출시 첫줄에서만 사용가능
-
-
-
-## 참조변수 this => 파이썬 self
-
-![image-20220627162600672](overloading.assets/image-20220627162600672.png)
-
-- 괄호가 안붙은 것 = 참조변수
-
-- 비슷하게 생겼지만 생성자 this와 전혀 다른 것임
-- 인스턴스 자신을 가리키는 참조변수
-- 인스턴스 메서드(생성자 포함)에서 사용가능
-- lv와 iv를 구별할 때 사용한다.
-- 클래스 매소드에서 this 사용불가
-  - 왜? ==> iv를 사용하지 않기 때문에
-  - this는 iv에만 사용하기 때문에
-
-
-
-## 변수의 초기화
-
-cv, iv 초기화의 종류 
-
-- 자동초기화
-- 간편초기화 ( = )
-- 복잡초기화
-  - {  } ==> 거의 사용하지 않음
-  - static { }  :  cv초기화
-  - 생성자  : iv 초기화
-
-
-
-초기화 순서
-
-1. cv => iv
-2. 자동 => 간단 => 복잡
-
-
-
-
-
-![image-20220627164217252](overloading.assets/image-20220627164217252.png)
-
-- 지역변수는 수동 초기화 해야한다. ==> 사용전 꼭!!
-  - 지역변수는 메서드 내에서만 사용하는 변수
-  - 즉 생명주기가 굉장히 짧음
-  - 따라서 생성됐다가 사라졌다를 빠르게 반복함
-  - 이때 만약에 초기화를 계속시켜주면 성능이 안좋아짐 ==> 따라서 덮어씌우는 방식을 사용한다.
-
-![image-20220627164343629](overloading.assets/image-20220627164343629.png)
-
-
-
-#### 멤버(iv, cv)변수의 초기화
-
-명시적 초기화(=)
-
-- 대입 연산자(선언시)
-
-```java
-class Car{
-    int door = 4; // 기본형 변수 초기화
-    Engine e = new Engine() // 참조형 변수 초기화
-        // 참조형의 경우 객체를 만들어서 넣어줘야한다.
-}
-```
-
-
-
-초기화 블럭
-
-static 초기화
-
-![image-20220627165640846](overloading.assets/image-20220627165640846.png)
-
-- 인스턴스 초기화 블럭 { } : iv
-- 클래스 초기화 블럭 : static { } : cv
-
-
-
-생성자
-
-- iv 초기화
-- 복잡한 초기화 할때 사용한다.
-
-```java
-class Car(String color, String gearType, int door){
-	this.color = color;
-    this.gearType = gearType;
-    this.door = door;
-}
-```
+# ch7_자바 객체지향 언어
 
 
 
@@ -320,6 +136,306 @@ class TvDVD extends Tv{
   - 컴파일러가 자동으로 추가해줌
 - 모든 클래스 = Object 클래스에 정의된 11개의 메서드를 상속
   - toString(), equals(Object obj), hashCode()
+
+
+
+
+
+
+
+## 참조변수 super
+
+- 객체 자신을 가르키는 잠조변수. 
+- 인스턴스 메서드(생성자)내에서만 존재
+- 조상의 멤버를 자신의 멤버와 구별할 때 사용
+
+
+
+```java
+public class Ex7_2 {
+
+    public static void main(String[] args) {
+        Child c = new Child();
+        c.method();
+    }
+}
+class Parant{
+    int x = 10;
+}
+class Child extends Parant{
+    // parant의 x는? ==> super.x
+
+    int x = 20; // this.x
+
+    void method(){
+        System.out.println(x); // 가장 가까운 x ==> 따라서 this.x // 20
+        System.out.println(super.x); // 10
+        System.out.println(this.x);  // 20
+    }
+}
+```
+
+
+
+## super - 조상 생성자
+
+- 조상의 생성자를 호출할 때 사용
+- 조상의 멤버는 조상의 생성자를 호출해서 초기화
+  - 왜 super를 쓰나??
+  - 생성자와 초기화 블럭을 상속이 되지 않음 ==> 따라서 super를 통해서 생성자를 호출함
+
+
+
+==> 조상의 생성자는 자손이 초기화 하지 않는다 ==> 즉 super로 호출을 시킨다
+
+```java
+class Point{
+    int x,y;
+    Point(int x, int y){
+        this x = x;
+        this y = y;    
+    }
+}
+
+class Point3D{
+    int z;
+    Point3D(int x, int y,int z){
+        super(x,y)
+        this.z = z
+    }
+}
+```
+
+ 
+
+
+
+- **중요!!!** **생성자의 첫 줄에 반드시 생성자(super or this)를 호출해야 한다.**
+  - 그렇지 않으면 컴파일러가 생성자의 첫줄에 super();를 삽입
+
+![image-20220628154644461](overloading.assets/image-20220628154644461.png)
+
+
+
+
+
+## 패키지(package)
+
+- 서로 관련된 클래스의 묶음
+
+- 클래스느 클래스 파일, 패키지는 폴더. 하위 패키지는 하위 폴더
+- 클래스의 실제 이름(full name)은 패키지를 포함
+- rt.jar(runtime/ jar(클래스 파일을 묶어놓은 것))는 클래스들을 압축한 파일
+  - java9부터 rt.jar는 없어짐
+  - 모듈개념이 들어감 ==> 작은 모듈로 쪼개놓음
+
+
+
+#### 패키지의 선언
+
+- 패키지는 소스파일의 첫 번째 문장으로 단 한번 선언
+- 같은 소스 파일의 클래스들은 모두 같은 패키지에 속하게 된다.
+- 패키지 선언이 없으면 이름없는(unnamed)패키지에 속하게 된다. (default package)
+
+- bin파일로 들어가서 패키지로가서 pacakage를 선언하면 된다.
+
+
+
+#### 클래스 패스(class path)
+
+- 클래스파일의 위치를 알려주는 경로
+- 환경변수 classpath로 관리하며, 경로간의 구분자는 **;** 임
+- classpath에 패키지의 루트를 등록해줘야 함
+
+
+
+
+
+## import 문
+
+- 클래스를 사용할 때 패키지 이름을 생략할 수 있다.
+- 컴파일러에게 클래스가 속한 패키지를 알려준다.
+- java.lang패키지의 클래스는 import를 사용하지 않고도 사용가능
+
+```java
+import java.util.Date;
+
+class ImportTest{
+    Date today = new Date();
+}
+```
+
+
+
+import문은 패키지문과 클래스 선언의 사이에 선언
+
+![image-20220628170758361](overloading.assets/image-20220628170758361.png)
+
+
+
+- 이름이 같은 클래스가 속한 두 패키지
+
+![image-20220628171030811](overloading.assets/image-20220628171030811.png)
+
+
+
+
+
+- static 멤버를 사용할 떄 클래스 이름을 생략할 수 있음
+
+![image-20220628171107512](overloading.assets/image-20220628171107512.png)
+
+
+
+
+
+```java
+import static java.lang.System.out();
+import static java.lang.Math.*;
+
+out.printlin(random());
+out.printlin(PI);
+
+//이런식으로 사용가능
+
+```
+
+
+
+
+
+## 제어자(modifier)
+
+- 클래스와 클래스의 멤버(멤버변수, 메서드)에 부가적인 의미 부여 ==> 형용사와 같은 느낌
+- 접근 제어자는 하나만 붙일 수 있다
+- 하나의 대상에 여러 제어자를 같이 사용가능 하다( 접근제어자는 하나만 )
+  - 보통 접근제어자를 더 왼쪽에 쓴다 
+
+![image-20220628171913906](overloading.assets/image-20220628171913906.png)
+
+
+
+#### static
+
+![image-20220628173433516](overloading.assets/image-20220628173433516.png)
+
+
+
+#### final
+
+- 마지막의, 변경될 수 없는
+
+![image-20220628173719200](overloading.assets/image-20220628173719200.png)
+
+
+
+![image-20220628173753128](overloading.assets/image-20220628173753128.png)
+
+##### final class
+
+-  ==> 마지막 class라는 것 ==> 즉 자식을 가질 수 없음 (leaf노드의 느낌)
+- 대표적인 final class ==> String, Math
+
+
+
+##### final 변수
+
+- 변수 앞에 final을 붙이게 되면 상수가 된다.
+- 즉 값을 변경할 수 없는 변수가 된다.
+
+
+
+##### final 메서드
+
+- 변경 불가능한 메서드가 된다
+- 즉 오버라이딩을 할 수 없음 (조상 메서드를 덮어쓰는 것 ) ==> 자식에서 조상 메서드 제정의 하는 것
+
+
+
+
+
+#### abstract - 추상의, 미완성의
+
+- 용도 ==> 추상클래스를 상속 받아서 완전한 클래스로 만들어야 사용할 수 있음
+  - 이때 객체를 생성할 수 있다 => 그것이 아니면 객체생성 불가
+
+![image-20220628174838517](overloading.assets/image-20220628174838517.png)
+
+몸통이 없는 메서드들이 있음
+
+```java
+abstract class AbstractTest{ // 추상 메서드를 포함한 클래스 ==> 추상 클래스
+    abstract void move(); // 몸통이 없음 {} <= 이게 없음 ==> 추상메서드
+}
+    
+// 추상 메서드 = 미완성 메서드이다.
+
+AbstractTest a = new AbstractTest(); // ==> 에러 : 추상클래스는 인스턴스 생성 불가
+
+```
+
+
+
+## 접근 제어자 (access modifier)
+
+![image-20220628225055649](overloading.assets/image-20220628225055649.png)
+
+private		 :  같은 클래스 내에서만 접근이 가능하다.
+
+(default)	  :  같은 패키지 내에서만 접근이 가능하다.
+
+protected	: 같은 패키지 내에서, 그리고 다른 패키지의 자손 클래스에서 접근이 가능하다. 
+
+public		  :  접근 제한이 전혀 없다.
+
+
+
+==> 클래스에는 public, default 붙일 수 있음
+
+==> 멤버에는 모두 다 붙일 수 있음
+
+
+
+![image-20220628231625539](overloading.assets/image-20220628231625539.png)
+
+
+
+정리
+
+- private => 하나의 파일 (하나의 클래스)
+- default => 하나의 폴더
+- protected => 같은 폴더 + 다른 폴더 자손(import 해서 불러옴)
+- public ==> 아무때나 가능
+
+
+
+
+
+## 캡슐화와 접근제어자
+
+접근제어자를 사용하는 이유
+
+- 직접 접근을 막고 간접접근을 허용하기 위한 것 => 갭슐화
+
+- 외부로부터 데이터를 보호하기 위해서
+  - 무슨 뜻?? 
+  - hour, min, sec은 24, 59,59까지 숫자면 들어가야함
+  - 하지만 다른 곳에서 접근해서 이 데이터의 범위를 바꾸거나 할 수 있음
+  - 이러한 경우 데이터가 보호되지 않음 ==> 따라서 
+
+![image-20220628233037585](overloading.assets/image-20220628233037585.png)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

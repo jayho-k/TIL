@@ -19,60 +19,169 @@
 12 19 23 14 21
 11 24 9 20 15
 '''
+
+def bingo():
+
+    cnt = 0
+    for n in num:
+        cnt += 1
+        for y in range(5):
+            for x in range(5):
+                if grid[y][x] == n:
+                    visited[y][x] = 1
+
+        c1 = garo()
+        c2 = sero()
+        c3,c4 = diagonal()
+        # print(c3,c4)
+        # print(c1+c2+c3+c4)
+        # pprint(visited)
+
+        if c1+c2+c3+c4 >= 3:
+            return cnt
+
+def garo():
+
+    complete = 0
+    for vy in visited:
+        if sum(vy) == 5:
+            complete += 1
+        
+    return complete
+
+def sero():
+
+    complete = 0 
+    for x in range(5):
+        tmp = 0
+        for y in range(5):
+            if visited[y][x] == 1:
+                tmp += 1
+        if tmp == 5:
+            complete += 1
+
+    return complete
+
+
+def diagonal():
+    
+    tmp1 = 0
+    tmp2 = 0
+    complete1 = 0
+    complete2 = 0
+    for y in range(5):
+        if visited[y][y] == 1:
+            tmp1 += 1
+        
+        if visited[y][-y-1] == 1:
+            tmp2 += 1
+    
+    if tmp1 == 5:
+        complete1 = 1
+    if tmp2 == 5:
+        complete2 = 1
+    
+    return complete1, complete2
+
+
 from pprint import pprint
 
-lst = [list(map(int, input().split())) for _ in range(5)]
+grid = [list(map(int,input().split())) for _ in range(5)]
+visited = [[0]*5 for _ in range(5)]
 
-num_lst = []
+num = []
 for _ in range(5):
-    l = list(map(int, input().split()))
-    num_lst = num_lst+ l
+    num += list(map(int,input().split()))
 
-cnt = 0
 
-for num in num_lst:
-    bingo_cnt = 0
-    for i in range(5):
-        for j in range(5):
-            if lst[i][j] == num:
-                lst[i][j] = -1
-                break
+cnt = bingo()
+print(cnt)
 
-    # 대각선
-    total1 = 0
-    total2 = 0
-    for i in range(5):
-        total1 += lst[i][i]
-        total2 += lst[i][-i-1]
-    if total1 == -5:
-        bingo_cnt += 1
 
-    if total2 == -5:
-        bingo_cnt += 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from pprint import pprint
+
+# lst = [list(map(int, input().split())) for _ in range(5)]
+
+# num_lst = []
+# for _ in range(5):
+#     l = list(map(int, input().split()))
+#     num_lst = num_lst+ l
+
+# cnt = 0
+
+# for num in num_lst:
+#     bingo_cnt = 0
+#     for i in range(5):
+#         for j in range(5):
+#             if lst[i][j] == num:
+#                 lst[i][j] = -1
+#                 break
+
+#     # 대각선
+#     total1 = 0
+#     total2 = 0
+#     for i in range(5):
+#         total1 += lst[i][i]
+#         total2 += lst[i][-i-1]
+#     if total1 == -5:
+#         bingo_cnt += 1
+
+#     if total2 == -5:
+#         bingo_cnt += 1
 
     
-    # 가로세로
-    for i in range(5):
-        total3 = 0
-        total4 = 0
-        for j in range(5):
-            total3 += lst[i][j]
-            total4 += lst[j][i]
+#     # 가로세로
+#     for i in range(5):
+#         total3 = 0
+#         total4 = 0
+#         for j in range(5):
+#             total3 += lst[i][j]
+#             total4 += lst[j][i]
 
-        if total3 == -5:
-            bingo_cnt += 1
+#         if total3 == -5:
+#             bingo_cnt += 1
 
-        if total4 == -5:
-            bingo_cnt += 1
-        # total4 = 0
+#         if total4 == -5:
+#             bingo_cnt += 1
+#         # total4 = 0
     
-    cnt += 1
-    if bingo_cnt >= 3:
+#     cnt += 1
+#     if bingo_cnt >= 3:
 
-        # print('bingo')
-        # pprint(lst)
-        print(cnt)
-        break
+#         # print('bingo')
+#         # pprint(lst)
+#         print(cnt)
+#         break
 
 
 
@@ -214,9 +323,3 @@ for num in num_lst:
 #                 print(cnt)
 #                 break
         
-
-
-            
-
-
-

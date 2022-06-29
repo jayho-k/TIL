@@ -18,11 +18,6 @@
 
 # two pointer
 
-def rain():
-    pass
-
-
-
 y,x = map(int,input().split())
 lst = list(map(int,input().split()))
 
