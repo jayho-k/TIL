@@ -10,18 +10,16 @@ n가지 종류의 동전이 있다. 각각의 동전이 나타내는 가치는 �
 5
 '''
 
-# n,k = map(int,input().split())
-# lst = [int(input()) for _ in range(n)]
-# lst.sort()
+n,knum = map(int,input().split())
+lst = [int(input()) for _ in range(n)]
 
+dp = [0]*(10001)
+dp[0] = 1
 
-# dp = [0]*(k+1)
-# dp[0] = 1
+for l in lst:
+    for k in range(1,knum+1):
+        
+        if l<=k:
+            dp[k] = dp[k-l]+dp[k]
 
-
-# for l in lst:
-#     for i in range(l,k+1):
-#         if i-i>=0:
-#             dp[i] += dp[i-l]
-#     # print(dp)
-# print(dp[-1])
+print(dp[knum])
