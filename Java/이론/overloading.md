@@ -2,6 +2,10 @@
 
 
 
+
+
+
+
 ## class
 
 클래스의 관계
@@ -429,9 +433,155 @@ public		  :  접근 제한이 전혀 없다.
 
 
 
+## 다형성
+
+- 여러 가지 형태를 가질 수 있는 능력
+
+- 조상 타입 참조변수로 자손 타입 객체를 다루는 것
+
+  - 타입이 불일치하는 것 ==> okay 
+
+  - ```java
+    // 원래
+    SmartTv t = new SmartTv();
+    
+    // 서로의 타입이 불일치 함
+    Tv t = new SmartTv();  
+    //리보컨 = 제품 ==> 즉 Tv라는 리모컨으로 SmartTv를 조정
+    //단 Tv = 조상타입 참조변수, SmartTv = 자손타입 객체
+    ```
+
+- 자손 타입의 참조변수로 조상 타입의 객체를 가리킬 수 없다.
 
 
 
+### 일치 할 때와 일치하지 않을 때 차이
+
+Tv 변수 5개
+
+SmartTv 변수 2개 ==> 총 7개
+
+
+
+**일치하는 경우 ( SmartTv t = new SmartTv(); )**
+
+- 스마트 폰 리모컨 (버튼이 7개 존재 )
+- 즉 일치할 경우에는 모든 객체를 다 사용할 수 있다.
+
+
+
+**일치하지 않는 경우( Tv t = new SmartTv(); )**
+
+- 리모컨 => Tv리모콘 ( 버튼 5개밖에 존재하지 않음 )
+- 즉 일치하지 않으면 모든 객체 사용 불가
+
+
+
+**불가한 경우**
+
+SmartTv t = new Tv( ); ==> 자손 리모컨으로 부모 tv를 컨트롤 할 수 없음
+
+
+
+이유 :
+
+-  Tv는 5개의 기능을 가지고 있음 =
+
+- smartTv 리모컨은 7개의 버튼이 있음 ==> 따라서 없는 걸 누르게 되면 작동 하지 않음
+- 따라서 안됨
+
+
+
+## 참조변수의 형변환
+
+- 사용할 수 있는 멤버의 개수를  조절하는 것
+- 중요한 건 뭐다??
+  - 가르키는 실제 객체가 무엇인지 파악하는 것이 중요함
+
+ 
+
+규칙
+
+```java
+class car {}
+class FireEngin extends Car{}
+class Ambulance extends Car{}
+```
+
+- 부모 자식간에 형 변환 가능
+- 형제간에 형변환은 불가능 하다
+
+![image-20220705182904539](overloading.assets/image-20220705182904539.png)
+
+
+
+```java
+// car : 4개
+// Fire : 5개
+
+
+FireEngin f = new FireEgine(); // 타입 일치 ==> 5개 변수 사용 가능
+
+// 조상 자손 형변환
+// 즉 리모컨을 바꿔주는 행위라고 생각하면 된다. 
+Car c = (Car) f; // 조상인 Car타입으로 형 변환 (생략가능) ==> 사용가능한 변수() ==> 4개 사용가능
+FireEngin f2 = (FireEngin)c; // 자손인 FireEngine타입으로 형변환 (생략 불가능) ==> 5개 사용 가능
+
+// 형제 끼리 형변환 ==> 불가능
+Amblulance a = Ambulance f; // 에러 ==> 상속관계가 아닌 클래스 간의 형변환 불가
+```
+
+
+
+![image-20220705191329642](overloading.assets/image-20220705191329642.png)
+
+```java
+public class Ex7_7 {
+    public static void main(String[] args) {
+        Car car = null;
+        FireEngine fe1 = new FireEngine();
+        FireEngine fe2 = new FireEngine();
+
+        fe1.water();
+//        car = fe1;
+
+        car = (FireEngine) fe1; // ==> 5개에서 4개로 줄이는 것은 안전
+//        car.water(); 에러가 나게 된다 ==> car type의 참조  변수로는 water를 호출 할 수 없다
+
+        fe2 = (FireEngine) car;
+        fe2.water(); // 4개 => 5개 늘리는 것은 어떤 변수가 추가되었는지 알수 없음 ==> 따라서 객체를 필수로 작성해야함
+
+    }
+}
+
+class Car{
+    String color;
+    int door;
+
+    void drive(){
+        System.out.println("drive");
+    }
+    void stop(){
+        System.out.println("stop");
+    }
+}
+
+class FireEngine extends Car{
+    void water(){
+        System.out.println("water");
+    }
+}
+```
+
+
+
+## instanceof 연산자
+
+- 참조변수의 형변황 가능여부 확인에 사용. 가능하면 true
+  - 형변환 하기 전에 반드시 확인을 먼저 한다. (형변환 해도 되니??)
+  - 그리고 형변환
+
+ 
 
 
 
