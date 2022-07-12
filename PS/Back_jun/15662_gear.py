@@ -21,10 +21,27 @@
 
 '''
 
-def check(foreward, back):
-
-    if foreward[2]!=back[6]:
+def play(g_num, direction):
+    
+    # foreward
+    for i in range(g_num,9):
         pass
+
+    # backward
+    for j in range(g_num-1,-1,-1):
+        pass
+    
+
+
+def check(front, back, ward):
+
+    if front[2]!=back[6]:
+        if ward == 'foreward':
+            r_rotation(back)
+
+        else:
+            r_rotation(front)
+
 
 def rotation(gear):
     return gear.rotate()
@@ -36,6 +53,10 @@ def r_rotation(gear):
 from collections import deque
 
 T = int(input())
-gear = [deque(list(map(int,input().split()))) for _ in range(T)]
+
+gear = [deque(list(map(int,list(input())))) for _ in range(T)]
 k = int(input())
 order = [list(map(int,input().split())) for _ in range(k)]
+
+
+print(gear)
