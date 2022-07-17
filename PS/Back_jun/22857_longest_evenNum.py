@@ -15,7 +15,6 @@ if n == 1:
     else:
         ans = 1
 
-
 else:
 
     # initialization
