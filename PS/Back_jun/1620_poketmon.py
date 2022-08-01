@@ -38,9 +38,6 @@ n,m = map(int,input().split())
 nums = set(map(str,range(1,10)))
 diclist = [input() for _ in range(n)]
 anslist = [input() for _ in range(m)]
-# print(nums)
-# print(diclist)
-# print(anslist)
 
 for al in anslist:
     
