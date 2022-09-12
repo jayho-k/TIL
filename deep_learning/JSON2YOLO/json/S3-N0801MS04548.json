@@ -1,0 +1,42 @@
+{
+  "image": {
+    "date": "20201215",
+    "path": "S3-N0402MF02097",
+    "filename": "S3-N0801MS04548.jpg",
+    "copyrighter": "미디어그룹사람과숲(컨)",
+    "location": "08",
+    "H_DPI": 96,
+    "V_DPI": 96,
+    "bit": 24,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "annotations": [
+    {
+      "data ID": "S3",
+      "middle classification": "02",
+      "box": [
+        1186,
+        320,
+        1710,
+        654
+      ],
+      "class": "05",
+      "flags": "not occluded,not truncated"
+    },
+    {
+      "data ID": "S3",
+      "middle classification": "02",
+      "box": [
+        241,
+        214,
+        789,
+        835
+      ],
+      "class": "05",
+      "flags": "not occluded,not truncated"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "image": {
+    "date": "20201015",
+    "path": "S3-N0401MF00047",
+    "filename": "S3-N0403MF00533.jpg",
+    "copyrighter": "미디어그룹사람과숲(컨)",
+    "location": "04",
+    "H_DPI": 96,
+    "V_DPI": 96,
+    "bit": 24,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "annotations": [
+    {
+      "data ID": "S3",
+      "middle classification": "01",
+      "box": [
+        934,
+        702,
+        1160,
+        812
+      ],
+      "class": "03",
+      "flags": "not occluded,not truncated"
+    }
+  ]
+}
