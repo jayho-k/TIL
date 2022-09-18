@@ -10,8 +10,6 @@ fast : 20%
 
 정도를 차지한다.
 
-
-
 **Slow pathway**
 
 - Low frame rate
@@ -19,8 +17,6 @@ fast : 20%
 - Capturing spatial semantics : 공간에 대한 정보를 가지고 있음
   
   - color정보, 디테일한 정보들
-
-
 
 **Fast pathway**
 
@@ -34,8 +30,6 @@ fast : 20%
   
   - 이유 : 디테일한 정보는 slow path에서 얻기 때문
 
-
-
 ![](SlowFast.assets/2022-09-08-00-10-27-image.png)
 
 slow path
@@ -43,8 +37,6 @@ slow path
 - 뒷 쪽 부분 : resnet임
 
 - 앞 쪽 부분 : 프레임을 띄엄띄엄 넣어주게 된다. ( 많은 프레임을 넣지 않음 )
-
-
 
 fast path
 
@@ -59,10 +51,6 @@ fast path
   - 따라서 많은 채널이 필요하지 않음 ==> 많은 정보가 있지 않아도 된다
   
   - 또한 gray scale로 했을떄 computation을 줄일 수 있음
-
-
-
-
 
 #### 두 네트워크간의 연결
 
@@ -98,8 +86,6 @@ fast path
       
       - 전체에서 20%정도의 계산량을 차지한다.
 
-
-
 #### 구현
 
 ![](SlowFast.assets/2022-09-08-00-50-02-image.png)
@@ -116,15 +102,11 @@ slow path나 fast path 둘다 resnet 50구조를 띄고 있다
 
 초록 색  : frame수가 증가한 모습을 보여주는 부분
 
-
-
 Dimension : { T S^2, C }
 
 stride : { temporal, spatial^2 }
 
 backbone : ResNet-50
-
-
 
 #### Lateral Connections
 
@@ -142,8 +124,6 @@ backbone : ResNet-50
   
   - bidirection(양방향)과 별차이가 없었다고 한다.
 
-
-
 - Global average pooling on each pathway output
   
   - 각각의 path는 resnet이 끝나게 되면 Global average pooling 진행
@@ -151,8 +131,6 @@ backbone : ResNet-50
   - concatenation : 데이터 결합
   
   - FC classifier layer
-
-
 
 - feature shape
   
@@ -165,8 +143,6 @@ backbone : ResNet-50
     - 이때 slow path와 fast path의 shape이 맞지 않게 되고 concatenation을 바로 해줄 수가 없음
     
     - 따라서 shape을 바꿔주어야 함
-
-
 
 ###### shape 변경 3가지 방법
 
@@ -182,8 +158,6 @@ backbone : ResNet-50
 
 <img src="SlowFast.assets/2022-09-08-02-37-17-image.png" title="" alt="" width="404">
 
-
-
 방법
 
 - image Net을 미리 train할 필요가 없음
@@ -192,15 +166,11 @@ backbone : ResNet-50
 
 - not local network
 
-
-
 ###### Global average pooling이란?
 
 max pooling일 경우
 
 <img title="" src="SlowFast.assets/2022-09-08-01-16-18-image.png" alt="" width="360">
-
-
 
 Global average pooling일 경우
 
@@ -249,68 +219,6 @@ F.adaptive_avg_pool2d(x, (1, 1))
 torch.mean(x.view(x.size(0), x.size(1), -1), dim=2)
 ```
 
-
-
-
-
 결과 - Kinetics-600
 
 ![](SlowFast.assets/2022-09-08-02-48-49-image.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
