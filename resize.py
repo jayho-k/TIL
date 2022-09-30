@@ -14,6 +14,21 @@ frame_cnt = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
 outputvideo = cv2.VideoWriter(vide_save_path,cv2.VideoWriter_fourcc(*'mp4v'), 10, (width,height))
 frameRate = 10
 
+# resize만 시키기
+while True:
+    hasFrame, frame = video.read()
+    if not hasFrame:
+        break
+
+    resize_frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
+    outputvideo.write(resize_frame)
+
+
+video.release()
+cv2.destroyAllWindows()
+end = time.time()
+print(end-start)
+
 
 # # 방법 1
 # sec = 0
