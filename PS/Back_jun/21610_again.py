@@ -21,20 +21,15 @@
 
 '''
 
-
-from re import L
-
-
 def move(d,s,clud_lst):
 
     # new_grid = [[0]*n for _ in range(n)]
     n_clud_lst = []
     for i in range(len(clud_lst)):
         y,x = clud_lst[i]
-        ny = (y+dy[d]*s)%n
-        nx = (x+dx[d]*s)%n
+        ny = (y+(dy[d]*s)%n)%n
+        nx = (x+(dx[d]*s)%n)%n
         n_clud_lst.append((ny,nx))
-
     return n_clud_lst
 
 def add_water(clud_lst,grid):
@@ -52,36 +47,56 @@ def copy_skill(grid,clud_lst):
     for i in range(len(clud_lst)):
         y,x = clud_lst[i]
         cnt = 0
-        for d in (1,3,5,7):
+        for d in (2,4,6,8):
             ny = y+dy[d]
             nx = x+dx[d]
-            if not grid[ny][nx]:
+            if 0<=ny<n and 0<=nx<n and grid[ny][nx]!=0:
                 cnt += 1
         skilled.append((y,x,cnt))
 
     for sky,skx,sk_cnt in skilled:
         grid[sky][skx] += sk_cnt
 
+    return grid
+
 def create_clud(grid,clud_lst):
 
+    n_clud_lst = []
     n_grid = [[0]*n for _ in range(n)]
     for y in range(n):
         for x in range(n):
             if grid[y][x] >=2 and (y,x) not in clud_lst:
                 n_grid[y][x] = grid[y][x]-2
+                n_clud_lst.append((y,x))
             else:
                 n_grid[y][x] = grid[y][x]
 
-    return n_grid
+    return n_grid,n_clud_lst
 
 
+from pprint import pprint
+import sys
+input = sys.stdin.readline
 
 n,m = map(int,input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
 magic = [tuple(map(int,input().split())) for _ in range(m)]
-dy = [0,-1,-1,-1,0,1,1,1]
-dx = [-1,-1,0,1,1,1,0,-1]
+dy = [0,0,-1,-1,-1,0,1,1,1]
+dx = [0,-1,-1,0,1,1,1,0,-1]
 stp = [(n-1,0),(n-1,1),(n-2,0),(n-2,1)]
 
+for d,s in magic:
+    clud_lst = move(d,s,stp)
+    n_grid = add_water(clud_lst,grid)
+    n_grid = copy_skill(n_grid,clud_lst)
+    grid,stp = create_clud(n_grid,clud_lst)
 
+
+
+total = 0
+for i in range(n):
+    for j in range(n):
+        total += grid[i][j]
+
+print(total)
 
