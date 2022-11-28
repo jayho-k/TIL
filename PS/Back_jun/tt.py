@@ -16,9 +16,6 @@
 0 0 0 0 0 2
 '''
 from collections import deque
-
-from django import views
-
 def stp(grid):
     vi = []
     for y in range(n):

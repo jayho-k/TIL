@@ -40,19 +40,6 @@ def defence(hunter,enemy,d):
                 if 0<=ey<n and 0<=ex<m:
                     new_enemy.append((ey,ex))
 
-
-
-
-
-    #     if new_enemy == []:
-    #         break
-
-    #     else:
-    #         enemy = new_enemy
-    
-    # return cnt
-
-
 def stp():
 
     for y in range(n):

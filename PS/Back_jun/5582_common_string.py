@@ -5,6 +5,7 @@ ECADADABRBCRDARA
 from pprint import pprint
 import sys
 
+
 st1 = list(input())
 st2 = list(input())
 
