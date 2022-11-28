@@ -15,13 +15,6 @@ sm = lst[0]
 
 
 
-
-
-
-
-
-
-
     # if sm+lst[end] < mx:
     #     mx = max(mx, sm+lst[end])
     #     sm += lst[end]
@@ -32,9 +25,6 @@ sm = lst[0]
     #     sm -= lst[st]
     #     st += 1
 
-    print(mx)
-
-print(mx)
 
 
 
