@@ -23,9 +23,15 @@
 
 def play(g_num, direction):
     
+    front = g_num
+    back = g_num+1
+
     # foreward
     for i in range(g_num,9):
-        pass
+        check
+
+
+
 
     # backward
     for j in range(g_num-1,-1,-1):
