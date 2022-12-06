@@ -10,6 +10,11 @@
 4 2 4 2
 4 4 8 8
 
+4
+0 0 0 0
+2 2 2 2
+4 2 4 2
+4 4 8 8
 '''
 def copy_grid(grid):
     n_grid = [[0]*n for _ in range(n)]
@@ -107,13 +112,15 @@ def dfs(grid,d):
     if d == 5:
         for y in range(n):
             for x in range(n):
-                ans = max(ans,grid[y][x])
+                if ans < n_grid[y][x]:
+                    ans = n_grid[y][x]
+                # ans = max(ans,grid[y][x])
         return
 
     for m in range(4):
-        grid = move(grid,m)
-        grid = copy_grid(grid)
-        dfs(grid, d+1)
+        n_grid = copy_grid(grid)
+        n_grid = move(n_grid,m)
+        dfs(n_grid, d+1)
 
 from pprint import pprint
 n = int(input())
@@ -121,10 +128,14 @@ grid = [list(map(int,input().split())) for _ in range(n)]
 ans = 0
 
 # 0:동, 1:남, 2:서, 3:북
-# pprint(move(grid,3))
+# pprint(move(grid,1))
+# pprint(move(grid,1))
+# pprint(move(grid,0))
+# pprint(move(grid,0))
 
 dfs(grid,0)
 print(ans)
+
 
 
 
