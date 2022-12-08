@@ -1,14 +1,18 @@
 # Binary Tree
 
 - 표현법 1
+  
   - 배열, 리스트에 저장 ==> heap
   - 메모리상에 비효율적
+
 - 표현법 3
+  
   - 노드와 링크 직접 연결
   - Node class
   - BT class
 
 - 특징
+  
   - 루트노드 빼고 다 부모를 가지고 있음
 
 ![image-20220215134550995](09Binary Tree.assets/image-20220215134550995.png)
@@ -42,31 +46,30 @@ d.parent = b
 # 즉 insert하고 등등은 BT 클라스를 만들어서 생성 할 것이다
 ```
 
-
-
 ### 순회(traversal)
 
 ![image-20220215135503521](09Binary Tree.assets/image-20220215135503521.png)
 
 - 이진트리 노드의 key 값을 빠짐없이 출력하는 방법
-
+  
   - 어느 쪽 먼저 방문할지를 정하는 것
+  
   - preorder: M을 기준 M->L->R
-
+  
   - inorder: L->M->R
-
+  
   - postorder: L->R->M
 
 ![image-20220215135733122](09Binary Tree.assets/image-20220215135733122.png)
 
-####  preorder
+#### preorder
 
 - M->L->R
 - F => B => A => D => C => E => G => I => H
 
 #### inorder
 
--  L->M->R
+- L->M->R
 - A => B => C => D => E => F => H => I
 
 #### postorder
@@ -86,13 +89,13 @@ class Node:
             print(self.key)
             if self.left:
                 self.left.preorder()
-            
+
             if self.right:
                 self.right.preorder()
 
     def inorder(self):  # 현재 방문중인 노드 = self 
         if self != None:
-            
+
             if self.left:
                 self.left.inorder()
             print(self.key)
@@ -102,10 +105,10 @@ class Node:
 
     def postorder(self):  # 현재 방문중인 노드 = self  
         if self != None:
-            
+
             if self.left:
                 self.left.postorder()
-            
+
             if self.right:
                 self.right.postorder()
 
@@ -115,15 +118,11 @@ class Node:
         return str(self.key)
 ```
 
-
-
 #### re_construction
 
 #### ![image-20220215141318347](09Binary Tree.assets/image-20220215141318347.png)
 
 - 프리오더와 인오더를 확인하면서 모양을 추리해낼 수 있다 ??? 확이해 볼 것
-
-
 
 ### 이진탐색트리 (Binary search Tree) (BST)
 
@@ -133,24 +132,23 @@ class Node:
 ![image-20220215142856785](09Binary Tree.assets/image-20220215142856785.png)
 
 - 정의: (규칙)
+  
   - 각 노드의 왼쪽 subtree의 key 값은 노드의 key값보다 작거나 같아야한다
   - 각 노드의 오른쪽 subtree의 key 값은 노드의 key값보다 커야 같아야한다
   - 왼쪽 자기보다 작
   - 오른 자기보다 큼
 
 - 만약에 search(19) 를 한다면 15보다 크기때문에 무조건 오른쪽에 있음
+
 - 약간 이진 탐색하는 방법과 비슷하다고 볼 수 있다.
 
 - h(높이)만큼만 비교하면 찾을 수 있다 ==> h를 작게 할 수록 좋다
+
 - O(h)라고 할 수 있다.
-
-
 
 ![image-20220215151235366](09Binary Tree.assets/image-20220215151235366.png)
 
 ![image-20220215151258354](09Binary Tree.assets/image-20220215151258354.png)
-
-
 
 ```python
 class Node:
@@ -246,23 +244,17 @@ class BST:
             return None
 
 
-        
+
 
 # t = BST()
 # print(t.root)
 ```
-
-
-
-
 
 ### 삭제 연산
 
 - deleteByMerging
 
 - deleteByCopy
-
-
 
 - deleteByMerging
 
@@ -277,24 +269,20 @@ class BST:
 
 ![image-20220215230915538](09Binary Tree.assets/image-20220215230915538.png)
 
-
-
-
-
 child
 
 - 20의 위치에 L을 넣는다
+
 - 오른쪽에 있는 32가 19에 붙게 된다
 
 - L에 들어있는 key값은 R에 있는 key 값보다 커야 한다.
+
 - 즉 L에 있는 노드중에서 가장 큰 key값의 오른쪽 child로 R값을 가져야 한다.
 
 parent
 
 - 17의 부모노드와 15의 자식노드도 수정이되어야한다
 - 서로 연결을 시켜줘야한다.
-
-
 
 경우들
 
@@ -348,24 +336,23 @@ def deleteByMerging(self, x):
             self.root = c
             if c:
                 c.parent = None
-            
+
         self.size -= -1
 ```
-
-
 
 ### delete by copying
 
 ![image-20220216004449105](09Binary Tree.assets/image-20220216004449105.png)
 
 - 왼쪽에 가장 큰 값을 찾아서 자신하테 보내준다
+
 - 직접 구현해보기
 
 - 19값을 카피해서 x에 오도록 한다
+
 - 그리고 18을 17로 옮기도록 한다
+
 - 둘다 O(h) 시간이 든다
-
-
 
 균형을 맞춰주어야 한다
 
@@ -374,32 +361,3 @@ def deleteByMerging(self, x):
 그것을 ==> 균형 이진탐색 트리라고 한다.
 
 다음 시간에 계속
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
