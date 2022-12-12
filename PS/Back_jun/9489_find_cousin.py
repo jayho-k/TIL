@@ -14,8 +14,6 @@
 
 '''
 
-
-
 while 1:
     n,target = map(int,input().split())
     if n == 0 and target == 0:
@@ -37,15 +35,22 @@ while 1:
         else:
             parents[i] = val[cnt]
 
-
+    # 타겟의 parent => 3 4 5
     tmp_idx = val.index(parents[t])
+
+    # 그랜드의 index값 => 0
     grand = parents[tmp_idx]
     tmp_idx_lst = set()
     ans = 0
+
     for j in range(len(val)):
+
         if parents[j] == grand and j != tmp_idx:
             tmp_idx_lst.add(val[j])
-        
+            
         if parents[j] in tmp_idx_lst:
             ans += 1
+    
+    print(tmp_idx_lst)
     print(ans)
+    print('*'*30)

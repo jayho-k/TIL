@@ -17,11 +17,11 @@
 def findGiga(node):
 
     global giga_node, pillar
+    visited[node]=1
     if len(tree[node])>2 or (len(tree[node])==1 and node != root):
         giga_node = node
         return
 
-    visited[node]=1
     for tnode in tree[node]:
         if visited[tnode[0]]==0:
             pillar += tnode[1]

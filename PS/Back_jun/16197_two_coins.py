@@ -15,7 +15,6 @@ def bfs(coin1,coin2,depth):
         y1,x1 = coin1
         y2,x2 = coin2
         if depth >= 10:
-
             return -1
             
         for d in range(4):
@@ -25,6 +24,7 @@ def bfs(coin1,coin2,depth):
 
             # 범위 안으로 들어옴
             if 0<=ny1<n and 0<=nx1<m and 0<=ny2<n and 0<=nx2<m:
+                
                 # 벽이 있을 경우
                 if grid[ny1][nx1] == '#':
                     ny1,nx1 = y1,x1
@@ -32,7 +32,6 @@ def bfs(coin1,coin2,depth):
                 if grid[ny2][nx2] == '#':
                     ny2,nx2 = y2,x2
 
-                # 벽이 없을 경우
                 q.append(((ny1,nx1),(ny2,nx2),depth+1))
 
             elif (ny1<0 or ny1>=n or nx1<0 or nx1>=m) and\
@@ -60,8 +59,6 @@ def findCoins():
 
 n,m = map(int,input().split())
 grid = [list(input()) for _ in range(n)]
-visited1 = [[0]*m for _ in range(n)]
-visited2 = [[0]*m for _ in range(n)]
 dy = [-1,0,1,0]
 dx = [0,1,0,-1]
 coin1,coin2 = findCoins()

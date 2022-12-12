@@ -10,9 +10,9 @@ D . .
 G . .
 '''
 
-import string
+# import string
 
-a_lst = list(string.ascii_uppercase)
+# a_lst = list(string.ascii_uppercase)
 
 tree = {}
 

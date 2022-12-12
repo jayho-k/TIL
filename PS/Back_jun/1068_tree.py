@@ -25,7 +25,6 @@ def dfs(st):
 
 n = int(input())
 parent = list(map(int,input().split()))
-match = list(range(n))
 tree = [[] for _ in range(51)]
 remv = int(input())
 cnt = 0
@@ -42,9 +41,9 @@ if root == remv:
     print(0)
 else:
     dfs(root)
-
+    
     # 부모노드의 오직 지우려는 자식노드밖에 없다면=> 일직선 => 그때는 
-    if len(re_parent)==1 and re_parent[0]==remv:
+    if len(re_parent)==1:
         print(cnt)
     else:
         print(cnt-1)
