@@ -72,10 +72,8 @@ class Heap:
 lst = [1,2,3,4,5,6,7,8,9,10]
 
 hlst = Heap(lst)
-<<<<<<< HEAD
-
 print(1)
-=======
+
 print(hlst)
 
 hlst.insert(0)
@@ -84,4 +82,3 @@ print(hlst)
 
 hlst.max_delete()
 print(hlst)
->>>>>>> cb5c229d1969c607168e5e8aca56df03d8f210c4
