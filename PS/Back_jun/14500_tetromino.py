@@ -12,8 +12,13 @@ from pprint import pprint
 import sys
 
 def dfs(d,y,x,total):
-    global ans
+    global ans,mx
 
+    # ans값이 현재 가질 수 있는 최대값보다 크다면 멈춰라
+    # 왜냐하면 더 돌려도 의미가 없기 때문에
+    if ans >= ((4-(d+1))*mx)+total:
+        return
+        
     if d == 3:
         ans = max(ans,total)
         return
@@ -23,13 +28,10 @@ def dfs(d,y,x,total):
         nx = x+dx[i]
         if 0<=ny<n and 0<=nx<m and visited[ny][nx]==0:
 
+            visited[ny][nx]=1
             if d == 1:
                 # depth가 1로 들어가고 난 뒤 부터 2갈래로 나뉘어 간다
-                visited[ny][nx]=1
                 dfs(d+1,y,x,total+grid[ny][nx])
-                visited[ny][nx]=0
-
-            visited[ny][nx]=1
             dfs(d+1,ny,nx,total+grid[ny][nx])
             visited[ny][nx]=0
 
@@ -40,10 +42,9 @@ dy = [-1,0,1,0]
 dx = [0,1,0,-1]
 ans = 0
 visited = [[0]*m for _ in range(n)]
-
+mx = max(map(max,grid))
 for y in range(n):
     for x in range(m):
-        # visited = [[0]*m for _ in range(n)]
         visited[y][x]=1
         dfs(0,y,x,grid[y][x])
         visited[y][x]=0

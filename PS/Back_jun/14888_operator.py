@@ -16,7 +16,7 @@ def operator(d,plus,minus,time,div,compare):
         mx = max(mx,compare)
         mn = min(mn,compare)
         return
-
+    
     if plus != 0:
         operator(d+1,plus-1,minus,time,div,compare+lst[d])
 
@@ -27,13 +27,7 @@ def operator(d,plus,minus,time,div,compare):
         operator(d+1,plus,minus,time-1,div,compare*lst[d])
 
     if div != 0:
-        if compare>=0:
-            operator(d+1,plus,minus,time,div-1,compare//lst[d])   
-            
-        elif compare<0:
-            operator(d+1,plus,minus,time,div-1,-((-compare)//lst[d]))
-
-
+        operator(d+1,plus,minus,time,div-1,int(compare/lst[d]))   
 
 n = int(input())
 lst = list(map(int,input().split()))
