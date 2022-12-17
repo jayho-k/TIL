@@ -24,7 +24,11 @@ def findGiga(node):
     global giga_node, pillar
     visited[node]=1
 
-    if len(tree[node])>2 or (len(tree[node])==1 and node != root) or\
+    # 1. 자식이 2개 이상인 경우 (양방향 => len(tree[node])>2)
+    # 2. 가지가 하나이지만 그것이 root노드가 아닌경우 (끝이라는 뜻 일자 모양)
+    # 3. 루트노드의 자식이 2개인 경우
+    if len(tree[node])>2 or \
+        (len(tree[node])==1 and node!=root) or\
         (len(tree[node])==2 and node==root):
         giga_node = node
         return
@@ -65,18 +69,14 @@ visited = [0]*200002
 
 findGiga(root)
 
+# findGiga에서 return이 한번도 없었던 경우
+# giga_node = root
 if giga_node == -1:
     giga_node = root
 
 visited[giga_node]=1
 findLongest(giga_node,0)
 print(pillar,longest)
-
-
-
-
-
-
 
 
 
