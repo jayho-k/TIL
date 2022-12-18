@@ -24,7 +24,7 @@ for i in range(100,1000):
     i = str(i)
     i_lst = list(map(int,list(i)))
 
-    play = play[]
+    play = []
 
     for p in play:
         p_lst,s,b = p
