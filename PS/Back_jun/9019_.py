@@ -12,7 +12,7 @@ set 함수, list를 비교해보기
 '''
 
 
-def dfs(st,fi,command):
+def bfs(st,fi,command):
 
     register = ['d','s','l','r']
     visited = [0]*10000
@@ -25,9 +25,7 @@ def dfs(st,fi,command):
         for r in range(4):
             new_num,new_co = calculate(register[r],num,co)
             if visited[new_num]==0:
-            # if new_num not in visited:
                 visited[new_num]=1
-                # visited.add(new_num)
                 q.append((new_num,new_co))
 
 
@@ -72,7 +70,7 @@ for  _ in range(1,T+1):
 
     s,f = map(int,input().split())
     # visited = set()
-    print(dfs(s,f,''))
+    print(bfs(s,f,''))
 
 
 
@@ -163,3 +161,4 @@ for  _ in range(1,T+1):
 #     st_num, end_num = map(int,input().split())
 #     visited = [0]* 10000
 #     bfs(st_num,end_num,visited)
+

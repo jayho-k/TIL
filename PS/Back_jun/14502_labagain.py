@@ -20,21 +20,21 @@ input = sys.stdin.readline
 
 # wall에서 3개 뽑기
 add_walls2 = set()
-tmp = []
+# tmp = []
 visited_dfs = []
 def dfs(grid,no_walls,d,idx):
     
     if d == 3:
-        add_walls2.add(tuple(tmp))
+        add_walls2.add(tuple(visited_dfs))
         return
 
     for i in range(idx, len(no_walls)):
         wy,wx = no_walls[i]
         if (wy,wx) not in visited_dfs:
             visited_dfs.append((wy,wx))
-            tmp.append((wy,wx))
+            # tmp.append((wy,wx))
             dfs(grid,no_walls,d+1,i+1)
-            tmp.pop()
+            # tmp.pop()
             visited_dfs.pop()
 
 def bfs(sy,sx):

@@ -1,6 +1,6 @@
 '''
 
-
+=> 2차원 배열 => 1차원 배열
 
 '''
 def bfs(st):
@@ -16,7 +16,8 @@ def bfs(st):
             new_m = m + i
             if new_m <= 100 and new_m not in dupl:
                 dupl.add(new_m)
-                if graph[new_m] == []:
+
+                if not graph[new_m]:
                     q.append((new_m,cnt+1))
                     
                 else:
@@ -26,9 +27,12 @@ from collections import deque
 from sys import stdin
 input = stdin.readline
 n,m = map(int,input().split())
+g  = [0]*101
+
 graph = [[] for _ in range(101)]
 dupl = set()
 for lx,ly in (map(int,input().split()) for _ in range(n)):
+    # g[lx] = ly
     graph[lx].append(ly)
 
 for su,sv in (map(int,input().split()) for _ in range(m)):

@@ -56,6 +56,4 @@ input = sys.stdin.readline
 
 n, m = map(int,input().split())
 grid = [list(map(int,list(input().rstrip()))) for _ in range(n)]
-ans = bfs(0,0,0)
-
-print(ans)
+print(bfs(0,0,0))
