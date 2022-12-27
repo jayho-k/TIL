@@ -11,10 +11,9 @@ set 함수, list를 비교해보기
 
 '''
 
-
+# 3번째 풀이
 def bfs(st,fi,command):
 
-    register = ['d','s','l','r']
     visited = [0]*10000
     q = deque([(st,command)])
     while q:
@@ -24,10 +23,9 @@ def bfs(st,fi,command):
 
         for r in range(4):
             new_num,new_co = calculate(register[r],num,co)
-            if visited[new_num]==0:
+            if not visited[new_num]:
                 visited[new_num]=1
                 q.append((new_num,new_co))
-
 
 def calculate(register,num,co):
     
@@ -40,48 +38,95 @@ def calculate(register,num,co):
         return num,co+'S'
 
     elif register == 'l':
-        num_lst = list(str(num))
-        if num <10:
-            num_lst.insert(0,'0')
-        if num <100:
-            num_lst.insert(0,'0')
-        if num <1000:
-            num_lst.insert(0,'0')
-        num = int(num_lst[1]+num_lst[2]+num_lst[3]+num_lst[0])
-        return num,co+'L'
+        a = num//1000
+        b = num%1000
+        return b*10+a, co+'L'
 
     elif register == 'r':
-        num_lst = list(str(num))
-        if num <10:
-            num_lst.insert(0,'0')
-        if num <100:
-            num_lst.insert(0,'0')
-        if num <1000:
-            num_lst.insert(0,'0')
-
-        num = int(num_lst[3]+num_lst[0]+num_lst[1]+num_lst[2])
-        return num, co+'R'
+        a = num%10
+        b = num//10
+        return (a*1000)+b, co+'R'
 
 import sys
 from collections import deque
 input = sys.stdin.readline
 T = int(input())
-for  _ in range(1,T+1):
 
+register = ['d','s','l','r']
+for  _ in range(1,T+1):
     s,f = map(int,input().split())
-    # visited = set()
     print(bfs(s,f,''))
 
 
 
+# # 두번째 풀이
+# def bfs(st,fi,command):
+
+#     register = ['d','s','l','r']
+#     visited = [0]*10000
+#     q = deque([(st,command)])
+#     while q:
+#         num,co = q.popleft()
+#         if num == fi:
+#             return co
+
+#         for r in range(4):
+#             new_num,new_co = calculate(register[r],num,co)
+#             if visited[new_num]==0:
+#                 visited[new_num]=1
+#                 q.append((new_num,new_co))
+
+
+# def calculate(register,num,co):
+    
+#     if register == 'd':
+#         return (num*2)%10000, co+'D'
+
+#     elif register == 's':
+#         if num == 0: num = 10000
+#         num -= 1
+#         return num,co+'S'
+
+#     elif register == 'l':
+
+#         num_lst = list(str(num))
+#         if num <10:
+#             num_lst.insert(0,'0')
+#         if num <100:
+#             num_lst.insert(0,'0')
+#         if num <1000:
+#             num_lst.insert(0,'0')
+#         num = int(num_lst[1]+num_lst[2]+num_lst[3]+num_lst[0])
+#         return num,co+'L'
+
+#     elif register == 'r':
+
+#         num_lst = list(str(num))
+#         if num <10:
+#             num_lst.insert(0,'0')
+#         if num <100:
+#             num_lst.insert(0,'0')
+#         if num <1000:
+#             num_lst.insert(0,'0')
+
+#         num = int(num_lst[3]+num_lst[0]+num_lst[1]+num_lst[2])
+#         return num, co+'R'
+
+# import sys
+# from collections import deque
+# input = sys.stdin.readline
+# T = int(input())
+# for  _ in range(1,T+1):
+
+#     s,f = map(int,input().split())
+#     print(bfs(s,f,''))
 
 
 
 
 
 
-
-
+#  1번쨰 풀이
 
 # def D(num):
 #     num = (num*2)

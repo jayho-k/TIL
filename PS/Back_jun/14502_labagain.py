@@ -110,3 +110,6 @@ for add_wall in add_walls2:
 print(mx)
 
 
+# copy
+# [b[:] for g in grid]
+# 이렇게 조금 더 빠르다고 한다.
