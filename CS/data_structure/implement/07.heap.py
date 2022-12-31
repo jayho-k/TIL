@@ -4,7 +4,7 @@ max heap 구현
 2) make heap
 3) insert
 4) delete
-5) heapify up 
+5) heapify up
 
 heapq를 이용해서 min, max heap만들기
 '''
@@ -39,13 +39,11 @@ class Heap:
                     break
 
     def heapify_up(self,k):
+        
         # 아래서 부터 = 부모노드를 찾아줘야함
-        p = (k-1)//2
-        while k>0 and self.lst[p] < self.lst[k]: #k가 0보다 같거나 작다는 뜻 = 루트노드
-            self.lst[p],self.lst[k] = self.lst[k],self.lst[p]
-            print(self.lst)
-            k = p
-            # p = k
+        while k>0 and self.lst[(k-1)//2] < self.lst[k]: #k가 0작거나 같다 = 루트노드
+            self.lst[(k-1)//2],self.lst[k] = self.lst[k],self.lst[(k-1)//2]
+            k = (k-1)//2
         
     def make_heap(self):
         # heapify_down + for문이 필요하다
@@ -54,7 +52,6 @@ class Heap:
         # 밑에부터 가는 이유 => 큰값이 위로 올라가기 때문이다
         for k in range(n//2,-1,-1):
             self.heapify_down(k,n)
-            # print(k)
 
     def insert(self, key):
         self.lst.append(key)
@@ -72,12 +69,11 @@ class Heap:
 lst = [1,2,3,4,5,6,7,8,9,10]
 
 hlst = Heap(lst)
-print(1)
 
 print(hlst)
 
 hlst.insert(0)
-hlst.insert(2)
+hlst.insert(11)
 print(hlst)
 
 hlst.max_delete()
