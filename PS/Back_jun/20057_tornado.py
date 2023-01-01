@@ -11,35 +11,48 @@
 from pprint import pprint
 import sys
 
+# 토네이도
 def tornado(y,x,d):
+
     out_of_grid = 0
     total_sand = grid[y][x]
-    total_rate_sand = 0
     grid[y][x] = 0
+    
+    total_rate_sand = 0
     d_sand_y = sand_y[d]
     d_sand_x = sand_x[d]
+
+
+    # 총 9개의 비율을 가진 것을 순서대로 계산
+    # rate = [0.05,0.1,0.07,0.01,0.02,0.1,0.07,0.01,0.02]
+    # d_sand_y, d_sand_x => 비율의 방향
     for i in range(9):
         new_sand_y = y+d_sand_y[i]
         new_sand_x = x+d_sand_x[i]
         rate_sand = int(rate[i]*total_sand)
+
         total_rate_sand += rate_sand
         if 0<=new_sand_y<n and 0<=new_sand_x<n:
             grid[new_sand_y][new_sand_x] += rate_sand
+        
+        # 밖에 나갔을 경우
         else:
             out_of_grid+=rate_sand
 
+    # 알파값 계산
     alpha = total_sand-total_rate_sand
     ny = y+dy[d]
     nx = x+dx[d]
     if 0<=ny<n and 0<=nx<n:
         grid[ny][nx] += alpha
+
+    # 밖에 나갔을 경우
     else:
         out_of_grid+=alpha
 
     return out_of_grid
 
-# while (s) => for2(d) => for speed
-# 리뷰 해줘야할듯
+# 1) 달팽이 구현
 def move(start):
     y,x = start
     speed = 1
@@ -58,6 +71,7 @@ def move(start):
             d = (d+1)%4
         speed+=1
 
+# 2) 흙뿌리기 규칙
 sand1 = [0,-1,-1,-1,-2,1,1,1,2]
 sand2 = [2,1,0,-1,0,1,0,-1,0]
 sand_y = {
@@ -74,6 +88,7 @@ sand_x = {
 
 rate = [0.05,0.1,0.07,0.01,0.02,0.1,0.07,0.01,0.02]
 
+# input
 input = sys.stdin.readline
 n = int(input())
 start = (n//2,n//2)
