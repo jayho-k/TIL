@@ -33,15 +33,14 @@ def belt_rotate(robots,belt):
     return robots,belt
 
 def move_robots(robots,belt):
-    global n
+
     for i in range(n-2,-1,-1):
-        if robots[i]==1:
-            # 앞이 비었고, belt의 내구도가 0이 아니라면
-            if robots[i+1]==0 and belt[i+1]!=0:
-                robots[i+1]=1
-                robots[i]=0
-                belt[i+1]-=1
-            
+        # 앞이 비었고, belt의 내구도가 0이 아니라면
+        if robots[i]==1 and robots[i+1]==0 and belt[i+1]!=0:
+            robots[i+1]=1
+            robots[i]=0
+            belt[i+1]-=1
+
     # putoff
     if robots[n-1]==1:
         robots[n-1]=0
@@ -71,16 +70,15 @@ while True:
     ans += 1
     robots,belt = belt_rotate(robots,belt)
     robots,belt = move_robots(robots,belt)
-    cnt = check_du(belt)
-    # cnt = belt.count(0)
-    if cnt >= k: break
-
     robots,belt = puton_robot(robots,belt)
-    cnt = check_du(belt)
+    cnt = belt.count(0)
+    # cnt = check_du(belt)
     # cnt = belt.count(0)를 사용할때 시간이 2배로 느려진다.
     if cnt >= k: break
 
 print(ans)
+
+
 
 
 

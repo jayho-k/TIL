@@ -9,12 +9,15 @@ r,c,m,s,d
 
 def move(fire_ball):
     n_grid = [[[] for _ in range(N)] for _ in range(N)]
+    fire_location = set()
     for fire in fire_ball:
         y,x,m,s,d = fire
+        #  수정
         ny = (y+((dy[d])*s)%N)%N
         nx = (x+((dx[d])*s)%N)%N
         n_grid[ny][nx].append((m,s,d))
-    return n_grid
+        fire_location.add((ny,nx))
+    return n_grid,fire_location
 
 def collect_fireball(y,x,grid,cnt):
     sum_m,sum_s,d_1,d_2 = 0,0,0,0
@@ -35,32 +38,33 @@ def divide_fireball(decision):
     elif decision=='Odd':
         return (1,3,5,7)
 
-def collect(grid):
+def collect(grid,fire):
     n_fire_ball = set()
-    for y in range(N):
-        for x in range(N):
-            cnt = len(grid[y][x])
-            if cnt>=2:
-                nm,ns,d_1,d_2 = collect_fireball(y,x,grid,cnt)
+    # 이중 for문 수정
+    # for y in range(N):
+    #     for x in range(N):
+    for y,x in fire:
+        cnt = len(grid[y][x])
+        if cnt>=2:
+            nm,ns,d_1,d_2 = collect_fireball(y,x,grid,cnt)
 
-                # 질량이 0일 경우
-                if nm<=0:
-                    continue
+            # 질량이 0일 경우
+            if nm<=0:
+                continue
 
-                # 홀수
-                if d_1 and d_2:
-                    new_direction = divide_fireball('Odd')
-                
-                # 짝
-                else:
-                    new_direction = divide_fireball('Even')
+            # 홀수
+            if d_1 and d_2:
+                new_direction = divide_fireball('Odd')
+            # 짝
+            else:
+                new_direction = divide_fireball('Even')
 
-                for nd in new_direction:
-                    n_fire_ball.add((y,x,nm,ns,nd))
+            for nd in new_direction:
+                n_fire_ball.add((y,x,nm,ns,nd))
 
-            elif cnt==1:
-                m,s,d = grid[y][x][0]
-                n_fire_ball.add((y,x,m,s,d))
+        elif cnt==1:
+            m,s,d = grid[y][x][0]
+            n_fire_ball.add((y,x,m,s,d))
 
     return n_fire_ball
 
@@ -73,8 +77,8 @@ for _ in range(M):
     fire_ball.add((r-1,c-1,m,s,d))
 
 for _ in range(K):
-    grid = move(fire_ball)
-    fire_ball = collect(grid)
+    grid,fire_location = move(fire_ball)
+    fire_ball = collect(grid,fire_location)
 
 ans=0
 for _,_,a,_,_ in fire_ball:
@@ -83,7 +87,7 @@ for _,_,a,_,_ in fire_ball:
 print(ans)
 
 
-
+# set 순서 저장 된다고 들었는데? 확인 , 딕셔너리도
 
 
 
