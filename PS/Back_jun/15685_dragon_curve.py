@@ -10,14 +10,13 @@ x, y, d, g
 '''
 
 # 90도 회전
-rotaion={
-    0:1,
-    1:2,
-    2:3,
-    3:0
-}
 def direction(d,g):
-
+    rotaion={
+        0:1,
+        1:2,
+        2:3,
+        3:0
+    }
     direction_lst = [d]
     for _ in range(g):
         co_dir = direction_lst[::-1]
@@ -44,7 +43,6 @@ def check(drew_grid):
                 cnt +=1
     return cnt                
 
-from pprint import pprint
 
 n = int(input())
 curves = [tuple(map(int,input().split())) for _ in range(n)]

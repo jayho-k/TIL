@@ -22,7 +22,3 @@ for c in child:
         break
 
 print(ans)
-
-        
-    
-

@@ -7,6 +7,51 @@ one1 two2 three3 4fourr 5five 6six
 '''
 
 s = input()
+tmp = ''
+sentence = ''
+flip = True
+for i in range(len(s)):
+
+    if s[i] == '<':
+        tmp += s[i]
+        flip = False
+
+    elif s[i]=='>':
+        tmp += s[i]
+        sentence += tmp
+        tmp =''
+        flip = True
+    
+    elif s[i]==' ':
+        sentence = sentence+tmp+' '
+        tmp =''
+
+    elif flip:
+        tmp = s[i]+tmp
+
+    elif not flip:
+        tmp += s[i]
+
+if tmp:
+    sentence+=tmp
+
+
+print(sentence)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+s = input()
 
 no_flip=False
 

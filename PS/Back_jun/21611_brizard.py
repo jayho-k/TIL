@@ -3,7 +3,7 @@
 1. 마법 파괴
 2. 구슬 이동
 3. 구슬 폭발 => 빈칸 이동 => 폭발 반복
-4. 구슬 변화()
+4. 구슬 변화
 
 7 1
 0 0 0 0 0 0 0
@@ -36,6 +36,7 @@ def snail(n,y,x,mode,grid):
             for _ in range(s):
                 if i==n**2:
                     return snail,lst
+
                 ny = y+snail_dy[d]
                 nx = x+snail_dx[d]
                 if mode=='make':
@@ -57,7 +58,6 @@ def blizzard(d,s,y,x):
     for _ in range(s):
         ny=y+dy[d]
         nx=x+dx[d]
-        # dic[grid[ny][nx]]+=1
         grid[ny][nx] = 0
         y=ny
         x=nx
@@ -67,7 +67,7 @@ def move_marble():
     # 
     n_grid = [[0]*n for _ in range(n)]
     _,check_lst = snail(n,n//2,n//2,'check',grid)
-    # print(check_lst)
+    
     for y in range(n):
         for x in range(n):
             num = snail_grid[y][x]
@@ -118,6 +118,7 @@ def change(lst):
         cy,cx,_ = lst[i]
         if grid[by][bx] == grid[cy][cx]:
             tmp.append((by,bx))
+
         else:
             tmp.append((by,bx))
             a = len(tmp)
@@ -142,12 +143,13 @@ dx = [0,0,0,-1,1]
 n,m = map(int,input().split())
 grid = [list(map(int,input().split())) for _ in range(n)]
 snail_grid,snail_lst = snail(n,n//2,n//2,'make',[])
+# pprint(snail_grid)
+# print(snail_lst)
 dic = {
     1:0,
     2:0,
     3:0
 }
-
 
 for _ in range(m):
     d,s = map(int,input().split())

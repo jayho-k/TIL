@@ -74,6 +74,7 @@ def move(start):
 # 2) 흙뿌리기 규칙
 sand1 = [0,-1,-1,-1,-2,1,1,1,2]
 sand2 = [2,1,0,-1,0,1,0,-1,0]
+
 sand_y = {
     0:sand1,
     1:sand2,
@@ -82,9 +83,17 @@ sand_y = {
 
 sand_x = {
     0:list(map(lambda x:x*-1,sand2)),
-    1:list(map(lambda x:x*-1,sand1)),
+    1:sand1,
     2:sand2,
-    3:sand1}
+    3:list(map(lambda x:x*-1,sand1)),
+    # 1:list(map(lambda x:x*-1,sand1)),
+    # 3:sand1
+    }
+
+for i in range(4):
+    lst = []
+    for j in range(9):
+        lst.append((sand_y[i],sand_x[i]))
 
 rate = [0.05,0.1,0.07,0.01,0.02,0.1,0.07,0.01,0.02]
 
