@@ -15,10 +15,10 @@ for name in ['ga','df']:
 # base_url = 'https://developers.themoviedb.org/3'
 # path = '/movie/now_playing'
 
-# # 'https://developers.themoviedb.org/3/movie/now_playing> api_key = 'dddddd&region=KR&language=ko'
+# # 'https://developers.themoviedb.org/3/movie/now_playing> api_key = ''
 
 # params = {
-#     'api_key': '50ca281a943ecad26f13d17bc9d40827',
+#     'api_key': '',
 #     'region' : 'KR',
 #     'language':'ko'
 # }
