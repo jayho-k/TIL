@@ -47,7 +47,6 @@ class Trie:
     # SEARCH
     def _recurSearch(self, node:TrieNode, word:str)-> bool:
         
-        # leafNode까지 갔을 경우 그 단어는 있다는 뜻
         if len(word)==0:
             isEnd = node.isEnd
             return isEnd
