@@ -12,7 +12,7 @@ https://mangkyu.tistory.com/154
 
 
 
-## 01_트랜잭션이란?
+## 01_Transaction이란?
 
 - 데이터 베이스의 상태를 변화시키기 위해 수행하는 **최소단위**
 
@@ -54,7 +54,12 @@ if
 
 
 
-## 02_트랜젝션의 특징
+## 02_Transaction의 특징
+
+> - 원자성(Atomicity)
+> - 일관성(Consistency)
+> - 독립성(Isolation)
+> - 지속성(Durability)
 
 ##### 원자성(Atomicity)
 

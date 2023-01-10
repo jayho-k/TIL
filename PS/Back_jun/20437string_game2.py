@@ -10,43 +10,35 @@
 조건 3 : 가장 김
 
 '''
+from collections import defaultdict
 import sys
 input = sys.stdin.readline
-
-t = int(input())
-
-for _ in range(t):
-    st = list(input())
-    n = len(st)
-    k = int(input())
-
+def play(dic):
     mx = 0
     mn = 1e9
+    for val in dic.values():
+        if len(val)>=k:
+            for j in range(len(val)):
+                if j+k-1 < len(val):
+                    tmp = val[j+k-1]-val[j]+1
+                    mx = max(tmp,mx)
+                    mn = min(tmp,mn)
+    return (mx,mn)
 
-    total = 0
-    end = 1
-    for strt in range(n):
-        stnd = st[strt]
-        cnt = 1
-
-        while end < n:
-            com = st[end]
-            if com==stnd:
-                cnt += 1
-                if cnt == k:
-                    total = len(st[strt:end+1])
-                    mx = max(mx, total)
-                    mn = min(mn, total)
-                    break
-
-            end += 1
-
-        cnt -= 1
-
-    if mn != 1e9 or mx != 0:
-        print(mn, mx)
-    else:
+T = int(input())
+for _ in range(1,T+1):
+    word = input()
+    k = int(input())
+    dic = defaultdict(list)
+    for i in range(len(word)):
+        dic[word[i]].append(i)
+    
+    mx,mn = play(dic)
+    if mx == 0:
         print(-1)
+    else:
+        print(mn,mx)
+
 
 
 
