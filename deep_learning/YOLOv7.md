@@ -9,7 +9,7 @@ https://velog.io/@parksh089g/%EC%97%B0%EA%B5%AC%EC%8B%A4%EB%85%BC%EB%AC%B8%EB%A6
   - CSPVoVNet
   - ELAN
   - E-ELAN
-  - BOF ( YOLOv4)
+  - BOF (YOLOv4)
   - RepConv : (Re-parameterized) ex)VGG, ResNet, DenseNet
 
 ![](YOLOv7.assets/2022-09-11-14-25-30-image.png)
