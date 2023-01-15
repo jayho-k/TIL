@@ -4,11 +4,24 @@
 3 4 6 20 25
 3 52
 
+
+
 5 1 1 1
 3
 3
 3 7
 
+
+입력
+50 4 5 2
+24 15 27 43
+3 4 6 20 25
+3 25
+26 52
+
+정답
+12
+13
 
 
 '''
@@ -22,11 +35,10 @@ stud = [0]*(n+3)
 n_stud = [0]*(n+3)
 flag = False
 for i in range(len(code)):
-    if code[i] not in sleep:
+    if code[i] not in sleep:    
         for c in range(0,len(stud),code[i]):
             if c not in sleep:
                 stud[c]=1
-                flag=True
 # print(stud)
 tmp = 0
 for s in range(3,len(stud)):
@@ -36,10 +48,7 @@ for s in range(3,len(stud)):
 # print(n_stud)
 for _ in range(m):
     s,e = map(int,input().split())
-    if flag:
-        print(n_stud[e]-n_stud[s])
-    else:
-        print(n_stud[e]-n_stud[s]+1)
+    print(n_stud[e]-n_stud[s])
 
 
 
