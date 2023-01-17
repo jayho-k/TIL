@@ -10,7 +10,9 @@ https://velog.io/@parksh089g/%EC%97%B0%EA%B5%AC%EC%8B%A4%EB%85%BC%EB%AC%B8%EB%A6
   - ELAN
   - E-ELAN
   - BOF (YOLOv4)
-  - RepConv : (Re-parameterized) ex)VGG, ResNet, DenseNet
+  - RepConv :
+    -  (Re-parameterized) ex)VGG, ResNet, DenseNet
+    - 3개의 layer를 블록으로 두고 깊이를 깊게 만든 것???
 
 ![](YOLOv7.assets/2022-09-11-14-25-30-image.png)
 
