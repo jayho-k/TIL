@@ -1,5 +1,15 @@
 # SQL & NoSQL
 
+> 01_Database와 DBMS?
+>
+> 02_SQL (관계형 데이터 베이스)
+>
+> 03_NoSQL
+>
+> 04_NoSQL이 핫해진 이유
+>
+> 05_SQL & NoSQL의 차이점
+
 출처
 
 https://zangzangs.tistory.com/79
@@ -7,10 +17,6 @@ https://zangzangs.tistory.com/79
 http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 
-
-> 01_Database와 DBMS?
->
-> 
 
 ## 01_Database와 DBMS?
 
@@ -39,9 +45,9 @@ http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 #### 3_DBMS의 종류
 
-**1. SQL**
+​	**1. SQL**
 
-**2. NoSQL**
+​	**2. NoSQL**
 
 
 
@@ -67,7 +73,7 @@ http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 
 
-## 02_NoSQL
+## 03_NoSQL
 
 > 1. NoSQL란?
 > 2. 종류
@@ -120,7 +126,7 @@ http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 
 
-## 03_NoSQL이 핫해진 이유
+## 04_NoSQL이 핫해진 이유
 
 ![img](https://blog.kakaocdn.net/dn/Pw91x/btqVtccTlWD/CfKJU8n4XR5QTEo9rIuiq0/img.png)
 
@@ -130,7 +136,7 @@ http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 
 
-## 04_SQL & NoSQL의 차이점
+## 05_SQL & NoSQL의 차이점
 
 > 1_Scalability
 >
@@ -243,6 +249,7 @@ http://blog.skby.net/nosql-base-%EC%86%8D%EC%84%B1/
 
 - **Eventually Consistent(결과적 일관성)**
   ![image-20230110231719487](SQL&NoSQL.assets/image-20230110231719487.png)
+  
   - 일시적으로 일관성이 깨질 수 있음
   - 하지만 나중에는 다시 돌아와야한다.
 

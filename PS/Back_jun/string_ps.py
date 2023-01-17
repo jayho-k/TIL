@@ -5,7 +5,7 @@ baekjoo
 baekjoo
 '''
 
-# # 16916_부분 문자열
+# # 16916_부분 문자열 => kmp공부
 
 # sp = input()
 # c = input()
