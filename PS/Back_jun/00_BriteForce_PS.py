@@ -26,23 +26,67 @@
     - ['0'] + list(map(str,input().split())) 이렇게 하다가 틀림발생
 - 부등호를 잘 보자 =, 
 '''
-def dfs(d,v):
-    global mx
-    if d == depth:
-        if mx < int(v) and int(v) <= n:
-            mx = int(v)
+# 16439 치킨치킨치킨
+from itertools import combinations
+def dfs(d,v_lst):
+    global remx
+    if d==3:
+        total = 0
+        for y in range(n):
+            mx = 0
+            for v in v_lst:
+                if mx<pref[y][v]:
+                    mx=pref[y][v]
+            total+=mx
+        remx = max(total,remx)
         return
 
-    for i in range(len(lst)):
-        dfs(d+1,v+lst[i])
-        dfs(d+1,v)
+    for i in range(m):
+        if i not in v_lst:
+            dfs(d+1,v_lst+[i])
 
-mx = 0
-n,k = map(int,input().split())
-depth = len(list(str(n)))
-lst = list(map(str,input().split()))
-dfs(0,'0')
-print(mx)
+
+n,m = map(int,input().split())
+lst = list(range(m))
+# com_lst = list(combinations(lst,3))
+pref = [list(map(int,input().split())) for _ in range(n)]
+remx = 0
+dfs(0,[])
+print(remx)
+
+# mx_pref = 0
+# for com in com_lst:
+#     total = 0
+#     for y in range(n):
+#         mx = 0
+#         for c in com:
+#             if pref[y][c] > mx:
+#                 mx = pref[y][c]
+#         total+=mx
+
+#     if mx_pref < total:
+#         mx_pref=total
+# print(mx_pref)
+
+
+
+# def dfs(d,v):
+#     global mx
+#     if d == depth:
+#         if mx < int(v) and int(v) <= n:
+#             mx = int(v)
+#         return
+
+#     for i in range(len(lst)):
+#         dfs(d+1,v+lst[i])
+#         dfs(d+1,v)
+
+# mx = 0
+# n,k = map(int,input().split())
+# depth = len(list(str(n)))
+# lst = list(map(str,input().split()))
+# dfs(0,'0')
+# print(mx)
 
 
 # # 15721_번데기

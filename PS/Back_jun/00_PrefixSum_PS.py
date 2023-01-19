@@ -29,30 +29,59 @@
 4 7
 9 9
 5 9
-'''
 
-# 21318_피아노 체조
+4 0
+2 -2 2 -2
+'''
+# 2015_수들의 합 4
+# 다시 생각해보기
+
+from collections import defaultdict
 import sys
 input = sys.stdin.readline
-def make_dp():
-    dp = [0]*(n)
-    for i in range(1,n):
-        if lst[i-1]>lst[i]:
-            dp[i]=dp[i-1]+1
-        else:
-            dp[i]=dp[i-1]
+
+n,k = map(int,input().split())
+arr = list(map(int,input().split()))
+dp = [0]
+store = {0:1}
+for i in range(n):
+    dp.append(dp[-1]+arr[i])
+
+ans = 0
+for j in range(1,n+1):
+
+    if dp[j]-k in store:
+        ans += store[dp[j]-k]
+
+    if dp[j] in store:
+        store[dp[j]] +=1
     else:
-        dp = [0]+dp
-    return dp
+        store[dp[j]] =1
 
-n = int(input())
-lst = list(map(int,input().split()))
-q = int(input())
-dp = make_dp()
+print(ans)
 
-for _ in range(q):
-    x,y = map(int,input().split())
-    print(dp[y]-dp[x])
+# # 21318_피아노 체조
+# import sys
+# input = sys.stdin.readline
+# def make_dp():
+#     dp = [0]*(n)
+#     for i in range(1,n):
+#         if lst[i-1]>lst[i]:
+#             dp[i]=dp[i-1]+1
+#         else:
+#             dp[i]=dp[i-1]
+#     else:
+#         dp = [0]+dp
+#     return dp
+
+# n = int(input())
+# lst = list(map(int,input().split()))
+# q = int(input())
+# dp = make_dp()
+
+# for _ in range(q):
+#     x,y = map(int,input().split())
+#     print(dp[y]-dp[x])
 
 
 # #  구간 합 구하기 5
