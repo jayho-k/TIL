@@ -25,34 +25,222 @@
     - dfs(0,'0')
     - ['0'] + list(map(str,input().split())) 이렇게 하다가 틀림발생
 - 부등호를 잘 보자 =, 
+
+ANT
+4
+35000 COMPUTERARCHITECTURE
+47000 ALGORITHM
+43000 NETWORK
+40000 OPERATINGSYSTEM
+
+AAA
+3
+10000 BCD
+20000 AAC
+50000 DDD
+
+정답 : -1
+
+결과 : 20000
 '''
-# 16439 치킨치킨치킨
-from itertools import combinations
-def dfs(d,v_lst):
-    global remx
-    if d==3:
-        total = 0
-        for y in range(n):
-            mx = 0
-            for v in v_lst:
-                if mx<pref[y][v]:
-                    mx=pref[y][v]
-            total+=mx
-        remx = max(total,remx)
+
+# 9079_동전게임
+from pprint import pprint
+import sys
+sys.setrecursionlimit(10**9)
+
+
+T = int(input())
+def play(board,v):
+    global mn
+    if check(board):
+        mn = min(mn,v)
         return
+    
+    for j in range(3):
+        if visited[j]==0:
+            visited[j]=1
+            if j!=3:
+                play(cross(board,j),v+1)
+            play(change_w(board,j),v+1)
+            play(change_h(board,j),v+1)
+            visited[j]=0
 
-    for i in range(m):
-        if i not in v_lst:
-            dfs(d+1,v_lst+[i])
+def check(board):
+    cnt = 0
+    for y in range(3):
+        for x in range(3):
+            if board[y][x]=='H':
+                cnt+=1
+    
+    if cnt==9 or cnt==0:
+        print(board)
+        return True
+    else:
+        return False
+
+def change_w(board,y):
+    n_board = [row[:] for row in board]
+    for x in range(3):
+        if n_board[y][x]=='H':
+            n_board[y][x]='T'
+        else:
+            n_board[y][x]='H'
+    return n_board
+
+def change_h(board,x):
+    n_board = [row[:] for row in board]
+    for y in range(3):
+        if n_board[y][x]=='H':
+            n_board[y][x]='T'
+        else:
+            n_board[y][x]='H'
+    return n_board
+
+def cross(board,lo):
+    n_board = [row[:] for row in board]
+    if lo==0:
+        for i in range(3):
+            if n_board[i][i]=='H':
+                n_board[i][i]='T'
+            else:
+                n_board[i][i]='H'
+
+    elif lo==1:
+        for i in range(3):
+            if n_board[i][-i-1]=='H':
+                n_board[i][-i-1]='T'
+            else:
+                n_board[i][-i-1]='H'
+
+    return n_board
+
+for _ in range(T):
+    mn = 1e9
+    visited = [0]*3
+    board = [list(input().split()) for _ in range(3)]
+    play(board,0)
+    print(mn)
 
 
-n,m = map(int,input().split())
-lst = list(range(m))
-# com_lst = list(combinations(lst,3))
-pref = [list(map(int,input().split())) for _ in range(n)]
-remx = 0
-dfs(0,[])
-print(remx)
+
+
+
+
+
+
+# # 16508_전공책
+# # 부분 집합=> 값을 얻어내는 것을 먼저
+# from itertools import combinations
+
+# def count_same(com_lst,target):
+
+#     vis_t = [0]*len(target)
+#     total = 0
+#     for book in com_lst:
+#         cost,name = book
+#         flag = False
+#         for na in name:
+#             for t in range(len(target)):
+#                 # 같고 이미 지나 왔을 경우
+#                 if na == target[t] and vis_t[t]==0:
+#                     vis_t[t] = 1
+#                     flag = True
+#                     break
+#         if flag:
+#             total+=cost
+#         else:
+#             break
+#     return total, vis_t.count(1)
+
+
+# target = input()
+# n = int(input())
+# books_info = []
+# for _ in range(n):
+#     c,na = input().split()
+#     books_info.append([int(c),na])
+
+# mn = 1e9
+# for i in range(1,n+1):
+#     for com_lst in list(map(list,combinations(books_info,i))):
+#         total, vis_t_cnt = count_same(com_lst,target)
+#         if vis_t_cnt==len(target):
+#             mn = min(mn,total)
+
+# if mn==1e9:
+#     print(-1)
+# else:
+#     print(mn)
+
+
+
+
+
+# # 16937_두 스티커
+# from itertools import combinations
+# y,x = map(int,input().split())
+# n = int(input())
+# lst = [tuple(map(int,input().split())) for _ in range(n)]
+# com_lst = list(combinations(lst,2))
+# mx = 0
+# for i in range(len(com_lst)):
+#     stk1,stk2 = com_lst[i]
+#     y1,x1 = stk1
+#     y2,x2 = stk2
+#     if ((y1+y2<=y and max(x1,x2)<=x) or (max(y1,y2)<=y and x1+x2<=x)) or \
+#         ((y1+x2<=y and max(x1,y2)<=x) or (max(y1,x2)<=y and x1+y2<=x)) or \
+#         ((x1+y2<=y and max(y1,x2)<=x) or (max(x1,y2)<=y and y1+x2<=x)) or \
+#         ((x1+x2<=y and max(y1,y2)<=x) or (max(x1,x2)<=y and y1+y2<=x)):
+#         mx = max(mx, (y1*x1)+(y2*x2))
+# print(mx)
+
+
+# # 14501_퇴사
+
+# n = int(input())
+# sch = [tuple(map(int,input().split())) for _ in range(n)]
+# dp = [0]*(n+1)
+
+# for day in range(n-1,-1,-1):
+#     du,pay = sch[day]
+#     if n<day+du:
+#         dp[day] = dp[day+1]
+#     else:
+#         dp[day] = max(dp[day+du]+pay,dp[day+1])
+
+# print(max(dp))
+
+
+
+
+# # 16439 치킨치킨치킨
+# from itertools import combinations
+# def dfs(d,v_lst):
+#     global remx
+#     if d==3:
+#         total = 0
+#         for y in range(n):
+#             mx = 0
+#             for v in v_lst:
+#                 if mx<pref[y][v]:
+#                     mx=pref[y][v]
+#             total+=mx
+#         remx = max(total,remx)
+#         return
+
+#     for i in range(m):
+#         if i not in v_lst:
+#             dfs(d+1,v_lst+[i])
+
+
+# n,m = map(int,input().split())
+# lst = list(range(m))
+# # com_lst = list(combinations(lst,3))
+# pref = [list(map(int,input().split())) for _ in range(n)]
+# remx = 0
+# dfs(0,[])
+# print(remx)
 
 # mx_pref = 0
 # for com in com_lst:

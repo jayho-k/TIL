@@ -32,33 +32,88 @@
 
 4 0
 2 -2 2 -2
-'''
-# 2015_수들의 합 4
-# 다시 생각해보기
 
-from collections import defaultdict
+
+3 5
+2 3 -21 -22 -23
+5 6 -22 -23 -25
+-22 -23 4 10 2
+'''
+
+# 1749_점수따먹기
+from pprint import pprint
 import sys
 input = sys.stdin.readline
 
-n,k = map(int,input().split())
-arr = list(map(int,input().split()))
-dp = [0]
-store = {0:1}
-for i in range(n):
-    dp.append(dp[-1]+arr[i])
+def make_dp():
+    dp = [[0]*(m+1) for _ in range(n+1)]
+    for y in range(1,n+1):
+        for x in range(1,m+1):
+            dp[y][x] = grid[y-1][x-1]+dp[y-1][x]+dp[y][x-1]-dp[y-1][x-1]
+    return dp
 
-ans = 0
-for j in range(1,n+1):
 
-    if dp[j]-k in store:
-        ans += store[dp[j]-k]
+n,m = map(int,input().split())
+grid = [list(map(int,input().split())) for _ in range(n)]
+dp = make_dp()
+mx = -10001
 
-    if dp[j] in store:
-        store[dp[j]] +=1
-    else:
-        store[dp[j]] =1
+for y1 in range(1,n+1):
+    for x1 in range(1,m+1):
+        for y2 in range(y1,n+1):
+            for x2 in range(x1,m+1):
+                mx = max(mx,(dp[y2][x2]-dp[y2][x1-1]-dp[y1-1][x2]+dp[y1-1][x1-1]))
+print(mx)
 
-print(ans)
+# # 설명 필요
+# mx = -10001
+# # y의 범위를 정해준다
+# for y1 in range(1,n+1):
+#     p = [0]*(m+1)
+#     for y2 in range(y1,n+1):
+#         t = [0]*(m+1)
+#         for i in range(1,m+1):
+
+#             # y2줄에 누적합을 다 넣어 놓음
+#             p[i] += dp[y2][i]
+
+#             # y2줄에 누적합과 
+#             t[i] = max(t[i-1]+p[i],p[i])
+#             mx = max(t[i],mx)
+
+ 
+
+
+
+
+
+
+# # 2015_수들의 합 4
+# # 다시 생각해보기
+
+# from collections import defaultdict
+# import sys
+# input = sys.stdin.readline
+
+# n,k = map(int,input().split())
+# arr = list(map(int,input().split()))
+# dp = [0]
+# store = {0:1}
+# for i in range(n):
+#     dp.append(dp[-1]+arr[i])
+
+# ans = 0
+# for j in range(1,n+1):
+
+#     if dp[j]-k in store:
+#         ans += store[dp[j]-k]
+
+#     if dp[j] in store:
+#         store[dp[j]] +=1
+#     else:
+#         store[dp[j]] =1
+
+# print(ans)
 
 # # 21318_피아노 체조
 # import sys
