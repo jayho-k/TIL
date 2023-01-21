@@ -42,90 +42,341 @@ AAA
 정답 : -1
 
 결과 : 20000
+
+6
+0 1 2 3 4 5
+1 0 2 3 4 5
+1 2 0 3 4 5
+1 2 3 0 4 5
+1 2 3 4 0 5
+1 2 3 4 5 0
+
+A
+BABA
+
 '''
+#12919_A와B2
+def dfs(word,t):
+    global ans
 
-# 9079_동전게임
-from pprint import pprint
-import sys
-sys.setrecursionlimit(10**9)
-
-
-T = int(input())
-def play(board,v):
-    global mn
-    if check(board):
-        mn = min(mn,v)
+    if t == word:
+        ans = 1
         return
-    
-    for j in range(3):
-        if visited[j]==0:
-            visited[j]=1
-            if j!=3:
-                play(cross(board,j),v+1)
-            play(change_w(board,j),v+1)
-            play(change_h(board,j),v+1)
-            visited[j]=0
 
-def check(board):
-    cnt = 0
-    for y in range(3):
-        for x in range(3):
-            if board[y][x]=='H':
-                cnt+=1
-    
-    if cnt==9 or cnt==0:
-        print(board)
-        return True
-    else:
-        return False
+    if len(t)==len(word):
+        return
 
-def change_w(board,y):
-    n_board = [row[:] for row in board]
-    for x in range(3):
-        if n_board[y][x]=='H':
-            n_board[y][x]='T'
+    for d in range(2):
+        if d==0:
+            nw_word = addA(word)
+            if nw_word not in visited:
+                visited.add(nw_word)
+                dfs(nw_word,t)
         else:
-            n_board[y][x]='H'
-    return n_board
+            nw_word = addB(word)
+            if nw_word not in visited:
+                visited.add(nw_word)
+                dfs(nw_word,t)
 
-def change_h(board,x):
-    n_board = [row[:] for row in board]
-    for y in range(3):
-        if n_board[y][x]=='H':
-            n_board[y][x]='T'
-        else:
-            n_board[y][x]='H'
-    return n_board
+def addA(word):
+    word+='A'
+    return word
 
-def cross(board,lo):
-    n_board = [row[:] for row in board]
-    if lo==0:
-        for i in range(3):
-            if n_board[i][i]=='H':
-                n_board[i][i]='T'
-            else:
-                n_board[i][i]='H'
+def addB(word):
+    tmp = ''
+    for w in word:
+        tmp = w+tmp
+    tmp = 'B'+tmp
+    return tmp
 
-    elif lo==1:
-        for i in range(3):
-            if n_board[i][-i-1]=='H':
-                n_board[i][-i-1]='T'
-            else:
-                n_board[i][-i-1]='H'
+visited = set()
+ans = 0
+s = input()
+t = input()
+dfs(s,t)
+print(ans)
 
-    return n_board
+# #15661_링크와 스타트
+# from itertools import permutations
+# import sys
+# input = sys.stdin.readline
 
-for _ in range(T):
-    mn = 1e9
-    visited = [0]*3
-    board = [list(input().split()) for _ in range(3)]
-    play(board,0)
-    print(mn)
+# def div_team(visited):
+#     team1 = []
+#     team2 = []
+#     for i in range(len(visited)):
+#         if visited[i]==0:
+#             team1.append(i)
+#         else:
+#             team2.append(i)
+#     return team1,team2
+
+# def cal_pwr(team):
+#     pwr_t = 0
+#     for y1,x1 in permutations(team,2):
+#         pwr_t+=grid[y1][x1]
+#     return pwr_t
+
+# def dfs(d,idx,end):
+#     global mn
+
+#     if d==end:
+#         # print(visited)
+#         team1,team2 = div_team(visited)
+#         pwr_t1=cal_pwr(team1)
+#         pwr_t2=cal_pwr(team2)
+#         mn=min(mn,abs(pwr_t1-pwr_t2))
+#         return
+
+#     for i in range(idx,n):
+#         if visited[i]==0:
+#             visited[i]=1
+#             dfs(d+1,i,end)
+#             visited[i]=0
+
+# mn = 1e9
+# n = int(input())
+# visited = [0]*n
+# grid = [list(map(int,input().split())) for _ in range(n)]
+# for i in range(1,n//2+1):
+#     dfs(0,0,i)
+
+# print(mn)
+
+
+
+
+# # 2615_오목
+# from pprint import pprint
+# import sys
+# input = sys.stdin.readline
+
+# def play():
+#     res_lst = []
+#     for y in range(19):
+#         for x in range(19):
+#             if board[y][x]!=0:
+#                 blwh,lo = isOmak(y,x,board[y][x])
+#                 if blwh:
+#                     res_lst.append((blwh,lo))
+#     return res_lst
+
+
+# def isOmak(sy,sx,blwh):
+
+#     y1,x1 = sy,sx
+#     y2,x2 = sy,sx
+    
+#     for d in range(4):
+#         cnt = 1
+#         while 1:
+#             ny1 = y1+dy[d]
+#             nx1 = x1+dx[d]
+#             if ny1<0 or ny1>=19 or nx1<0 or nx1>=19 \
+#                 or board[ny1][nx1]==0 or board[ny1][nx1]!=blwh:
+#                 break
+#             cnt+=1
+#             y1 = ny1
+#             x1 = nx1
+        
+#         while 1:
+#             ny2 = y2+dy[d+4]
+#             nx2 = x2+dx[d+4]
+#             # 0이거나, 다른색이거나, visited
+#             # 방문한적이 없거나, 방문한곳이 같은 색이라면 들어가도 된다.
+#             # 방문한적이 있고,방문한곳이 다른색이라면 안된
+
+#             if ny2<0 or ny2>=19 or nx2<0 or nx2>=19 \
+#                 or board[ny2][nx2]==0 or board[ny2][nx2]!=blwh:
+#                 break
+#             cnt+=1
+#             y2 = ny2
+#             x2 = nx2
+
+#         if cnt==5:
+#             return blwh,(sy+1,sx+1)
+
+#         y1,x1 = sy,sx
+#         y2,x2 = sy,sx
+
+#     return None,None
+
+# dy = [-1,-1,-1,0,1,1,1,0]
+# dx = [-1,0,1,1,1,0,-1,-1]
+
+# board = [list(map(int,input().split())) for _ in range(19)]
+# res_lst = play()
+# bl_cnt = 0
+# wh_cnt = 0
+# for res in res_lst:
+#     res_blwh,location = res
+#     if res_blwh==1:
+#         bl_cnt+=1
+
+#     elif res_blwh==2:
+#         wh_cnt+=1
+# res_lst.sort(key=lambda x: (x[1][1],x[1][0]))
+# # print(res_lst)
+
+# # if ((not bl_cnt and wh_cnt) or (bl_cnt and not wh_cnt)) and \
+# #     (bl_cnt <=5 or bl_cnt<=5):
+# #     print(res_lst[0][0])
+# #     print(res_lst[0][1][0],res_lst[0][1][1])
+# # else:
+# #     print(0)
+
+
+# # 동시에 이기는 경우
+# if bl_cnt and wh_cnt:
+#     print(0)
+
+# elif not bl_cnt and not wh_cnt:
+#     print(0)
+
+# # 오목이 2개 이상인 경우
+# elif bl_cnt>5 or wh_cnt>5:
+#     print(0)
+
+# # 나머지
+# else:
+#     print(res_lst[0][0])
+#     print(res_lst[0][1][0],res_lst[0][1][1])
+
+
+
+# if blwh==0:
+#     print(blwh)
+# else:
+#     print(blwh)
+#     print(lo[0],lo[1])
+
+
+
+# # 9079_동전게임
+# # from pprint import pprint
+# import sys
+# from collections import deque
+
+# def bfs(st):
+#     q = deque([(st,0)])
+#     visited[st]=1
+
+#     while q:
+#         num,cnt = q.popleft()
+#         # print(num)
+#         if num==0 or num==511:
+#             return cnt
+
+#         cur_board = num2board(num)
+
+#         for d in range(8):
+#             if 0<=d<3:
+#                 new_board = change_w(cur_board,d)
+
+#             elif 3<=d<6:
+#                 new_board = change_h(cur_board,d%3)
+                
+#             elif 6<=d<8:
+#                 new_board = cross(cur_board,d%2)
+
+#             new_num = board2num(new_board)
+#             if visited[new_num] == 0:
+#                 visited[new_num] = 1
+#                 q.append((new_num,cnt+1))
+
+#     return -1
+
+
+# def change_w(board,y):
+#     n_board = [row[:] for row in board]
+#     for x in range(3):
+#         if n_board[y][x]=='0':
+#             n_board[y][x]='1'
+#         else:
+#             n_board[y][x]='0'
+#     return n_board
+
+# def change_h(board,x):
+#     n_board = [row[:] for row in board]
+#     for y in range(3):
+#         if n_board[y][x]=='0':
+#             n_board[y][x]='1'
+#         else:
+#             n_board[y][x]='0'
+#     return n_board
+
+# def cross(board,lo):
+#     n_board = [row[:] for row in board]
+#     if lo==0:
+#         for i in range(3):
+#             if n_board[i][i]=='0':
+#                 n_board[i][i]='1'
+#             else:
+#                 n_board[i][i]='0'
+
+#     elif lo==1:
+#         for i in range(3):
+#             if n_board[i][-i-1]=='0':
+#                 n_board[i][-i-1]='1'
+#             else:
+#                 n_board[i][-i-1]='0'
+
+#     return n_board
+
+# def set_board(board):
+#     n_board = [['0']*3 for _ in range(3)]
+#     for y in range(3):
+#         for x in range(3):
+#             if board[y][x] == 'T':
+#                 n_board[y][x] = '1'
+#     return n_board
+
+# def num2board(num):
+#     # 정수 => 2진수 => board
+#     bi_num = str(bin(num))[2:]
+#     if len(bi_num)<9:
+#         bi_num=('0'*(9-len(bi_num)))+bi_num
+#     bi_lst = list(bi_num)
+#     n_board = []
+#     for i in range(0,9,3):
+#         n_board.append(bi_lst[i:i+3])
+#     return n_board
+
+# def board2num(board):
+#     tmp = '0b'
+#     for y in range(3):
+#         for x in range(3):
+#             tmp+=board[y][x]
+#     return int(tmp,2)
+
+# T = int(input())
+# for _ in range(T):
+#     mn = 1e9
+#     visited = [0]*513
+#     board = [list(input().split()) for _ in range(3)]
+#     num_baord = set_board(board)
+#     st = board2num(num_baord)
+#     cnt = bfs(st)
+#     print(cnt)
 
 
 
 
 
+# def play(board,v):
+#     global mn
+#     if check(board):
+#         mn = min(mn,v)
+#         return
+    
+#     for j in range(3):
+#         if visited[j]==0:
+#             visited[j]=1
+#             if j!=3:
+#                 play(cross(board,j),v+1)
+#             play(change_w(board,j),v+1)
+#             play(change_h(board,j),v+1)
+#             visited[j]=0
 
 
 
@@ -304,13 +555,6 @@ for _ in range(T):
 #         break
 
 # print(lo)
-
-
-
-
-
-
-
 
 
 # total_round = [0]
