@@ -25,76 +25,42 @@
     - dfs(0,'0')
     - ['0'] + list(map(str,input().split())) 이렇게 하다가 틀림발생
 - 부등호를 잘 보자 =, 
-
-ANT
-4
-35000 COMPUTERARCHITECTURE
-47000 ALGORITHM
-43000 NETWORK
-40000 OPERATINGSYSTEM
-
-AAA
-3
-10000 BCD
-20000 AAC
-50000 DDD
-
-정답 : -1
-
-결과 : 20000
-
-6
-0 1 2 3 4 5
-1 0 2 3 4 5
-1 2 0 3 4 5
-1 2 3 0 4 5
-1 2 3 4 0 5
-1 2 3 4 5 0
-
-A
-BABA
-
 '''
-#12919_A와B2
-def dfs(word,t):
+# #12919_A와B2
+
+def dfs(s,word):
     global ans
 
-    if t == word:
+    if word == '':
+        return
+
+    if s == word:
         ans = 1
         return
 
-    if len(t)==len(word):
-        return
-
     for d in range(2):
-        if d==0:
-            nw_word = addA(word)
-            if nw_word not in visited:
-                visited.add(nw_word)
-                dfs(nw_word,t)
+        if d:
+            dfs(s,minusA(word))
         else:
-            nw_word = addB(word)
-            if nw_word not in visited:
-                visited.add(nw_word)
-                dfs(nw_word,t)
+            dfs(s,minusB(word))
+    
+def minusA(word):
+    if word[-1]=='A':
+        return word[:-1]
+    return ''
 
-def addA(word):
-    word+='A'
-    return word
-
-def addB(word):
-    tmp = ''
-    for w in word:
-        tmp = w+tmp
-    tmp = 'B'+tmp
-    return tmp
-
-visited = set()
+def minusB(word):
+    word = word[::-1]
+    if word[-1]=='B':
+        return word[:-1]
+    return ''
 ans = 0
 s = input()
 t = input()
 dfs(s,t)
 print(ans)
+
+
 
 # #15661_링크와 스타트
 # from itertools import permutations
