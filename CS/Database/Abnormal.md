@@ -47,7 +47,7 @@ https://1000hg.tistory.com/22
 
 - **특정 데이터가 존재하지 않아** 중요한 데이터를 데이터베이스에 **삽입할 수 없을 때** 발생
 
-![image-20230118175204650](C:\Users\jayho\AppData\Roaming\Typora\typora-user-images\image-20230118175204650.png)
+![image-20230118175204650](C:\Users\jayho\Developer\practice\CS\Database\assets\image-20230118175204650.png)
 
 - 수학과가 신설 되었다
 - 하지만 아직 신입을 받지 않았기 때문에 테이블에 값을 추가할 수 없음
@@ -61,7 +61,7 @@ https://1000hg.tistory.com/22
 
 - **특정 정보를 삭제**하면, **원치 않는 정보도 삭제**되는 현상
 
-![image-20230118175717985](C:\Users\jayho\AppData\Roaming\Typora\typora-user-images\image-20230118175717985.png)
+![image-20230118175717985](C:\Users\jayho\Developer\practice\CS\Database\Abnormal.assets\image-20230118175717985.png)
 
 - 둘리가 자퇴
 - 둘리가 학과에 한명 밖에 없음
@@ -78,7 +78,7 @@ https://1000hg.tistory.com/22
 
 - 테이블의 **특정 데이터를 업데이트**했는데, **정상적으로 변경되지 않은 경우** 그리고 **너무 많은 행을 업데이트**하는 것
 
-![image-20230118180128214](C:\Users\jayho\AppData\Roaming\Typora\typora-user-images\image-20230118180128214.png)
+![image-20230118180128214](C:\Users\jayho\Developer\practice\CS\Database\Abnormal.assets\image-20230118180128214.png)
 
 - 상황 : 학과장 이름 개명 => 학과장명을 변경해야함
 - 학과생이 1000명일 경우 1000개의 데이터를 변경해야하는 비효율이 발생

@@ -34,7 +34,7 @@ https://github.com/Youji-Sung/CS-study/tree/master/%EB%8B%A4%EC%9D%B8
 
 #### 1NF
 
-![image-20230115184737488](C:\Users\jayho\AppData\Roaming\Typora\typora-user-images\image-20230115184737488.png)
+![image-20230115184737488](C:\Users\jayho\Developer\practice\CS\Database\Normalization.assets\image-20230115184737488-1674642898035-4.png)
 
 문제점
 
@@ -44,7 +44,7 @@ https://github.com/Youji-Sung/CS-study/tree/master/%EB%8B%A4%EC%9D%B8
 
 
 
-![image-20230115185039871](C:\Users\jayho\AppData\Roaming\Typora\typora-user-images\image-20230115185039871.png)
+![image-20230115185039871](C:\Users\jayho\Developer\practice\CS\Database\Normalization.assets\image-20230115185039871.png)
 
 **제1정규화**
 
