@@ -27,6 +27,7 @@ maybe ans
 bfs()
 dp()
 '''
+from pprint import pprint
 grid=[
     [0,11,10,9],
     [8,7,6,5],
@@ -35,4 +36,35 @@ grid=[
 ]
 ycost=2
 xcost=1
+n = len(grid)
+
+def make_cost_table(n):
+    cost_table = [[0]*(n+1) for _ in range(n+1)]
+    for i in range(2,n+1):
+        cost_table[1][i]=-xcost+cost_table[1][i-1]
+
+    for y in range(2,n+1):
+        for x in range(1,n+1):
+            cost_table[y][x]=cost_table[y-1][x]-ycost
+    return cost_table
+
+def make_dp_table(grid):
+    cost_table = make_cost_table(n)
+    dp_table = [[0]*(n+1) for _ in range(n+1)]
+    for y in range(1,n+1):
+        for x in range(1,n+1):
+            dp_table[y][x] = grid[y-1][x-1] + cost_table[y][x]
+
+    return dp_table
+
+dp_table = make_dp_table(grid)
+dp = [[0]*(n+1) for _ in range(n+1)]
+for y in range(1,n+1):
+    for x in range(1,n+1):
+        if y==1:
+            dp[y][x] = dp_table[y][x]+dp[y][x-1]
+        else:
+            dp[y][x] = max(dp[y-1][x],dp[y][x-1])+dp_table[y][x]
+pprint(dp)
+pprint(dp_table)
 
