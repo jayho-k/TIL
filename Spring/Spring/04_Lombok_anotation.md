@@ -100,7 +100,72 @@ User(id=1, username=1234, scores=[80, 70, 100])
 
 
 
-## 04_equals, hashCode 자동 생성
+## 04_@Builder
+
+- 해당 객체의 생성에 Bulder패턴을 적용시켜준다.
+- 모든 변수에 대해 buld하기를 원한다면 클래스 위에 @Builder를 붙이면 되지만, 특정 변수만을 build하기 원한다면 생성자를 작성하고 그 위에 @Builder어노테이션을 붙여 준다.
+- 쓰는 이유
+  - 가독성
+  - 순서 상관 없음
+  - 
+
+```java
+@Getter
+@NoArgsConstructor
+public class Store extends Common {
+
+    private String companyName;                                 // 상호명
+    private String industryTypeCode;                            // 업종코드
+    private String businessCodeName;                            // 업태명
+    private String industryName;                                // 업종명(종목명)
+    private String telephone;                                   // 전화번호
+    private String regionMoneyName;                             // 사용가능한 지역화폐 명
+    private boolean isBmoneyPossible;                           // 지류형 지역화폐 사용가능 여부
+    private boolean isCardPossible;                             // 카드형 지역화폐 사용가능 여부
+    private boolean isMobilePossible;                           // 모바일형 지역화폐 사용가능 여부
+    private String lotnoAddr;                                   // 소재지 지번주소
+    private String roadAddr;                                    // 소재지 도로명주소
+    private String zipCode;                                     // 우편번호
+    private double longitude;                                   // 경도
+    private double latitude;                                    // 위도
+    private String sigunCode;                                   // 시군 코드
+    private String sigunName;                                   // 시군 이름
+
+    @Builder
+    public Store(String companyName, String industryTypeCode){
+        this.companyName = companyName;
+        this.industryTypeCode = industryTypeCode;
+    }
+    
+}
+```
+
+```java
+@RestController
+@RequestMapping(value = "/store")
+@Log4j2
+public class StoreController {
+
+    @GetMapping(value = "/init")
+    private ResponseEntity init(){
+        Store store = Store.builder()
+                .companyName("회사이름")
+                .industryTypeCode("업종코드")
+                .build();
+
+        return ResponseEntity.ok(store);
+    }
+
+}
+```
+
+
+
+
+
+
+
+## 05_equals, hashCode 자동 생성
 
 equals :  2개의 객체가 동일한지 검사하기 위해 사용
 
