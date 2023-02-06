@@ -1,16 +1,18 @@
 from itertools import permutations
 from itertools import combinations
 from itertools import product
+from itertools import accumulate
 from pprint import pprint
 
-lst = [1,2,3,4,5]
-
-grid = [0]*9
-lst2= [1,1,1]
-
-# print(list(combinations(lst, 2)))
-# print(list(product(*grid)))
-
+# accumulate
+def func(x,y):
+    print(x,y)
+    return x+y
+n = 5
+# grid = [[0]*(n+1) for _ in range(n+1)]
+grid = [list(range(1,n+1)) for _ in range(n)]
+lst = list(range(1,n+1))
+print(lst)
+res = list(accumulate(lst,func))
 pprint(grid)
-
-print(list(map(list,product(lst2, grid))))
+print(res)
