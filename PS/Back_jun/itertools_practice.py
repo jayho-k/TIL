@@ -13,6 +13,10 @@ n = 5
 grid = [list(range(1,n+1)) for _ in range(n)]
 lst = list(range(1,n+1))
 print(lst)
-res = list(accumulate(lst,func))
+res_grid = []
+for _ in range(n):
+    res = list(accumulate(lst,func))
+    res_grid+=res
+    
 pprint(grid)
 print(res)
