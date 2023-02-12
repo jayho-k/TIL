@@ -35,7 +35,7 @@
 // Item
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)// 조인전략을 사용할 때 사용
-@DiscrimivatorColumn 
+@DiscriminatorColumn 
 // DTYPE을 테이블에 생성해준다. Enitity명이 들어감. 사용해주는 것이 좋음
 public abstract class Item{
     @Id @GenerateValue

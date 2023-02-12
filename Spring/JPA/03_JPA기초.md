@@ -1,6 +1,6 @@
 # 03_
 
-## JAP 구동 방식
+## JPA 구동 방식
 
 ![image-20230204161633831](./03_.assets/image-20230204161633831.png)
 
@@ -8,7 +8,7 @@
 
 1. META-INF에서 설정 정보들을 조회하게 된다.
 2. 설정 정보들을 통해서 EntityManagerFactory를 만든다.
-3. 필할때 마다 EntityManager를 만들어낸다.
+3. 필요할때 마다 EntityManager를 만들어낸다.
 
 
 
@@ -84,11 +84,7 @@ public static void main(String[] args) {
 
 
 
-
-
 ## Member 조회
-
-
 
 ```java
 public class JpaMain {

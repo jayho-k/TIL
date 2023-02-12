@@ -6,7 +6,16 @@
 > - 값 타입의 비교
 > - 값 타입 컬렉션
 
+**주의 : 값타입을 사용할 시기 **
 
+- 한명의 사용자가 한 개의 주소를 갖는다
+  - 이러한 요구사항이 있을 시에는 값타입으로 사용하는 것이 좋다
+- 예를 들어 collection등을 사용하게 되면 수정이 매우 어려워진다.
+  - 왜냐하면 상위 Entity와 관련된 모든 값을 지우고 다시 저장하기 때문이다.
+- 따라서 하나 만있을 때 사용하는 것을 권장한다.
+- 그럼 어떻게 해결?
+  - Entity로 승격을 해서 관리하는 방향으로 사용하면 된다.
+  - **OneToMany**단방향을 이용해서 이 문제를 해결하면 된다.
 
 ## JPA의 데이터 타입 분류
 
@@ -304,6 +313,169 @@ public int hasCode(){
     return Objects.hash(city)
 }
 ```
+
+
+
+## 값 타입 컬렉션
+
+<img src="./11_.assets/image-20230209222725857.png" alt="image-20230209222725857" style="zoom: 80%;" />
+
+- 별도의 테이블로 뽑아야한다.
+- 값타입이기 때문에 그것 들을 묶어서 PK로 구성하면 된다.
+- **값타입을 하나 이상 저장할 때** 사용한다.
+- @ElementCollection, @CollectionTable을 사용
+- 참고 : 값타입 컬렉션은 영속성 전이 + 고아객체 제거 기능을 필수로 가진다고 볼 수 있다.
+
+```java
+@Embedded
+private Address homeAddress;
+
+@ElecemtCollection
+@CollectionTable(name="favorite_food", joinColumns = 
+                @JoinColumn(name="member_id")
+)
+@Column(name = "food_name")
+private Set<String> favoriteFoods = new HashSet<>();
+
+@ElecemtCollection
+@CollectionTable(name="address", joinColumns = 
+                @JoinColumn(name="member_id")
+)
+private List<Address> addressHistory = new ArrayList();
+```
+
+
+
+**사용 예제**
+
+**저장**
+
+```java
+Member member = new member();
+member.setUserName("member1");
+member.setHomeAddress(new Address("homecity","street","zipcode"));
+
+member.getFavoriteFoods().add("치킨");
+member.getFavoriteFoods().add("치킨");
+member.getFavoriteFoods().add("족발");
+// 위와 같이 진행시 Set<String> favoriteFoods에 3가지가 들어가게 된다.
+
+member.getAddressHistory().add(new Address("old1","street","zipcode"));
+member.getAddressHistory().add(new Address("old2","street","zipcode"));
+em.persist(member);
+// member persist를 하니 다 persist가 되었다.
+```
+
+<img src="./11_.assets/image-20230209224433938.png" alt="image-20230209224433938" style="zoom:50%;" />
+
+**조회**
+
+- 지연로딩이다
+
+```java
+Member findMember = em.find(Member.class, member.getId());
+// 이렇게되면 모두 지연로딩이기 때문에 FavoriteFoods같은것들을 불러오지 않는다.
+```
+
+
+
+**수정**
+
+- homecity => newcity로 이사를 갔다고 했을 경우
+- 값 타입은 항상 통으로 갈아껴야한다.
+
+```java
+// 이렇게 하면 안된다. 값타입을 불변행야하기 때문
+findMember.getHomeAddress().setCity("newcity"); 
+
+
+// 이렇게 새로 만들어서 사용해야한다.
+Address oldAddress = findMember.getHomeAddress();
+findMember.setHomeAddress(
+			new Address("newcity",oldAddress.getStreet(),oldAddress.getZipcode));
+
+// 치킨 => 한식 ==> 아예 지운다음에 한식을 넣어줘야한다.
+findMember.getFavoriteFoods().remove("치킨");
+findMember.getFavoriteFoods().add("한식");
+
+//주소변경 ==> old1, old2가 list로존재 => old1만 바꾸고 싶을 경우
+// 이렇게 같은것을 찾아와줘야하기 때문에 위에 equals overide해서 바꾼것을 잘해야한다.
+// 물론 hashcode도
+findMember.getAddressHistory().remove(
+	new Address("old1","street","10000"));
+findMember.getAddressHistory().add(
+	new Address("new1","street","10000"));
+```
+
+- 이렇게 하면 문제가 있음
+  - 다 제대로 작동을 하기는 함 하지만 table삭제하고 아예 새로 처음부터 다 넣게 된다.
+
+
+
+#### 값 타입 컬렉션의 제약사항
+
+- 값 타입은 엔티티와 다르게 식별자 개념이 없다
+  - 값은 변경하면 추적이 어렵다
+- 값 타입 컬렉션에 **수정 발생** => 주인 엔티티와 **연관된 모든 데이터 삭제** => 값 타입 컬렉션에 있는 **현재 값을 모두 다시 저장**
+  - 즉 이렇게 사용하면 안됨
+- 값 타입 컬렉션을 매핑하는 테이블은 **모든 컬럼을 묶어서 기본키를 구성**해야한다.
+
+
+
+#### 다른 대안이 있나?
+
+- 실무에서는 값타입 컬렉션 대신에 **일대다 관계를 고려**
+- 
+
+```java
+//즉 Entity를 그냥 만들어버린다.
+@Entity
+public class AddressEntity{
+    @Id @GenerateValue
+    private Long id;
+    private Address address; // address로 맵핑한다.
+}
+
+
+//
+public class Member{
+	// 값 타입으로 맵핑하는 것이 아니라 Entity로 맵핑한다.
+    /**
+    @ElecemtCollection
+    @CollectionTable(name="address", joinColumns = 
+                    @JoinColumn(name="member_id")
+    )
+    private List<Address> addressHistory = new ArrayList();
+    **/
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name = "member_id")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
+    ///...
+}
+
+// 사용
+// 저장
+member.getAddressHistory().add(new AddressEntity("old1", "street", "10000"))
+    
+// 조회
+
+// 수정
+
+
+```
+
+
+
+#### 값타입 컬렉션은 그럼 언제 사용하나?
+
+- 좋아하는 메뉴가 뭐냐?
+- 치킨하고 피자 좋아한다.
+- 그렇게 단순한거 할때 쓰는 것이다.
+- 값을 변경해도 추적할 필요가 없는 것
+
+
+
+
 
 
 
