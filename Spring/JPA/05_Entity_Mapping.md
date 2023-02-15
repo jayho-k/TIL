@@ -24,8 +24,6 @@
   - final class, enum, interface, inner클래스에는 사용할 수 없다.
   - DB에 저장하고 싶은 필드에는 final을 사용할 수 없다.
 
-
-
 #### @Table
 
 - Entity와 Mapping할 테이블을 지정한다.
