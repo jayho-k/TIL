@@ -134,7 +134,7 @@ public void startQuerydsl(){
 ```
 
 - 기본 인스턴스를 사용 + static import로 바꿔서 사용하면 더 깔끔하게 사용할 수 있음
-- 같은 테이블을 조인할 때는 `QMember qMember = new QMember("m");` 별칭을 사용해서 쓰면 된다.
+- **같은 테이블을 조인**할 때는 `QMember qMember = new QMember("m");` 별칭을 사용해서 쓰면 된다.
 
 ```yaml
   jpa:
@@ -154,7 +154,7 @@ public void startQuerydsl(){
 
 ex_
 
-```java
+```sql
 @Test
 public void search(){
     MemberQuery findMember = queryFactory
@@ -220,38 +220,35 @@ member.username.startsWith("member") // like ‘member%’ 검색
   - 리스트 조회
   - 데이터 X => 빈리스트 반환
 
-
-
 - **fetchOne( )**
   - 결과 없으면 null
   - 둘 이상 => Error
 
-
-
 - **fetchFirst( )**
-  - limit(1).fetchOne( )
-
-
+  - limit(1).fetch( )
 
 - **fetchResults( )**
   - 페이징 정보 포함
-  - total count 쿼리 추가 실행
+  - **total count 쿼리 추가 실행**
   - 성능이 중요한 paging을 활용해야할 때는 서로 다른 값을 내보낼 수 있다.
     - 성능 때문에
   - 따라서 이때는 쿼리 두개를 따로 보내야한다.
 
-```java
+```sql
 @Test
 public void resultFetch(){
     QueryResults<MemberQuery> results = queryFactory
         .selectFrom(memberQuery)
         .fetchResults();
+        
+    # result값을 이용
+    # getResults => Contents라고 생각하면 됨
+    # 
     results.getResults();
     List<MemberQuery> content = results.getResults();
 }
-// 이렇게하면 쿼리를 두번 실행
-// 1 => total이 있어야 paging할때 어디까지 페이지가 있는지 보여줄 수 있기 때문이다.
-// 
+# 이렇게하면 쿼리를 두번 실행
+# 1 => total이 있어야 paging할때 어디까지 페이지가 있는지 보여줄 수 있기 때문이다. 
 ```
 
 
@@ -463,12 +460,12 @@ public void theta_join(){
   - inner join일때는 where을 사용할 수 있어서 where을 사용하지만
   - outer join일때는 where을 사용할 수 없기 때문에 on을 사용한다.  => 정말 필요한 경우
 
-```java
+```sql
 public void join_on_filtering(){
     List<Tuple> result = queryFactory
         .select(memberQuery, teamQuery)
         .from(memberQuery)
-        .leftJoin(memberQuery.teamQuery, teamQuery)
+        .leftJoin(memberQuery.teamQuery, teamQuery) # member에 있는 team을 team이랑 조인
         .on(teamQuery.name.eq("teamA"))
         .fetch();
     for (Tuple tuple : result) {
@@ -497,7 +494,7 @@ tuple : [MemberQuery(id=84, username=member2, age=20), TeamQuery(id=81, name=tea
 
 - 이 경우는 종종 쓰임
 
-```java
+```sql
 @Test
 public void join_on_no_relation(){
     em.persist(new MemberQuery("teamA"));
@@ -507,7 +504,7 @@ public void join_on_no_relation(){
     List<Tuple> result = queryFactory
         .select(memberQuery, teamQuery)
         .from(memberQuery)
-        .leftJoin(teamQuery) // 이 경우가 다르다
+        .leftJoin(teamQuery) # 이 경우가 다르다 
         .on(memberQuery.username.eq(teamQuery.name))
         .fetch();
 
@@ -515,7 +512,7 @@ public void join_on_no_relation(){
         System.out.println("tuple : "+ tuple);
     }
 }
-//결과
+    #결과
     /*
     tuple : [MemberQuery(id=44, username=member1, age=10), null]
     tuple : [MemberQuery(id=45, username=member2, age=20), null]
@@ -531,7 +528,7 @@ public void join_on_no_relation(){
   - leftJoin(memberQeury.teamQuery, teamQuery)  
     이런식으로 사용했지만 위에서는 그렇게 사용하지 않았다.
     이렇게 사용하게 되면 id값으로 매칭을 시키게된다.
-  - leftJoin(teamQuery) // 이 경우가 다르다
+  - **leftJoin(teamQuery)** // 이 경우가 다르다
     .on(memberQuery.username.eq(teamQuery.name))
     이 방법으로 진행할 경우 username만 같은지를 확인하게 된다.
 
@@ -644,7 +641,7 @@ public void simpleCase(){
 
 **상수 더하기**
 
-```java
+```sql
 Tuple result = queryFactory
      .select(member.username, Expressions.constant("A"))
      .from(member)
@@ -663,9 +660,9 @@ tuple = [member4, A]
 
 **문자 더하기**
 
-```java
-// username_나이
-// 위 같이 만들어서 가져오고 싶을때
+```sql
+# username_나이
+# 위 같이 만들어서 가져오고 싶을때
 String result = queryFactory
          .select(member.username.concat("_").concat(member.age.stringValue()))
          .from(member)
@@ -677,5 +674,6 @@ s = member1_10
 */
 ```
 
-- 문자가 아닌 다른 타입들은 `stringValue()` 로 문자로 변환할 수 있다
+- 문자가 아닌 다른 타입들은 `stringValue()` 로 **문자로 변환**할 수 있다
 - enum을 처리할 때 자주 사용한다고 한다.
+

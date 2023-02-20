@@ -92,7 +92,8 @@ public void findDtoByJPQL(){
 ```
 
 -         queryDsl이 dto를 먼저 만들고 값을 setting 해주게 된다
--         따라서 Dto에 기본 생성자가 존재해야함
+          -         따라서 **Dto에 기본 생성자가 존재해야함**
+
 
 
 
@@ -115,7 +116,7 @@ public void findDtoByJPQL(){
 
 ```
 
--         fields는 기본 생성자가 없어도 작동한다.
+-         fields는 **기본 생성자가 없어도 작동**한다.
 -         왜냐하면 필드에다가 값을 바로 집어 넣기 때문이다.
 
 
@@ -152,9 +153,10 @@ public void findDtoByJPQL(){
 public void findDtoByConstructor(){
 
     List<MemberDto> result = queryFactory
-        .select(Projections.constructor(MemberDto.class,
-                                        memberQuery.username.as("name"), # 확인할 부분
-                                        memberQuery.age))
+        .select(Projections.constructor( # 확인할 부분
+                            MemberDto.class,
+                            memberQuery.username.as("name"), 
+                            memberQuery.age))
         .from(memberQuery)
         .fetch();
     for (MemberDto memberDto : result) {
