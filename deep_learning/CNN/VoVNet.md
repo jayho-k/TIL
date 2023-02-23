@@ -33,8 +33,6 @@ https://jackyoon5737.tistory.com/252  + 코드
 
 ## 02_Factors of Efficient Network Design
 
-
-
 - `depthwise convolution`과 `1 x 1 convolution bottleneck` 사용하여 FLOPs와 모델 Size에 초점을 두는 경향이 있다. 하지만 이는 **항상 GPU에서 Inference 시간을 보장하진 않는다.**
   - `depthwise convolution`과 `1 x 1 convolution bottleneck`가 GPU에서 Inference 시간을 보장하지 않는 이유???????????????????????????/
 
