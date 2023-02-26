@@ -9,6 +9,8 @@
 
 - Order를 기준으로 OrderItem과 Item이 필요한 상황
 - OneToMany의 값들도 불러오고 싶다는 뜻
+  - Join을 해야할 경우에는 엔티티를 포함하고 있는 경우에만 해당된다.
+
 
 **Order Entity**
 
