@@ -299,8 +299,17 @@ public class Member{
     public void changeTeam(Team team){
         this.team = team;
         team.getMembers().add(this);
-    }    
+    }
 }
+
+
+
+
+// 반대쪽
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
 ```
 
 
