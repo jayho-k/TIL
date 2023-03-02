@@ -16,7 +16,7 @@
 
 #### 테이블에 맞춰 모델링을 하는 경우
 
-![image-20230205185116617](./07_.assets/image-20230205185116617.png)
+<img src="./07_.assets/image-20230205185116617.png" alt="image-20230205185116617" style="zoom:50%;" />
 
 - 이런식으로 객체 연관관계에서 teamId를 가지게 된다.
 - 그렇다면 외례키로 객체를 다시 가져와야하는 상황이 오게 된다.
@@ -51,7 +51,7 @@ try{
 
 #### 객체지향 모델링
 
-![image-20230205190619766](./07_.assets/image-20230205190619766.png)
+<img src="./07_.assets/image-20230205190619766.png" alt="image-20230205190619766" style="zoom: 50%;" />
 
 - 객체를 통째로 가져왔음
 - 이렇게 설계를 할 경우 JPA가 어떤 관계인지 알려주어야 한다. 
@@ -72,7 +72,7 @@ public class Member{
 
 ## 양방향 연관관계(연관관계의 주인)
 
-![image-20230206163307066](./07_.assets/image-20230206163307066.png)
+<img src="./07_.assets/image-20230206163307066.png" alt="image-20230206163307066" style="zoom: 67%;" />
 
 ```java
 // 단방향일 경우
@@ -140,7 +140,7 @@ public class Team{
 
 #### Rule ) 둘중 하나는 외래 키를 관리해야한다?
 
-![image-20230206165933722](./07_.assets/image-20230206165933722.png)
+<img src="./07_.assets/image-20230206165933722.png" alt="image-20230206165933722" style="zoom:67%;" />
 
 - 테이블은 이 **둘 중에서 어느것을 Mapping해야하지?**
   - Member에 있는 team값이 변경 되었을때 Update를 해야하나?
@@ -168,7 +168,7 @@ public class Team{
 
 
 
-그렇다면 **누구를 주인**으로 지정할 것인가?![image-20230206171813081](./07_.assets/image-20230206171813081.png)
+그렇다면 **누구를 주인**으로 지정할 것인가?<img src="./07_.assets/image-20230206171813081.png" alt="image-20230206171813081" style="zoom:67%;" />
 
 - **외래키가 있는 곳을 주인**으로 정해야한다.
   - 즉 Member를 주인으로 잡는다
@@ -208,7 +208,7 @@ team.getMembers.add(member);
 em.persist(team);
 ```
 
-![image-20230206174447808](./07_.assets/image-20230206174447808.png)
+<img src="./07_.assets/image-20230206174447808.png" alt="image-20230206174447808" style="zoom:67%;" />
 
 
 
@@ -230,7 +230,7 @@ member.setName("member1");
 member.setTeam(team); // 이부분이 point
 ```
 
-![image-20230206174639605](./07_.assets/image-20230206174639605.png)
+<img src="./07_.assets/image-20230206174639605.png" alt="image-20230206174639605" style="zoom:67%;" />
 
 
 
