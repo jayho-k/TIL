@@ -72,3 +72,26 @@ def recruit_write():
                 f.write(f"({recruit},'smasung','2022','RECRUITING','recurit_title','2020','Mon','detail','image',5,'study_name',null,'FREE'),\n")
             else:
                 f.write(f"({recruit},'smasung','2022','COMPLETED','recurit_title','2020','Mon','detail','image',5,'study_name',null,'COM'),\n")
+
+
+
+def apply_write():
+     with open('C:/Users/jayho/Developer/practice/PS/test/db4ssafy_init/apply_init.txt', 'w') as f:
+        f.write("INSERT INTO homterviewssafy.apply (apply_no, apply_type, recruit_no, user_no) VALUES\n")
+        recruit = 1
+        user = 0
+        join_type = 'NORMAL'
+        for apply in range(1,10001):
+            if apply%5==1:
+                join_type = 'LEADER'
+            
+            user+=1
+            f.write(f"({apply},'{join_type}',{recruit},{user}),\n")
+
+            join_type = 'NORMAL'
+            if apply%5==0:
+                recruit+=1
+
+            if apply%2000==0:
+                user=0
+apply_write()

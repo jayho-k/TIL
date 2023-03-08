@@ -32,8 +32,6 @@ def user_email_write():
         for user in range(1,2001):
             f.write(f"UPDATE user SET user_email='sox{user}@naver.com' WHERE user_id = {user};\n")
 
-user_email_write()
-
 def resume_write():
     cnt = 0
     with open('C:/Users/jayho/Developer/practice/PS/test/db_init_query/resume_init.txt', 'w') as f:
@@ -102,6 +100,7 @@ def room_session4recruit_write():
             else:
                 f.write(f"('recruit',{recruit},NOW(),NOW(),'smasung','2022','2022','Mon','detail','image',5,'study_name','std_notation','COM'),\n")
 
+
 def recruit_write():
     with open('C:/Users/jayho/Developer/practice/PS/test/db_init_query/recruit_init.txt', 'w') as f:
         f.write("INSERT INTO recruit (recruit_status, recruit_title, std_id) VALUES\n")
@@ -110,3 +109,41 @@ def recruit_write():
                 f.write(f"('ING','title',{recruit}),\n")
             else:
                 f.write(f"('COMPLETE','title',{recruit}),\n")
+
+
+def study_join_write():
+    with open('C:/Users/jayho/Developer/practice/PS/test/db_init_query/study_join_init.txt', 'w') as f:
+        f.write("INSERT INTO study_join (study_join_id, join_status, join_type, resume_id, study_id, user_id) VALUES\n")
+        study = 1
+        join_type = 'NORMAL'
+
+        for study_join in range(1,2001):
+            if study_join%5==1:
+                join_type='LEADER'
+
+            f.write(f"({study_join},0,'{join_type}',{(study_join-1)*5+1},{study},{study_join}),\n")
+
+            join_type='NORMAL'
+            if study_join%5==0:
+                study+=1
+
+
+def apply_write():
+     with open('C:/Users/jayho/Developer/practice/PS/test/db_init_query/apply_init.txt', 'w') as f:
+        f.write("INSERT INTO apply (apply_id, create_at, modified_at, join_type, recruit_id, user_id) VALUES\n")
+        recruit = 401
+        user = 0
+        join_type = 'NORMAL'
+        for apply in range(1,10001):
+            if apply%5==1:
+                join_type = 'LEADER'
+            
+            user+=1
+            f.write(f"({apply},NOW(),NOW(),'{join_type}',{recruit},{user}),\n")
+
+            join_type = 'NORMAL'
+            if apply%5==0:
+                recruit+=1
+
+            if apply%2000==0:
+                user=0
