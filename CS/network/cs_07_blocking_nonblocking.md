@@ -94,8 +94,6 @@ https://jaehoney.tistory.com/242#recentComments
 
 
 
-
-
 ## Synchronous & Asynchronous
 
 ### Synchronous
@@ -121,7 +119,7 @@ https://jaehoney.tistory.com/242#recentComments
 - **방법3**
   - 방법1 + 방법2
 
-
+I/O관점
 
 **백앤드 프로그래밍의 추세**
 

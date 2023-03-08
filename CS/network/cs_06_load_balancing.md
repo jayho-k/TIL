@@ -24,6 +24,7 @@ https://steady-coding.tistory.com/535
   - 특정 서버에 부하가 집중되지 않도록 트래픽을 다양한 방법으로 분산
 
 -  **VIP(Virtual IP)**
+  
   - 로드 밸런싱의 대상이 되는 여러 서버를 대표하는 가상의 IP
   - 클라이언트들은 서버의 IP로 직접 요청을 하는 것이 아니라 LB가 가지고 있는 VIP를 대상으로 요청한다.
 
@@ -31,7 +32,7 @@ https://steady-coding.tistory.com/535
 
 ## 2) Load Balancer 의 기능
 
-### 2-1) Heal Check
+### 2-1) HealthCheck
 
 - 주기적으로 **장애여부 판단**
 
