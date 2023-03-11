@@ -35,6 +35,5 @@ for tc  in range(1,int(input())+1):
 
     # ans
     print(f'#{tc}')
-    pprint(ans_baord)
     for a in zip(*ans_baord):
         print(*a)
