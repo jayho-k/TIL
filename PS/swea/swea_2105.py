@@ -12,54 +12,46 @@
 4 3 4 4 9
 7 4 6 3 5
 
-
-#1 6
-#2 -1
-#3 4
-#4 4
-#5 8
-#6 6
-#7 14
-#8 12
-#9 18
-#10 30
 '''
 from pprint import pprint
-def dfs(y,x,visited,gy,gx,cnt):
+def dfs(y,x,gy,gx,d):
     global mx
-    if gy==y and gx==x and cnt!=0:
+
+    if d==3 and gy==y and gx==x:
         mx = max(mx,len(store))
         return
 
-    for d in range(4):
-        ny = y+dy[d]
-        nx = x+dx[d]
-        if 0<=ny<n and 0<=nx<n and visited[ny][nx]==0 and grid[ny][nx] not in store:
-            visited[ny][nx]=1
+    ny = y+dy[d]
+    nx = x+dx[d]
+
+    # 직진하는 경우
+    if 0<=ny<n and 0<=nx<n and grid[ny][nx] not in store:
+        store.add(grid[ny][nx])
+        dfs(ny,nx,gy,gx,d)
+        store.remove(grid[ny][nx])
+
+        # 꺽는 경우
+        if d<3:
             store.add(grid[ny][nx])
-            dfs(ny,nx,visited,gy,gx,cnt+1)
+            dfs(ny,nx,gy,gx,d+1)
             store.remove(grid[ny][nx])
-            visited[ny][nx]=0
 
 
 for tc in range(1,int(input())+1):
     n = int(input())
     grid = [list(map(int,input().split())) for _ in range(n)]
-    dy = [-1,1,1,-1]
-    dx = [1,1,-1,-1]
+    dy = [1,1,-1,-1]
+    dx = [1,-1,-1,1]
     mx = 0
+
     for y in range(n):
         for x in range(n):
             store = set()
-            visited = [[0]*n for _ in range(n)]
-            dfs(y,x,visited,y,x,0)
+            dfs(y,x,y,x,0)
     
-    if mx==0 or mx==2:
+    if mx==0:
         print(f"#{tc} {-1}")
 
     else:
         print(f"#{tc} {mx}")
-
-
-
 
