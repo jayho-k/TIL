@@ -29,7 +29,7 @@
 
 
 for tc in range(1,int(input())+1):
-    
+
     n,k = map(int,input().split())
     grid = [list(map(str,input().split()))for _ in range(n)]
     ans = 0
@@ -41,21 +41,21 @@ for tc in range(1,int(input())+1):
             if grid[y][x]=='1':
                 cnt_w +=1
             else:
-                if cnt_w == 3:
+                if cnt_w == k:
                     ans+=1
                 cnt_w=0
 
             if grid[x][y]=='1':
                 cnt_h+=1
             else:
-                if cnt_h == 3:
+                if cnt_h == k:
                     ans+=1
                 cnt_h=0
         
         else:
-            if cnt_w==3:
+            if cnt_w==k:
                 ans+=1
 
-            if cnt_h==3:
+            if cnt_h==k:
                 ans+=1
     print(f"#{tc} {ans}")
