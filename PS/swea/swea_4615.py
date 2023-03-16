@@ -43,7 +43,7 @@ def count_color(board,n):
 def setting(board,n):
     board[n//2][n//2]=2
     board[n//2][n//2+1]=1
-    board[n//2+1][n//2]=2
+    board[n//2+1][n//2]=1
     board[n//2+1][n//2+1]=2
     return board
 
@@ -88,7 +88,7 @@ for tc in range(1,int(input())+1):
             if tmp_lst:
                 for ty,tx in tmp_lst:
                     board[ty][tx]=color
-        pprint(board)
+        # pprint(board)
     s,f = count_color(board,n)
     print(f"#{tc}",s,f)
     
