@@ -20,7 +20,6 @@ global을 통해서 falg를 따로 만들어서 진행 시켜주어야 한다.
 
 2. 일자 체크 + visited가 저장이 되어야하는 경우에는 while문으로 쓰도록 하자
 
-
 1. permutation
 2. 최소 값을 찾음 => 그길을 저장해놓음 =>
 '''
@@ -65,6 +64,7 @@ def dfs(dp,total,cnt):
 
     # 이거를 한 이유 => 두번쨰 dfs때문에 cnt의 값이 항상 core_num값이
     # 아님 => 따라서 이렇게 진행을 한 것임
+    
     if cnt > result[0]:
         result[0]=cnt
         result[1]=total
@@ -84,6 +84,12 @@ def dfs(dp,total,cnt):
         connect(y,x,d,1)
         dfs(dp+1, total+dirct[d],cnt+1)
         connect(y,x,d,0)
+
+    # 이부분이 정말 어려움
+    # [0,0,0,0]이 나왔다는 뜻은
+    # power가 있는 곳이던가 아니면 다 막힌 곳이다.
+    # 따라서 cnt를 유지하고 다음으로 넘어가서
+    # cnt를 끝까지 못가게끔 만드는 방법이다.
     dfs(dp+1,total,cnt)
 
 
