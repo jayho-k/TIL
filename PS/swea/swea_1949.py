@@ -20,8 +20,8 @@
 
 
 '''
+
 from pprint import pprint
-from collections import deque
 def find_top():
     mx = 0
     lst=[]

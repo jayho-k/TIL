@@ -3,8 +3,6 @@ y = 0 or n-1
 x = 0 or n-1
 
 
-
-
 1  
 7    
 0 0 1 0 0 0 0
@@ -20,8 +18,7 @@ global을 통해서 falg를 따로 만들어서 진행 시켜주어야 한다.
 
 2. 일자 체크 + visited가 저장이 되어야하는 경우에는 while문으로 쓰도록 하자
 
-1. permutation
-2. 최소 값을 찾음 => 그길을 저장해놓음 =>
+
 '''
 from pprint import pprint
 def find_processor():
@@ -44,21 +41,20 @@ def check(y,x):
             cnt += 1
             ny += dy[d]
             nx += dx[d]
-            if  grid[ny][nx]:
+            if grid[ny][nx]:
                 break
-        
         else:
             dirct[d]=cnt
     return dirct
 
 def connect(y,x,d,mode):
-    
-    while 0<y<n-1 and 0<x<n-1:
-        ny = y+dy[d]
-        nx = x+dx[d]
+    ny,nx = y,x
+    while 0<ny<n-1 and 0<nx<n-1:
+        ny += dy[d]
+        nx += dx[d]
         grid[ny][nx]=mode
-        y = ny
-        x = nx
+        # y = ny
+        # x = nx
 
 def dfs(dp,total,cnt):
 
