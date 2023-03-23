@@ -330,7 +330,7 @@ def mvoeBefore(self, a, x):
     splice(a,a,x.prev)  # x의 전노드 다음이기 때문에 x전 임
 
 # 삽입연산 4개
-def indertAfter(self, x, key): #새로운 노드를 만들어서 집어넣는것
+def insertAfter(self, x, key): #새로운 노드를 만들어서 집어넣는것
     moveAfter(Node(key),x)
    
 def insertBefore(self, x, key):
