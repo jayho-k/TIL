@@ -1,5 +1,4 @@
-from itertools import permutations,combinations
-from collections import deque
+
 '''
 1
 5
@@ -10,6 +9,8 @@ from collections import deque
 1 0 5 0 0
 '''
 
+from itertools import permutations,combinations
+from collections import deque
 def find_ps():
     people = []
     stair = []
@@ -41,7 +42,7 @@ def lunch(ppl,stair):
     reach_lst = deque(sorted(distinct(ppl,stair))) # 전체 시간을 먼저 세팅
     exit_lst = deque()
 
-    while reach_lst:
+    while reach_lst or exit_lst:
         
         timer+=1
         
@@ -49,12 +50,12 @@ def lunch(ppl,stair):
             exit_lst.popleft()
             cur-=1
         
-        while reach_lst[0]<timer:
+        while reach_lst and reach_lst[0]<timer:
             if cur<3:
                 reach_lst.popleft() #도착시간
-                if not reach_lst:
-                    timer+=grid[stair[0]][stair[1]]
-                    break
+                # if not reach_lst:
+                #     timer+=grid[stair[0]][stair[1]]
+                #     break
                 exit_lst.append(timer+grid[stair[0]][stair[1]]) # 도착시간 + 계단 + 1분
                 cur+=1
             else:
@@ -70,7 +71,7 @@ for tc in range(1, T+1):
     grid = [list(map(int, input().split())) for _ in range(n)]
     people, stair = find_ps()
     ans = 1e9
-    for i in range(n):
+    for i in range(len(people)+1):
         for ppl1 in combinations(people,i):
             ppl2 = list(set(people)-set(ppl1))
             total = max(lunch(ppl1, stair[0]),lunch(ppl2, stair[1]))
@@ -238,7 +239,5 @@ for tc in range(1, T+1):
 #     for i in res:
 #         time.append(i[0])
 #     print("#{} {}".format(tc, max(time)))
-
-
 
 

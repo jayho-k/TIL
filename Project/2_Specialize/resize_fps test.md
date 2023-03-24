@@ -108,6 +108,24 @@ frame rate를 정해두고 모두 돌아가는 프레임에서 필요한 프레�
 - 정확한 시간에 frame을 받아오지 못한다 하지만 영상에는 크게 지장없어보인다.
 
 ```python
+prev_time = 0
+start = time.time()
+FPS = 5
+
+video_path = "7-4_cam02_assault01_place04_day_summer.mp4"
+vide_save_path = "modified.mp4"
+
+video = cv2.VideoCapture(video_path)
+width,height = int(video.get(3))//6,int(video.get(4))//6
+frame_cnt = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+video_fps = int(video.get(cv2.CAP_PROP_FPS))
+outputvideo = cv2.VideoWriter(vide_save_path,cv2.VideoWriter_fourcc
+\(*'mp4v'), 10, (width,height))
+
+sec = 0
+frame_time = 0
+frameRate = 10
+
 i=0
 while True:
     hasFrame, frame = video.read()
