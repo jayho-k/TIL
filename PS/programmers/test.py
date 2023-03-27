@@ -16,6 +16,9 @@ def dfs(d,com,word,full):
     
     for i in range(5):
         dfs(d+1,com,word,full)
+
+
+        
         dfs(d+1,com+full[i],word,full)
 
 

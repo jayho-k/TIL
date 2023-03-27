@@ -34,7 +34,5 @@ for i in range(n):
             break
     mxsm = max(mxsm,(sm+dism))
     print((sm+dism))
-    
-# print(sm)
-# print(dimx)
+
 print(mxsm)
