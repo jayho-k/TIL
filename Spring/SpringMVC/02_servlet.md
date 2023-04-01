@@ -99,7 +99,7 @@ public class RequestParamServlet extends HttpServlet {
         HttpServletRequest request, HttpServletResponse response) 
         								throws ServletException, IOException {
         
-        // paramName과 Param꺼내기, 전페 파라미터
+        // paramName과 Param꺼내기, 전체 파라미터
         request.getParameterNames().asIterator()
             .forEachRemaining(paramName -> System.out.println(
                 paramName + '='+ request.getParameter(paramName)));
