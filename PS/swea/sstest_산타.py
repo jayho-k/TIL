@@ -14,9 +14,6 @@ class d_linked_lst:
 
     def findSize(self):
         return self.size
-    
-    def initSize(self):
-        self.size = 0
 
     def addFront(self,key):
         if self.size==0:
@@ -25,6 +22,7 @@ class d_linked_lst:
             self.size+=1
 
         else:
+            # node <-> head
             node = Node(key)
             self.head.prev = node
             node.next = self.head
@@ -37,6 +35,7 @@ class d_linked_lst:
             self.tail = self.head
             self.size+=1
         else:
+            # tail <-> node
             node = Node(key)
             self.tail.next = node
             node.prev = self.tail
@@ -50,9 +49,8 @@ class d_linked_lst:
         if self.size ==0:
             return None
         node = self.head
-        next_node = node.next
-        # next_node.prev = None
-        self.head = next_node
+        self.head = node.next
+        # self.head.prev = None
         self.size-=1
         return node.key
     
@@ -61,7 +59,7 @@ class d_linked_lst:
             return None
         node = self.tail
         self.tail = node.prev
-        self.tail.next = None
+        # self.tail.next = None
         self.size-=1
         return node.key
 
@@ -81,12 +79,15 @@ class d_linked_lst:
             node = self.head
             for _ in range(self.size):
                 if node.key[0]==id:
+                    # prev  id_node  next
                     prev_node = node.prev
                     next_node = node.next
+
                     prev_node.next = next_node
                     next_node.prev = prev_node
-                    node.next = None
-                    node.prev = None
+                    
+                    # node.next = None
+                    # node.prev = None
                     self.size-=1
                     return node.key[0]
                 node = node.next
@@ -102,15 +103,16 @@ class d_linked_lst:
             node = self.head
             for _ in range(self.size):
                 if node.key[0]==id:
+                    # node~tail head prev_node
                     self.tail.next = self.head
                     self.head.prev = self.tail
                     
                     prev_node = node.prev
-                    prev_node.next = None
-                    node.prev = None
+                    # prev_node.next = None
 
                     self.tail = prev_node
                     self.head = node
+                    # self.head.prev = None
                     
                     return  node.key[0]
                 node = node.next
@@ -119,13 +121,8 @@ class d_linked_lst:
 
         self.tail.next = dlst.head
         dlst.head.prev = self.tail
-        # print(self.tail.key)
-        # print(self.tail.next.key)
-        dlst.head = None
-
         self.tail = dlst.tail
         self.size+= dlst.findSize()
-        dlst.initSize()
 
 
     def check(self):
@@ -149,6 +146,8 @@ for _ in range(q):
         weights = ids_weights[len(ids_weights)//2:]
         belts = {}
         belts_set = {}
+        broken = [0]*m
+
         b_n = 0
         for i in range(0,n,n//m):
             # 생성
@@ -159,15 +158,15 @@ for _ in range(q):
                 # add
                 belts[b_n].addBack((ids[j],weights[j]))
                 belts_set[b_n].add(ids[j])                
-            # print(belts[b_n].check())
             b_n+=1
     
     elif order==200:
         mx = tmp[0]
         total = 0
         for i2 in range(m):
-            if belts[i2].findSize()==0 or (belts[i2].findSize()==1 and belts[i2].checkFront()==-1):
-                continue
+            if belts[i2].findSize()==0 or broken[i2]:
+                continue 
+            
             else:
                 if belts[i2].checkFront()[1]<=mx:
                     i2_id,i2_w = belts[i2].popFront()
@@ -210,26 +209,53 @@ for _ in range(q):
 
     elif order==500:
         b_num = tmp[0]
-        if belts[b_num-1].findSize()==1 and belts[b_num-1].checkFront()==-1:
+
+
+        if belts[b_num-1].findSize()==0 or broken[b_num-1]:
             print(-1)
-            # print('order 500 :', -1)
 
         else:
             for i5 in range(m-1):
-                if belts[(i5+b_num)%m]:
-                    # print(i5, b_num, m, (i5%b_num)%m)
+                if (belts[(i5+b_num)%m].findSize()==0) or broken[(i5+b_num)%m]:
+                    continue
+
+                else:
                     belts[(i5+b_num)%m].together(belts[b_num-1])
-                    belts[b_num-1]=d_linked_lst()
-                    belts[b_num-1].addBack(-1)
-                    belts_set[(i5+b_num)%m]=belts_set[(i5+b_num)%m]|belts_set[b_num-1]
+                    broken[b_num-1]=1
+                    belts_set[(i5+b_num)%m]=belts_set[(i5+b_num)%m] | belts_set[b_num-1]
                     belts_set[b_num-1] = set()
-                    # print(belts[(i5+b_num)%m].check())
-                    # print(belts_set[(i5+b_num)%m])
                     print(b_num)
-                    # print('order 500 :', b_num)
                     break
 
+'''
+12
+100 12 3 10 12 20 15 14 19 22 25 16 17 21 18 30 30 20 20 10 18 17 15 25 11 14 17
+200 25
+300 22
+300 999
+400 14
+400 18
+500 3
+200 5
+300 12
+500 1
+500 3
+200 40
 
+35
+22
+-1
+-1
+3
+3
+0
+12
+1
+-1
+15
+
+
+'''
 # dlst = d_linked_lst()
 # dlst.addBack((1,0))
 # dlst.addBack((2,0))
