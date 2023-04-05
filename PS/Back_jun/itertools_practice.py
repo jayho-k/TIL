@@ -20,10 +20,10 @@ def arrAdd(arr1,arr2):
     print([list(map(sum,zip(ar1,ar2))) for ar1,ar2 in zip(arr1,arr2)])
 
 
-n,m = map(int,input().split())
-arr1 = [list(map(int,input().split())) for _ in range(n)]
-arr2 = [list(map(int,input().split())) for _ in range(n)]
-arrAdd(arr1,arr2)
+# n,m = map(int,input().split())
+# arr1 = [list(map(int,input().split())) for _ in range(n)]
+# arr2 = [list(map(int,input().split())) for _ in range(n)]
+# arrAdd(arr1,arr2)
 
 
 
