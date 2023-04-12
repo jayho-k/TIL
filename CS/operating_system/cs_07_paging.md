@@ -4,8 +4,111 @@
 
   - https://cocoon1787.tistory.com/859
   - https://cocoon1787.tistory.com/860
+  - https://github.com/jayho-k/TIL/blob/master/CS/operating_system/07_Memory_Management.md
+  
+
+
+
+## 00_binding
+
+### 0_1) address 종류
+
+- Logical address(= Virtual address)
+
+  - 프로그램만의 독자적인 메모리 공간
+
+  - cpu가 보는 주소
+
+    
+
+- Physical address
+
+  - 메모리에 실제 올라가는 위치
+
+    
+
+- Symbolic address
+
+  - 프로그래머가 변수로 이름을 짓는 것
+
+
+
+### 0_2) address binding
+
+> - Physical address에서 Logical address로 바뀌는 시점이 언제인가??
+> - Compile time binding
+> - Load time binding
+> - Execution time binding (Runtime binding)
+
+<img src="./cs_07_paging.assets/image-20230412170821859.png" alt="image-20230412170821859" style="zoom:67%;" />
+
+**Compile time binding**
+
+- 컴파일 나는 시점에 이미 물리적인 주소까지 저장이되는 것
+
+- 컴파일 타임 주소 할당은 프로세스 내부에서 사용하는 논리적 주소와 물리적 주소가 동일하다. 
+
+- 만약 위치가 변경된다면 재컴파일을 해주어야 한다.
+
+- 문제점
+
+  - 소가 고정되어 있기 때문에 메모리 상에 빈 공간이 많이 발생할 수 있어 비효율적이고, 로드하려는 위치에 이미 다른 프로세스가 존재할 수 있다. 
 
   
+
+**Load time binding**
+
+- 이 프로그램을 실행시키는 시점
+
+-  논리적 주소와 물리적 주소가 다르다.
+
+- 실제로 잘 사용하지 않는다.
+
+  
+
+**Execution time binding (Runtime binding)**
+
+- **프로세스가 수행이 시작된 이후에 프로세스가 실행될 때 메모리 주소를 바꾸는 방법이다**
+- **MMU(Memory Management Unit)**라는 하드웨어 장치를 사용하여 논리적 주소를 물리적 주소로 바꿔준다. 
+
+- load와 차이점
+  - 실행중에 주소가 바뀔 수 있음
+  - 수행이 시작된 이후에도 프로세스의 메모리상 위치를 옮길 수 있음
+  - cpu가 주소를 참조할 때마다 binding을 수시로 점검해야한다.
+    - (가상메모리 주소가 물리적인 주소에서는 어디인지 봐야한다)라는 뜻
+  - 하드웨어적인 지원이 필요하다
+    - 매번 주소변환이 필요하기 때문에
+
+
+
+### 04_MMU (Memory management Unit)
+
+- MMU란?
+  - CPU코어 안에 답재되어 가상주소를 실제 메모리 주소로 변환해주는 장치
+
+<img src="./cs_07_paging.assets/image-20230412171736888.png" alt="image-20230412171736888" style="zoom: 50%;" />
+
+- 사용자 프로그램
+  - 논리적인 주소만 다룬다.
+  - 실제 물리적 주소를 볼 수 없다.
+
+- 2개의 register필요
+
+  - **relocation register**
+
+    - 시작 위치를 알고 있음
+    - 가상 주소가 들어오면 거기다가 relocation에서 알려주는 값을 더함
+    - => 물리메모리
+
+    
+
+  - **limit register**
+
+    - 논리적인 주소의 범위를 알려준다.
+    - 3000을 가지고 있다면?
+    - 14000에서 17000까지 주소의 번위를 제한한다.
+
+
 
 ## 01_Memory Fragmentation
 
@@ -172,10 +275,6 @@
 - 페이징과 마찬가지로 mapping을 위한 segment table필요
   - paging과 달리 limit가 필요하다.
   - 왜냐하면 서로 크기가 다 다르기 때문이다.
-
-
-
-
 
 
 
