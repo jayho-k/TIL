@@ -63,21 +63,19 @@ fast path
 - hyperparameter
   
   - **tau**
-    
     - slow path에서 띄엄띄엄 있는 간격을 나타냄
-  
+    
   - **T** : Number of frames smapled bu the slow path
     
     - slow path에서 전체 길이
   
   - **alpha**
-    
     - times higher temporal resolution
     
     - 즉 알파 배 만큼 frame rate이 높다라는 것을 표현하는 것
     
     - 예를 들어 알파가 8이고 slow path에서 4장의 frame이 들어갔다면 fast path같은 경우에는 32장의 frame이 들어가게 된다.
-  
+    
   - **beta**
     
     - times smaller channels
@@ -151,7 +149,6 @@ backbone : ResNet-50
 2. T의 알파만큼 띄어져 있는 값들을 따로 뽑아내어서 값을 맞춘 뒤 결합
 
 3. 3D conv를 간단하게 하는 경우
-   
    - stride를 알바간격으로 3D conv를 진행
    
    - 결과로 나온 채널수가 있으면 그것을 slow path에 붙여주게 된다.
