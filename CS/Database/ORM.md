@@ -6,6 +6,8 @@ https://mangkyu.tistory.com/20
 
 - 언어 객체지향에 관하여
   - https://jongminfire.dev/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%B4%EB%9E%80
+  
+    
 
 ## 01_Object Relation Mapping?
 
