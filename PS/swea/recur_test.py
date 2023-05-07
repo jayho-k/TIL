@@ -12,8 +12,6 @@ print(recur(10))
 
 
 
-
-
 # def recur(n):
 #     if n<=0:
 #         return 0
