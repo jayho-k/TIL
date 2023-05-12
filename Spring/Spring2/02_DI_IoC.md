@@ -232,4 +232,4 @@ public class OrderServiceImpl implements OrderService {
 
 - IoC Contaner or DI Container
   - AppConfig처럼 객체를 생성하고 관리하면서 의존관계를 연결하주는 것
-  - 최근에는 DI Container라고 한다. 
+  - 최근에는 DI Container라고 한다.  

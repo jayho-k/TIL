@@ -98,11 +98,11 @@
   
   - Feature map을 만든다(크기 감소, 채널수 증가)
   
-  - 
+    
 
 - ##### FPN(Feature Pyramid Network) (neck)
   
-  - **FPN(Feature Pyramid Network)**을 통해 컴퓨팅 자원을 적게 차지하면서 다양한 크기의 객체를 인식하는 방법을 제시합니다.  ==> 작은거 큰거 등등을 구별하기 위함?
+  - **FPN(Feature Pyramid Network)**을 통해 컴퓨팅 자원을 적게 차지하면서 다양한 크기의 객체를 인식하는 방법을 제시합니다. ==> 작은거 큰거 등등을 구별하기 위함?
 
 - bottom-up pathway : 
   conv에 인풋  => 2배씩 작아지는 stage마다 feature map 추출(같은크기 = 같은 stage)
@@ -115,7 +115,7 @@
 
 - 작은 object들을 정리한다? 
 
-- ##### Network Prediction(head )
+- ##### Network Prediction(head)
   
   - classification
   
@@ -138,7 +138,7 @@
 
 - ##### 다양한 크기와 유형의 object가 섞여 있음
   
-  - box의 모양이 각각의 다르다
+  -  box의 모양이 각각의 다르다
     - ex) 자동차 가로로 긴 박스 , 사람 세로로 긴 박스
 
 - ##### Detect가 빨리 되어야한다
@@ -217,7 +217,7 @@ annotation 파일에 Bounding box에 대한 좌표값을 가지고 있음
   
   - 슬라이딩을 하면서 윈도우 내에서만 object를 찾는다
   
-  - 이렇게 슬라이딩을 통해 얻은 object들을 학습된 feature map과 mapping을 하게 된다.  
+  - 이렇게 슬라이딩을 통해 얻은 object들을 학습된 feature map과 mapping을 하게 된다. 
     ==> 그리고 여기서 bounding box를 끄집어 낸다
   
   - op1
@@ -337,6 +337,8 @@ confidence score 높은 순으로 정렬 ==> 겹치는 애 찾음 ==> 많이 겹
 3. 반복( 0.9 봤으니 ==> 0.8봄 ==> 순차적으로)
 - confidence score가 높을수록, IOU Threshold가 낮을 수록 많은 Box가 제거됨 (?????)
 
+
+
 ## Object Detection 성능 평가
 
 ### mAP (mean Average precision)
@@ -348,6 +350,8 @@ confidence score 높은 순으로 정렬 ==> 겹치는 애 찾음 ==> 많이 겹
 inference time이 작을 수록 좋음 (빨리 detect했다는 뜻)
 
 높은 AP일수록 좋음(정확도가 좋음)
+
+
 
 #### 정밀도(Precision)과 재현율(Recall)
 
@@ -414,12 +418,16 @@ Confidence 임계값 작게 설정
 
 - 그냥 난사한다는 소리
 
+  
+
 Confidence 임계값 높게 설정
 
 - 정밀도 높아짐 재현율 낮아짐
 - 정확한 것만 할꺼
 
 ==> 즉 재현율과 정밀도는 서로 반비례 관계이다
+
+
 
 ##### AP(Average Precision)
 

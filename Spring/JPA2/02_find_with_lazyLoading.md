@@ -83,7 +83,7 @@ public List<SimpleOrderDto> ordersV3() {
              .map(o -> new SimpleOrderDto(o))
              .collect(toList());
 	return result;
-}
+} 
 ```
 
 **OrderRepository - 추가 코드**
