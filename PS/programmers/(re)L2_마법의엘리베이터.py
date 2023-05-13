@@ -4,32 +4,70 @@
 
 '''
 
-def compare(storey):
-    cnt = 0
-    while storey:
-        remain = storey%10
-        # 5~9
-        if remain>5:
-            cnt+=(10-remain)
-            storey+=10
-        
-        # 0~4
-        elif remain<5:
-            cnt+=remain
-        
-        # 5
-        else:
-            # 앞자리가 5~9 => 더해주는 것이 더 빠름
-            if (storey//10)%10>=5:
-                storey+=10
-            cnt+=remain
-        storey//=10
-        
-    return cnt
 
-def solution(storey):
-    cnt = compare(storey)
-    return cnt
+def compare(n):
+    cnt = 0
+    que = n//10
+
+    while rem!=0:
+        
+        rem = n%10
+        
+        if rem<5:
+            cnt+=rem
+
+        elif rem>5:
+            cnt
+
+        else:
+            pass
+
+
+
+
+n = int(input())
+
+compare(n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def compare(storey):
+#     cnt = 0
+#     while storey:
+#         remain = storey%10
+#         # 5~9
+#         if remain>5:
+#             cnt+=(10-remain)
+#             storey+=10
+        
+#         # 0~4
+#         elif remain<5:
+#             cnt+=remain
+        
+#         # 5
+#         else:
+#             # 앞자리가 5~9 => 더해주는 것이 더 빠름
+#             if (storey//10)%10>=5:
+#                 storey+=10
+#             cnt+=remain
+#         storey//=10
+        
+#     return cnt
+
+# def solution(storey):
+#     cnt = compare(storey)
+#     return cnt
 
 # from collections import deque
 # def bfs(c,buttons,storey):

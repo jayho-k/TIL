@@ -227,7 +227,7 @@ do{
 
 -  Busy Waiting의 단점
   - **Spin Lock** => 만약 context switch비용이 더 든다면 spin lock이 더 이득
-  - Critical Section에 프로세스가 존재할 때, 다른 프로세스들은 Critical Section에 계속해서 진입하려고 시도 => CPU를 낭비
+    - Critical Section에 프로세스가 존재할 때, 다른 프로세스들은 Critical Section에 계속해서 진입하려고 시도 => CPU를 낭비
 
 
 
