@@ -302,7 +302,7 @@
 
 
 
-![image-20220316102636863](03_Process_Management.assets/image-20220316102636863.png)
+<img src="03_Process_Management.assets/image-20220316102636863.png" alt="image-20220316102636863" style="zoom:67%;" />
 
 - ##### message passing
 

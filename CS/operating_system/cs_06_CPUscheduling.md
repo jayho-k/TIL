@@ -214,7 +214,7 @@ do{
 
 
 
-## 5_ Mutex Locks
+## 5_Mutex Locks
 
 > Mutex  : Mutual Exclusion
 
@@ -223,11 +223,7 @@ do{
 -  lock이 하나만 존재하느 locking 메커니즘
   - Critical Section에서 작업 중이면 다른 프로세스들은 Critical Section에 들어갈 수 없도록 한다.
 
-**문제점**
 
--  Busy Waiting의 단점
-  - **Spin Lock** => 만약 context switch비용이 더 든다면 spin lock이 더 이득
-  - Critical Section에 프로세스가 존재할 때, 다른 프로세스들은 Critical Section에 계속해서 진입하려고 시도 => CPU를 낭비
 
 
 
@@ -272,7 +268,7 @@ void wait(semaphore S){
 // V연산
 void signal(semaphore S){
     S.value++;
-    if (S.value<=0){
+    if (S.value>=0){
         S.L에서 process P를 지운다.;
         wakeup(P);
     }
