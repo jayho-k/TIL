@@ -141,7 +141,7 @@ while True:
         interpolation=cv2.INTER_AREA)
         outputvideo.write(resize_frame)
         if not i%20:
-            print(i)ㅁㄴㅇ
+            print(i)
 
 # 동영상 파일 또는 카메라를 닫고 메모리를 해제
 video.release()

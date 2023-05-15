@@ -53,9 +53,6 @@ def lunch(ppl,stair):
         while reach_lst and reach_lst[0]<timer:
             if cur<3:
                 reach_lst.popleft() #도착시간
-                # if not reach_lst:
-                #     timer+=grid[stair[0]][stair[1]]
-                #     break
                 exit_lst.append(timer+grid[stair[0]][stair[1]]) # 도착시간 + 계단 + 1분
                 cur+=1
             else:
