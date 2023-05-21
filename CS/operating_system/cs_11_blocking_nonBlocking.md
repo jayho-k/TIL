@@ -31,7 +31,7 @@
     => data를 kernel space에서 user space로 이동시킨다.
   - thread block해제
 
-
+ 
 
 ### Socket에서 block I/O란?
 
@@ -118,7 +118,7 @@
 
 
 
-![image-20230515005847609](./cs_11_blocking_nonBlocking.assets/image-20230515005847609.png)
+<img src="./cs_11_blocking_nonBlocking.assets/image-20230515005847609.png" alt="image-20230515005847609" style="zoom: 50%;" />
 
 - 상황
 
