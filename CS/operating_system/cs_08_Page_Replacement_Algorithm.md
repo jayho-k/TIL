@@ -25,7 +25,7 @@ https://code-lab1.tistory.com/59
 
 - **요청**이 있으면 그 페이지를 **메모리에 올리겠다는 뜻**
 - **당장 실행에 필요한 페이지**만 **메모리에 적재**하는 기법이 요구 페이징
-- 당장 실행에 필요없는 부분은 **Backing Store**에 저장해놓았다가 필요할 때 메모리에 올리게 된다.
+- 당장 실행에 필요없는 부분은 **Backing Store**에 저장해놓았다가 필요할 때 메모리에 올리게 된다. 
 
 <img src="./cs_08_Page_Replacement_Algorithm.assets/image-20230404024245347.png" alt="image-20230404024245347" style="zoom:50%;" />
 

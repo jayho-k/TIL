@@ -88,7 +88,7 @@
 
 ### 2-1) Pipe
 
-<img src="https://blog.kakaocdn.net/dn/bLU3jo/btrlw3pc1Tq/QGTFg7JPXpiP3YGZymlma1/img.webp" alt="[운영체제] IPC - IPC 모델: 메시지 전달 (Message Passing) - 메시지 전달 모델의 예시 1 : 파이프" style="zoom:67%;" />
+<img src="https://blog.kakaocdn.net/dn/bLU3jo/btrlw3pc1Tq/QGTFg7JPXpiP3YGZymlma1/img.webp" alt="[운영체제] IPC - IPC 모델: 메시지 전달 (Message Passing) - 메시지 전달 모델의 예시 1 : 파이프" style="zoom: 80%;" />
 
 - Pipe는 stream 방식으로 동작 
 - 두 개의 프로세스를 파이프로 연결 

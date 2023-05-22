@@ -77,7 +77,6 @@ fast path
     - 예를 들어 알파가 8이고 slow path에서 4장의 frame이 들어갔다면 fast path같은 경우에는 32장의 frame이 들어가게 된다.
     
   - **beta**
-    
     - times smaller channels
     
     - beta값이 작으면 channels 수가 작아지게 되고 계산량이 작아지게 된다.
