@@ -104,6 +104,16 @@ select * from member
 	LIMIT 3, 2;			-- 3번쨰 데이터부터 2개
 	LIMIt 2 OFFSET 3;	 -- 위와 동일
 
+-- FOOD_PRODUCT 테이블에서 가격이 제일 비싼 식품 가져오기
+-- PRICE로 순서 + 상위 하나만 뽑기
+select PRODUCT_ID,
+        PRODUCT_NAME,
+        PRODUCT_CD,
+        CATEGORY,
+        PRICE
+from FOOD_PRODUCT
+order by PRICE desc
+limit 1
 ```
 
 
@@ -117,6 +127,8 @@ select distinct addr from member
 
 
 > GROUP BY - 그룹화
+>
+> \+ HAVING사용하기
 
 ```sql
 -- job이 같은 데이터를 그룹으로 묶음
@@ -129,7 +141,51 @@ select job, SUM(amount) as "합계"
 select genre, AVG(price) as "평균"
 	from library
 	group by genre
+	
+-- HAVING사용
+-- USER가 재구매한 PRODICT 출력하기 
+-- ==> USER_ID, PRODUCT_ID 그룹화(USER먼저 그룹화한 뒤 ==> PRODUCT그룹화 함)
+-- ==> 그럼 여기서 PRODUCT COUNT해주고 2개이상인 것 출력 ==> 즉 재구매한 것
+select 
+    USER_ID,
+    PRODUCT_ID
+from ONLINE_SALE
+    group by USER_ID, PRODUCT_ID
+        having count(PRODUCT_ID)>=2
+    order by USER_ID, PRODUCT_ID desc
 ```
+
+
+
+> data_format사용하기
+
+```sql
+-- 3월인 사람 뽑아내기
+where date_format(DATE_OF_BIRTH,'%m') = '03'
+
+-- 여자, 폰번호 존재, 3월인 사람 뽑아내기
+    where date_format(DATE_OF_BIRTH,'%m') = '03' and
+            TLNO is not null and
+            GENDER = 'W'
+```
+
+
+
+> string사용 - left, right
+
+```sql
+-- A110230 ==> A1으로 바꾸기 
+-- left(PRODUCT_CODE,2) = 왼쪽의 2자리만 뽑아내기
+select 
+    left(PRODUCT_CODE,2) as CATEGORY,
+    count (*) as PRODUCTS
+
+from PRODUCT
+group by CATEGORY
+order by CATEGORY
+```
+
+
 
 
 
@@ -143,6 +199,8 @@ select genre, AVG(price) as "평균"
   - COUNT(*) NULL값이 포함되어 있어도 카운트
   - COUNT(phone1) phone1 값에 NULL이 있을 경우 카운트 안함
 - COUNT(DISTINCT) : 행의 개수를 셈
+- ROUND(값, 원하는 곳): 반올림
+- TRUNCATE(값, 원하는 곳) : 버림
 
 
 
@@ -165,8 +223,6 @@ select SUM(amount*price) as "총 금액"
 
 > - INNER JOIN : 기준 테이블과 조인 테이블 **모두 데이터가 존재해야 조회됨**
 > - OUTER JOIN : **기준 테이블에만 데이터가 존재**하면 조회
-
-
 
 > INNER JOIN
 
@@ -204,6 +260,49 @@ SELECT a.empno
 ```
 
 ![image-20230523174853304](./cs_10_SQLGrammar.assets/image-20230523174853304.png)
+
+
+
+
+
+## case when
+
+> 새로운 열을 생성하는 경우
+
+```sql
+select case
+		when 기존 열 = 조건1 then '값 1'
+		when 기존 열 = 조건2 then '값 2'
+		(else '값N')
+		end as 새로운 열
+	
+```
+
+
+
+
+
+> 열을 집계하는 경우 (집계함수와 함께 사용)
+>
+> - 집계 열에 집계함수를 적용
+
+```sql
+select 집계함수 case when 기존 열 = 조건 then 집계열 as 새로운열
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
