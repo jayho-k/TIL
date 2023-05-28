@@ -171,7 +171,7 @@ where date_format(DATE_OF_BIRTH,'%m') = '03'
 
 
 
-> string사용 - left, right
+> string 부분 자르기 - left, right,mid
 
 ```sql
 -- A110230 ==> A1으로 바꾸기 
@@ -183,6 +183,28 @@ select
 from PRODUCT
 group by CATEGORY
 order by CATEGORY
+```
+
+
+
+> string 합치기 - **concat**
+
+```sql 
+-- 게시글 3회 이상 쓴 사람 뽑아내기
+select u.USER_ID,
+        u.NICKNAME,
+        case
+        when u.STREET_ADDRESS2 is null then concat(u.CITY,' ',u.STREET_ADDRESS1)
+        else concat(u.CITY,' ',u.STREET_ADDRESS1,' ',u.STREET_ADDRESS2 ) end as' 전체주소',
+        concat(left(TLNO, 3),'-', mid(TLNO, 4,4),'-', right(TLNO,4)) as '전화번호'
+       	-- 윗 부분확인 concat, mid 사용
+    
+from USED_GOODS_BOARD as b
+join USED_GOODS_USER as u
+    on b.WRITER_ID = u.USER_ID
+group by u.USER_ID
+    having count(u.USER_ID)>=3
+order by u.USER_ID desc
 ```
 
 
