@@ -321,15 +321,399 @@ int main()
 
 
 
+### 포인터 연산과 배열
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int arr[5] = {10, 20, 30, 40, 50};
+	int *arrPtr = arr;
+
+	printf("%d\n", *arrPtr); // 10
+	printf("%d\n", arr[0]); // 10
+
+	return 0;
+}
+
+// 결과 : 10 10
+    
+```
+
+- **배열의 주소값 = 첫번째 요소의 주소값**
+- 따라서 & 연산자를 사용하지 않아도 arr 이름 자체가 수소값이기 때문에, 바로 포인터에 대입이 가능
+  - 따라서 문자열에서는 &를 안붙혀도 되는 것
+
+
+
+### 포인터 연산
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int arr[5] = {10, 20, 30, 40, 50};
+	double arr2[5] = {10.1, 20.2, 30.3, 40.4, 50.5};
+	int *arrPtr = arr;
+	double *arrPtr2 = arr2;
+
+	printf("포인터 주소 : %d %d\n", arrPtr++, arrPtr2++); // 1. 주소1, 주소2
+	printf("증가 연산 후 : %d %d\n", arrPtr, arrPtr2); // 2. 주소1 + 4, 주소2 + 8 
+	printf("변수 값 : %d %.2f\n", *arrPtr, *arrPtr2); // 3. 20, 20.2
+
+	arrPtr += 2;
+	arrPtr2 += 2;
+
+	printf("증가 연산 후 : %d %d\n", arrPtr, arrPtr2); // 주소1 + 4*3, 주소2 + 8*3
+	printf("변수 값 : %d %.2f\n", *arrPtr, *arrPtr2); // 40, 40.4
+
+	return 0;
+}
+```
+
+1. 주소1, 주소2
+2. 주소1 + 4, 주소2 + 8 
+   - 이유 : int = 4, double = 8비트
+3. 20, 20.2
+   - 다음 요소로 간 것
+
+
+
+\+ 버블 솔트
+
+```c
+#include <stdio.h>
+
+void bubbleSort(int *arrPt, int n) // 주소 값의 요소를 가르키는 것
+{
+	int temp;	
+	for(int i=0; i<n; i++)
+	{
+		for(int j=0; j<n-i-1; j++)
+		{
+			
+			if(arrPt[j]>arrPt[j+1])
+			{
+				temp = arrPt[j];
+				arrPt[j] = arrPt[j+1];
+				arrPt[j+1] = temp;
+			}
+		}		
+	}
+}
+
+int main()
+{
+	int arr[10];
+	int n = sizeof(arr)/sizeof(arr[0]);
+	for(int i=0; i<10; i++)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	bubbleSort(arr,n); // 배열의 주소값 = arr
+
+	for(int i=0; i<10; i++)
+	{
+		printf("%d ", arr[i]);
+	}
+	
+	return 0;
+}
+```
+
+
+
+### 상수 포인터
+
+**포인터가 가르키는 변수를 상수화** == **const int *ptr2 = \&num;**
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int num = 10;
+	int *ptr1 = &num;
+	const int *ptr2 = &num; // 이부분 : 포인터가 가르키는 부분을 변하게 하지 않겠다는 뜻
+
+	*ptr1 = 20;
+	num = 30;
+
+	*ptr2 = 40; // 여기서 에러가 나게 된다. ==> 즉 변수값을 바꿀 수 없음
+
+	return 0;
+}
+```
+
+
+
+**포인터 상수화**
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int num1 = 10, num2 = 20;
+	int *ptr1 = &num1;
+	int* const ptr2 = &num1; // 이부분 
+    // : 이 포인터가 오로지 num1변수만을 가르키겠다, 다른 변수를 가르키지 않겟다는 뜻
+	
+	ptr1 = &num2;
+	
+	*ptr2 = 30;
+	ptr2 = &num2;
+	
+	return 0;
+}
+```
+
+- 포인터를 상수화 시킬때에는 **const전에 *연산자 사용해야함**
+- 포인터가 가르키고 있는 주소값을 변경하는 것이 불가능
+
+
+
+### 이중 포인터
+
+- 파이썬의 리스트 구현이 이중 포인터로 되어있음
+
+```c
+#include<stdio.h>
+
+int main(){
+    int num = 10;
+    int *prt;
+    int *pprt;
+    
+    prt = &num;
+    pprt = &prt;
+}
+*prt == **pprt
+```
+
+- 포인터의 주소값을 담는 주소를 바꿀때
+- 함수에서 문자열을 바꿀 때 사용
+
+
+
+### 포인터 배열
+
+```c
+#include <stdio.h>
+
+int main(){
+    int num1 = 10, int num2 = 20, int num3 = 30;
+    int *parr[3];
+    
+    parr[0] = &num1;
+    parr[1] = &num2;
+    parr[2] = &num3;
+    
+    for (int i=0; i<3; i++){
+        printf("%d", i, *parr[i]); // 10 20 30
+    }
+}
+```
+
+- 포인터들을 저장시켜놓은 것
 
 
 
 
 
+## 구조체
+
+
+
+### typedef
+
+```c
+#include <stdio.h>
+
+// 구조체 사용 form
+typedef struct {
+	int age;
+	char phone_number[14];
+} Student;
+
+int main(){
+    // 정의
+	Student goorm;  
+	
+    // 저장 &goorm.age
+	printf("나이 : ");
+	scanf("%d", &goorm.age); 
+	printf("번호 : ");
+	scanf("%s", goorm.phone_number);
+	
+    // 사용 goorm.age, goorm.phone_number
+	printf("----\n나이 : %d\n번호 : %s\n----", goorm.age, goorm.phone_number);
+	
+	return 0;
+}
+```
+
+
+
+### 구조체 배열
+
+```c
+#include <stdio.h>
+
+// 구조체
+typedef struct
+{
+	char name[15];
+	int kor; // 국어
+	int eng; // 영어
+	int math; // 수학
+	float avg; // 평균
+} Student;
+
+int main()
+{	
+    // 정의
+	Student sArr[3];
+	
+	for(int i=0; i<3; i++)
+	{
+        // 배열의 저장
+		scanf("%s",sArr[i].name);
+		scanf("%d",&sArr[i].kor);
+		scanf("%d",&sArr[i].eng);
+		scanf("%d",&sArr[i].math);
+		sArr[i].avg = (sArr[i].kor+sArr[i].eng+sArr[i].math)/3.00;
+	}
+	
+    // 구조체 사용
+	for(int i=0; i<3; i++)
+	{
+		printf("%s ",sArr[i].name);
+		printf("%.1f",sArr[i].avg);
+		printf("\n");
+	}
+	return 0;
+}
+```
 
 
 
 
+
+### 구조체  포인터
+
+```c
+#include <stdio.h>
+
+typedef struct {
+	int s_id;
+	int age;
+} Student;
+
+int main(){
+	Student goorm;
+	Student *ptr;
+	
+	ptr = &goorm; // 정의
+	
+    // 이렇게 point로 사용가능
+	(*ptr).s_id = 1004;
+	(*ptr).age = 20;
+    
+    // 화살표 가능
+    ptr -> s_id = 1004;
+	ptr -> age = 20;
+	
+	printf("goorm의 학번 : %d, 나이: %d\n", goorm.s_id, goorm.age);
+    // 결과 1004 , 20
+}
+```
+
+- 괄호를 해야한다. => 따라서 
+
+
+
+### 중첩 구조체
+
+- Student 안에 Teachr 구조체 이용가능
+
+```c
+#include <stdio.h>
+
+typedef struct {
+	char name[15];
+	int age;
+} Teacher;
+
+typedef struct {
+	char name[15];
+	int age;
+	Teacher teacher;  // 이 부분
+} Student;
+
+int main(){
+	Student Student;
+	Teacher Teacher;
+	
+	Student.teacher.age = 30; // 사용시
+	Teacher.age = 40;
+	
+	return 0;
+}
+```
+
+
+
+### 자기 참조 구조체
+
+```c
+typedef struct {
+	char name[15];
+	int age;
+	struct Student *ptr;  // 자기 자신을 참조
+} Student;
+```
+
+- 연결 리스트
+- 트리 등을 사용할 때 사용된다.
+
+
+
+### 구조체 전달
+
+```c
+#include <stdio.h>
+
+typedef struct {
+	int s_id;
+	int age;
+} Student;
+
+
+void print_student(Student *s){ // 이부분 전달 받음
+	s.s_id = 2000;
+	s.age = 25;
+	
+	printf("학번 : %d, 나이 : %d\n", s.s_id, s.age);
+}
+
+int main(){
+	Student s;
+
+	s.s_id = 1000;
+	s.age = 20;
+	
+	print_student(&s); // 이부분 전달
+    
+	printf("학번 : %d, 나이: %d\n", s.s_id, s.age);
+}
+```
+
+- call by value로도 가능하다 하지만 구조체 크기가 커질 수록 복사할 공간이 많이 필요하게 된다
+- 따라서 call by reference를 사용한다.
 
 
 
