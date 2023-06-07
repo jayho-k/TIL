@@ -68,6 +68,8 @@ select * from member where mem_name like '%불%';
 
 
 > 서브쿼리
+>
+> - group by  + 서브 쿼리
 
 ```sql
 -- 사람2의 키보다 큰 member
@@ -75,6 +77,39 @@ select mem_name, height
 	from member
 	where height > (select height from member where mem_name like '사람2');
 ```
+
+```sql
+-- REST_INFO 테이블에서 
+-- ""음식종류별"" 로 ""즐겨찾기수가 가장 많은 식당"" 
+select FOOD_TYPE,REST_ID,REST_NAME,FAVORITES
+from REST_INFO
+where (FOOD_TYPE,FAVORITES) in -- max인 애들 뽑았으면 그중에서 FOOD_TYPE,FAVORITES와 같은 애들
+	(select FOOD_TYPE,max(FAVORITES) -- 그룹마다 max인 애를 가지고 오는 것
+      	from REST_INFO
+      	group by FOOD_TYPE)
+
+-- 대여 시작일을 기준으로 2022년 8월부터 2022년 10월까지 총 대여 횟수가 5회 이상인 자동차들
+select 
+    month(START_DATE) as MONTH,
+    CAR_ID,
+    count(*) as RECORDS
+    
+from CAR_RENTAL_COMPANY_RENTAL_HISTORY
+where (date_format(START_DATE,"%m") between 8 and 10) and
+        CAR_ID in { -- 8~10에서 5회 이상인 애들 뽑는 것 ==> 걔랑 id가 같은 애들 뽑아냄
+        select CAR_ID from CAR_RENTAL_COMPANY_RENTAL_HISTORY
+            where (date_format(START_DATE,"%m") between 8 and 10)
+        group by CAR_ID
+            having count(CAR_ID)>=5
+        } 
+group by MONTH,CAR_ID
+order by MONTH, CAR_ID desc
+
+```
+
+- where에 **서브쿼리 + group by**
+
+
 
 
 
@@ -214,14 +249,34 @@ order by u.USER_ID desc
 ## 집계 함수
 
 - SUM
+
 - AVG
+
 - MIN
+
 - MAX
+
+  - ```sql
+    -- 코드를 입력하세요
+    -- max는 1의 값을 뽑아내기 위한 방법 true
+    -- max활용 방법 ==> 참거짓 사용시 1을 뽑아내는 방법으로 max를 사용할 수 있음
+    select CAR_ID,
+            case
+            when max('2022-10-16' between START_DATE and END_DATE) then '대여중' -- 이부분
+            else '대여 가능' end as 'AVAILABILITY'
+    from CAR_RENTAL_COMPANY_RENTAL_HISTORY
+    group by CAR_ID
+    order by CAR_ID desc
+    ```
+
 - COUNT : 행의 개수를 셈
   - COUNT(*) NULL값이 포함되어 있어도 카운트
   - COUNT(phone1) phone1 값에 NULL이 있을 경우 카운트 안함
+
 - COUNT(DISTINCT) : 행의 개수를 셈
+
 - ROUND(값, 원하는 곳): 반올림
+
 - TRUNCATE(값, 원하는 곳) : 버림
 
 
