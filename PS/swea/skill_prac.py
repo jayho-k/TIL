@@ -2,16 +2,47 @@
 여러가지 스킬들 구현하기
 
 1. 기본) 90, -90도 회전
-2. 분할) 90 + point 90도
+2. 분할) 90 + point 90도 -> 단일로 가능한지 확인
 3. time
 4. c2o 달팽이
 5. 기차
 6. bfs 경로 추적
 7. 반대편으로 넘어가기 공식(한칸씩 갈 경우) : ny = (y+dy[d]+n)%n
+8. 
 
 """
 from pprint import pprint
 from collections import deque
+
+
+def snail():
+    n = 7
+    grid = [[0] * n for _ in range(n)]
+    num = 1
+    dy = [-1,0,1,0]
+    dx = [0,1,0,-1]
+    y,x = n//2,n//2
+    s = 1
+    d = 0
+    while True:
+        for _ in range(2):
+            for i in range(s):
+                ny = y+dy[d]
+                nx = x+dx[d]
+                grid[ny][nx] = num
+                num+=1
+                y,x = ny,nx
+
+                if i == s-1:
+                    d = (d+1)%4
+
+                if (y,x) == (0,0):
+                    pprint(grid)
+                    return
+            
+        s += 1
+
+
 # # 1. 기본) 90, -90도 회전
 # def basic_90(mode):
 #     n = 7
@@ -122,48 +153,48 @@ from collections import deque
 
 
 # bfs로 경로 추적하기
-def bfs():
+# def bfs():
 
-    sy,sx = 0,0
-    gy,gx = 4,5
-    dy = [-1,0,1,0]
-    dx = [0,1,0,-1] 
-    q = deque([(sy,sx)])
-    visited = [[0]*n for _ in range(n)]
-    visited[sy][sx] = (-1,-1)
+#     sy,sx = 0,0
+#     gy,gx = 4,5
+#     dy = [-1,0,1,0]
+#     dx = [0,1,0,-1] 
+#     q = deque([(sy,sx)])
+#     visited = [[0]*n for _ in range(n)]
+#     visited[sy][sx] = (-1,-1)
 
-    while q:
-        y,x = q.popleft()
-        for d in range(4):
-            ny = y+dy[d]
-            nx = x+dx[d]
-            if 0<=ny<n and 0<=nx<n and visited[ny][nx]==0:
-                if (ny,nx)==(gy,gx):
+#     while q:
+#         y,x = q.popleft()
+#         for d in range(4):
+#             ny = y+dy[d]
+#             nx = x+dx[d]
+#             if 0<=ny<n and 0<=nx<n and visited[ny][nx]==0:
+#                 if (ny,nx)==(gy,gx):
 
-                    visited[ny][nx] = (y,x)
-                    return sy,sx,gy,gx,visited
+#                     visited[ny][nx] = (y,x)
+#                     return sy,sx,gy,gx,visited
                 
-                q.append((ny,nx))
-                visited[ny][nx] = (y,x)
+#                 q.append((ny,nx))
+#                 visited[ny][nx] = (y,x)
 
 
-def back_to_start(sy,sx,gy,gx,visited):
-    lst = [(gy,gx)]
-    y,x = gy,gx
-    while True:
-        by,bx = visited[y][x]
-        if (by,bx) == (sy,sx):
-            lst.append((sy,sx))
-            return lst
+# def back_to_start(sy,sx,gy,gx,visited):
+#     lst = [(gy,gx)]
+#     y,x = gy,gx
+#     while True:
+#         by,bx = visited[y][x]
+#         if (by,bx) == (sy,sx):
+#             lst.append((sy,sx))
+#             return lst
         
-        lst.append((by,bx))
-        y,x = by,bx
+#         lst.append((by,bx))
+#         y,x = by,bx
 
-n = 7
-grid = [list(range(1,n+1)) for _ in range(n)]
-sy,sx,gy,gx,visited = bfs()
-lst = back_to_start(sy,sx,gy,gx,visited)
-print(lst)
+# n = 7
+# grid = [list(range(1,n+1)) for _ in range(n)]
+# sy,sx,gy,gx,visited = bfs()
+# lst = back_to_start(sy,sx,gy,gx,visited)
+# print(lst)
 
 
 
