@@ -52,7 +52,6 @@ import sys
 import heapq
 from collections import defaultdict
 
-
 # setting
 rec1 = {}
 rec2_h = []
@@ -60,14 +59,12 @@ rec2_e = []
 rec3 = {}
 solved = defaultdict(set)
 p2l = {}
-p_dic = {}
 
 for i in range(1,101):
     rec1[i]=[]
     rec1[-i]=[]
     rec3[i]=[]
     rec3[-i]=[]
-
 
 # main
 input = sys.stdin.readline
@@ -108,7 +105,7 @@ for _ in range(m):
                 heapq.heappop(rec1[g])
             
             # print(rec1)
-            print(rec1[g][0])
+            print(-rec1[g][0][1])
             
 
         elif x==-1:
@@ -119,17 +116,19 @@ for _ in range(m):
                 and rec1[-g][0][0] in solved[rec1[-g][0][1]]:
                 heapq.heappop(rec1[-g])
             
-            print(rec1[-g][0])
+            print(rec1[-g][0][1])
 
 
     elif o=='recommend2':
+        x = int(con[0])
+
         if x==1:
             while rec2_h and -rec2_h[0][1] in solved \
                 and -rec2_h[0][0] in solved[-rec2_h[0][1]]:
                 heapq.heappop(rec2_h)
             
             # print(rec2_h)
-            print(rec2_h[0])
+            print(-rec2_h[0][1])
 
 
         elif x==-1:
@@ -138,7 +137,7 @@ for _ in range(m):
                 and rec2_e[0][0] in solved[rec2_e[0][1]]:
                 heapq.heappop(rec2_e)
             
-            print(rec2_e[0])
+            print(rec2_e[0][1])
 
 
 
@@ -200,6 +199,8 @@ for _ in range(m):
         # rec3
         heapq.heappush(rec3[l],p)
         heapq.heappush(rec3[-l],-p)
+
+        p2l[p]=l
 
         # remove
         # 같은 번호 + 같은 난이도가 있다면 remove
