@@ -63,7 +63,7 @@ for _ in range(int(input())):
 
     mn = 1e10
     mx = -1e10
-    print(mn)
+    # print(mn)
     for i in set_q:
         if set_q[i]>0:
             mn = min(mn,i)
@@ -71,7 +71,7 @@ for _ in range(int(input())):
     # print(min_q)
     # print(max_q)
     # print(set_q)
-    if mx==-1e9 and mn==1e9:
+    if mx==-1e10 and mn==1e10:
         print("EMPTY")
     else:
         print(mx,mn)
