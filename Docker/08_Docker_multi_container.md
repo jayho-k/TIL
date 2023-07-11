@@ -329,15 +329,146 @@ services:
 
 
 
+## 배포
+
+### Dockerrun.aws.json
+
+<img src="./08_Docker_multi_container.assets/image-20230711224447296.png" alt="image-20230711224447296" style="zoom: 80%;" />
+
+- **Dockerrun.aws.json** 가 필요한 이유
+  -  Docker파일이 여러개일 경우 Elastic Beanstalk이 어떻게 처리할지 모르기 때문이다. 
+  - 어떻게 다중 컨테이너를 작동시킬지 알려주는 역할을 한다.
+
+- Dockerrun.aws.json 파일의 정의
+  - Elastic Beanstalk 고유의 JSON파일이다.
 
 
 
 
 
+<img src="./08_Docker_multi_container.assets/image-20230711224906367.png" alt="image-20230711224906367" style="zoom:80%;" />
+
+- Task Definition
+  - 도커이미지
+  - CPU 및 메모리양
+  - 인프라
+  - 네트워킹 모드
+  - 로깅 구성
+  - restart
+  - CMD
+  - 볼륨
+  - IAM
+- Container Definition
+  - Dockerrun.aws.json안에 Container Definition을 넣어준다.
+
+```json
+{
+    "AWSEBDockerrunVersion":2,
+    "containerDefinitions":[
+        {
+            "name": "frontend",
+            "image": "soxn3579/docker-frontend",
+            "hostname": "frontend",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "backend",
+            "image": "soxn3579/docker-backend",
+            "hostname": "backend",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "nginx",
+            "image": "soxn3579/docker-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings":[
+                {
+                    "hostPort":80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["frontend", "backend"],
+            "memory": 128
+        }
+    ]
+}
+```
+
+- name : 
+- image : 사용할 이미지 이름
+- hostname : 도커 compose를 통해 다른 Container에서 연결할때 사용되는 name이다.
+- essential : 
+  - 컨테이너가 실패할 경우 작업을 중지해야할 경우 true
+  - 필수적이지 않은 컨테이너는 다른 컨테이너에 영향을 미치지않고 종료되거나 충돌할 수  있다.
+- portMappings : 80:80
+- memory : 메모리 설정
+- links
+  - <img src="./08_Docker_multi_container.assets/image-20230711225931297.png" alt="image-20230711225931297" style="zoom: 67%;" />
 
 
 
+## VPC(virtual private cloud)와 Security Group 설정
 
+
+
+### VPC(virtual private cloud)를 설정해줘야 하는 이유
+
+- RDS와 EB인스턴스가 연결되어 있지 않기 때문에 연결시켜줘야한다.
+- VPC를 사용해서 **나의 아이디에서만 EB RDS에 접근이 가능**하게 논리적으로 격리된 네트워크에서 생성이 되게 해주는 것
+  - 즉 다른 아이디로는 접근할 수 없다는 뜻이다. 
+
+
+
+### Security Group이란?
+
+<img src="./08_Docker_multi_container.assets/image-20230711232031487.png" alt="image-20230711232031487" style="zoom:67%;" />
+
+- Inbound : 
+
+  - 외부에서 EC2인스턴스나 EB인스턴스로 요청을 보내는 트래픽
+
+  - HTTP, HTTPS, SSH등
+
+  - 규칙
+
+    - 포트범위 3306 => mysql과 연결할 것이 때문에
+
+    
+
+- Outbound: 
+
+  - EC2인스터스나 EB인스턴스 등에서 외부로 나가는 트래픽
+
+  - 파일 다운로드, 응답
+
+    
+
+- Security Group (방화벽)
+
+  - inbound와 outbound를 통해 트래픽을 열어주거나 닫아주는 문같은 역할을 한다.
+  - VPC와 Security Group 을 이용해서 EB인스턴스와 RDS를 서로 연결시켜줄 수 있다.
+  - 적용
+    - RDS : 네트워크 및 보안 부분에서 Security Group을 추가해주면 된다.
+    - EB : 구성 => 인스턴스 => 보안그룹 편집 => Security Group 추가
+    - 이렇게 2개를 설정하게 된다면 EB인스턴스와 RDS(mysql)이 소통을 할 수 있게 된다.
+
+<img src="./08_Docker_multi_container.assets/image-20230712003659812.png" alt="image-20230712003659812" style="zoom:67%;" />
+
+
+
+### EB와 RDS 환경변수 설정
+
+![image-20230712004942493](./08_Docker_multi_container.assets/image-20230712004942493.png)
+
+- EB > 구성 > 환경속성
+  - RDS이름과 값을 넣어주면 된다.
+  - MYSQL_HOST => 이부분은 RDS 엔트포인트 값을 넣어야한다.
+  - MYSQL_USER
+  - MYSQL_ROOT_PASSWORD
+  - MYSQL_PORT
 
 
 
