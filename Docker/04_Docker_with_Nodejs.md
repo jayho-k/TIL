@@ -46,7 +46,10 @@ RUN npm install
 CMD ["node","server.js"]
 ```
 
-
+- RUN
+  - ex) `RUN pip install torch`
+  - ex) `RUN pip install -r reqirements.txt`
+  - 이런식으로 download받을 것들을 정할 수 있다.
 
 
 
