@@ -25,8 +25,6 @@
 
 ### 1-2) Master Node & Workder Node
 
-
-
 - 여러대의 서버를 마치 하나의 컴퓨터를 사용하는 것 처럼 사용할 수 있다.
 
 
@@ -357,13 +355,111 @@ spec:
 
 
 
+### 고급 컨트롤러
+
+- RC,RS,Deploeyment는 웹서버와 같은 일반적이 workload에 대해 Pod를 관리하기 위한 컨트롤러이다.
+- 일반적인 workload 이외에, DB, 배치작업, 데몬서버와 같이 다양한 형태의 워크로드 모델이 존재한다.
 
 
 
+**DeamonSet**
+
+- DeamonSet은 Pod가 각각의 노드에서 하나씩만 돌게하는 형태로 Pod를 관리하는 컨트롤러이다.
+
+![image-20230719001329341](02_Doker_c8s.assets/image-20230719001329341.png)
+
+- RC나 RS에 의해서 관리되는 Pod는 여러노드의 상황에 따라서 일반적으로 비균등하게 배포가 된다.
+- DeamonSet에 관리되는 Pod는 모든 노드를 균등하게 하나씩만 배포하게된다.
+- **서버의 모니터링, 로그 수집용도로 사용가능**
 
 
 
+![image-20230719001315816](02_Doker_c8s.assets/image-20230719001315816.png)
 
+- 특정 Node들에게만 Pod가 하나씩만 배포되도록 설정 가능
+- 특정 장비에 대한 모니터링을 하고자 할 때 가능하다
+  - ex_ 특정장비(노드)에만 SSD를 사용하거나 GPU를 사용할 경우 그 장비가 설치된 노드만을 모니터링할 수 있음
+- Pod의 **"node selector"의 라벨**을 이용해서 **특정 노드만을 선택**할 수 있음
+
+
+
+**Job**
+
+- workload 모델 중 배치가 **한번 실행되고 끝나는 형태의 작업**에 사용한다
+  - ex_ 파일변환 작업 등 웹서버처럼 계속 Pod가 떠 있을 필요가 없는 것들
+
+- Job이 종료되면 Pod도 같이 종료된다.
+- 정의하는 방법 : command로 사용한다.
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"] # 이부분
+      restartPolicy: Never
+  backoffLimit: 4
+```
+
+- **특정 노드가 장애가 낫을 경우**
+  - restart 
+    - => 즉 처음부터 작업을 다시 시작한다. => 데이터가 겹치거나 문제가 없는 형태여야 한다.
+  - 다시 시작 안함
+
+- **배치 작업을 하는 경우**
+
+  - <img src="02_Doker_c8s.assets/image-20230719002653162.png" alt="image-20230719002653162" style="zoom: 80%;" />
+
+  - completion을 주면 순차적으로 completion횟수만큼 반복된다.
+
+    
+
+  - <img src="02_Doker_c8s.assets/image-20230719002748297.png" alt="image-20230719002748297" style="zoom:80%;" />
+
+  - 위 그림과 같이 병렬로도 줄 수 있다.
+
+  - completion 5, parallelism 2
+
+
+
+**Cron jobs**
+
+- **시간에 따른 실행조건을 정의**해놓을 수 있고, 이에 따라 Job커트롤러를 실행하여, 정의된 Pod를 실행할 수 있게 해준다.
+- 주기적이고 반복적인 작업을 할때 용이
+- 1분마다 간단한 데모 작업을 실행
+
+```yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure
+```
+
+
+
+**StatefulSet**
+
+- DB와 같은 애플리케이션을 관리하기 위한 나온 컨트롤러
 
 
 
