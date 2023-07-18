@@ -88,13 +88,13 @@ CMD ["node","server.js"]
 
 ![image-20230706023436582](./05_Docker_compose.assets/image-20230706023436582.png)
 
-docker compose up : 이미지가 없을때 이미지를 빌드하고 컨테이너를 시작 
+- docker compose up : 이미지가 없을때 이미지를 빌드하고 컨테이너를 시작 
 
-docker compose up --build : 이미지가 있든 없든 이미지를 빌드하고 컨테이너를 시작 => 소스를 변경해쓸 때 이미지를 다시 빌드해줘야할때 사용한다.
+- docker compose up --build : 이미지가 있든 없든 이미지를 빌드하고 컨테이너를 시작 => 소스를 변경해쓸 때 이미지를 다시 빌드해줘야할때 사용한다.
 
-docker compose down : 중단하기
+- docker compose down : 중단하기
 
-docker compose -d up : 앱을 백그라운드에서 실행시킨다. 그래서 앱에서 나오는 output을 표출하지 않는다.
+- docker compose -d up : 앱을 백그라운드에서 실행시킨다. 그래서 앱에서 나오는 output을 표출하지 않는다.
 
 
 
