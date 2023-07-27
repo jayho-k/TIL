@@ -44,7 +44,7 @@ Epoch : 전체 데이터 한번을 도는 단위
   - 입력 feautre를 받음 
   - convolution이나 fully connected연산
   - activation function을 적용
-- 이렇게 Batch받위별로 이러한 학습을 할 시 배치마다 분포의 차이가 발생할 수 있다. 
+- 이렇게 Batch단위별로 이러한 학습을 할 시 배치마다 분포의 차이가 발생할 수 있다. 
 - 이를 해결하기 위해서 Batch Normalization 개념을 적용
 
 
