@@ -55,6 +55,49 @@ Kubeflow는 위 과정들을 K8s를 바탕으로 진행할 수 있게 도와주�
 
 
 
+## Pipline과 Component의 관계
+
+> - Component : 재사용 가능한 형태로 분리된 하나의 작업 단위
+> - Pipeline : 여러 Component들의 연관성, 순서에 따라 연결된 Graph
+
+### K8s 관점
+
+- Pipeline : Workflow
+- Component : Pod
+
+**Pipeline**
+
+- kfp sdk를 사용하여 pipline을 구현
+
+- dsl-compile 명령어를 사용해 컴파일을 진행한다. ==> 그럼 k8s가 이해할 수 있는 형태의 yaml파일이 생성되게 된다.
+
+- kind : Workflow
+
+- **workflow란?**
+
+  - 여러 개의 container들을 정해진 순서에 따라 실행 => input/ouput을 전달하는 것
+
+    
+
+**Component**
+
+- kfp sdk를 사용하여 component을 구현
+- 생성된 pipeline => workflow yaml파일의 spec.tamplates에 해당 컴포넌트를 감싼 부분이 추가된다.
+- 하나의 독립적인 pod로 생성 => component내부에 작성된 코드를 component decorator에 작성한 base_image환경에서 실행
+  - 하나의 pipeline 내에 연속된 component라고 하더라도 memory를 공유하는 일은 일어하지 않는다. 
+  - 서로 다른 component간의 data공유는 input/output변수 or 파일경로로 넘겨주는 방식을 사용
+  - pvc공유하여 사용가능
+
+
+
+
+
+
+
+
+
+
+
 
 
 
