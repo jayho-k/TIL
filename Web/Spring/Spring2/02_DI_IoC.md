@@ -93,9 +93,28 @@ OCP( 확장에는 열림, 변경에는 닫힘 )와 DIP ( 의존은 interface한�
   - 구현 => RateDiscountPolicy
 - **DIP를 위반하고 있다.**
 
+```java
+public class OrderServiceImpl implements OrderService {
+    // private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+     private final DiscountPolicy discountPolicy;
+    // 이런식으로 new값을 없애주면 해결 ==> 하지만 Error가 발생한다
+
+}
+```
+
+- 위 코드는 null point Error를 발생시킨다.
+- 이유는 discountPolicy에 어떠한 것도 할당되어있지 않기 때문이다.
+- 따라서 누군가가 클라이언트인 OrderServiceImpl에 DiscountPolicy의 구현객체를 대신 생성하고 주입해주어야 함
+
+
+
 
 
 ## AppConfig
+
+- 로미오 역할을 누가 할지 줄리엣 역할을 누가 할지 정하는 것은 누가하는가?
+  - 배우가 직접하는 것이 아니라 **기획팀에서 하는 것**이다.
+  - 
 
 - App의 전체 동작 방식을 구성(config)하기 위해, 구현 객체를 생성, 연결하는 책임을 가지는 별도의 설정 클래스를 만들 것임
 
