@@ -1,0 +1,38 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVMprac"
+        xmlns:ViewModel="clr-namespace:MVVMprac.ViewModel" x:Class="MVVMprac.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Label Content="Number" HorizontalAlignment="Left" Margin="190,131,0,0" VerticalAlignment="Top" Height="60" Width="134" FontSize="30">
+            <Label.DataContext>
+                <ViewModel:MainViewModel/>
+            </Label.DataContext>
+        </Label>
+        <Label Content="Result" HorizontalAlignment="Left" Margin="507,131,0,0" VerticalAlignment="Top" Height="60" Width="134" FontSize="30">
+            <Label.DataContext>
+                <ViewModel:MainViewModel/>
+            </Label.DataContext>
+        </Label>
+        <Label Content="Change Num" HorizontalAlignment="Center" Margin="0,52,0,0" VerticalAlignment="Top" Height="60" Width="198" FontSize="30">
+            <Label.DataContext>
+                <ViewModel:MainViewModel/>
+            </Label.DataContext>
+        </Label>
+        <TextBox HorizontalAlignment="Left" Margin="197,217,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged">
+            <TextBox.DataContext>
+                <ViewModel:MainViewModel/>
+            </TextBox.DataContext>
+        </TextBox>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="492,217,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged">
+            <TextBox.DataContext>
+                <ViewModel:MainViewModel/>
+            </TextBox.DataContext>
+        </TextBox>
+
+    </Grid>
+</Window>
