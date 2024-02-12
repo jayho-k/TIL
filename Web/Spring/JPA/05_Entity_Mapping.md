@@ -221,10 +221,11 @@ public class Member {
 - JPA는 보통 트랜잭션 커밋 시점에 INSERT SQL실행 => 하지만 IDENTITY는 그렇지 않음
 - AUTO_INCREMENT는 DB에 INSERT SQL을 실행한 이후에 ID 값을 알 수 있음
 - IDENTITY전략은 **em.persist()시점에 즉시 INSERT_SQL실행** 하고 DB에서 식별자를 조회
-
+  - 왜냐하면 JPA는 PK와 객체를 가지고 관리를 하는데 기본키를 DB에게 위임했기 때문에 DB에 값을 넣기 전까지는 기본키를 모르고 있기 때문
   - 이유 : 밑에 있는 문제점을 해결하기 위해서
   - 즉 모아서 보내는 것이 IDENTITY전략에서는 불가능하다.
     - 하지만 크게 메리트가 있거나 하지 않는다.
+  
 
 
 
@@ -239,8 +240,6 @@ public class Member {
   - id값을 알수 있는 시점이 언제인가?
   - db에 값이 들어가봐야 id값을 알수 있게 된다.
   - 하지만 jpa에서 PersistanceContext에 관리 되기 위해서는 무조건 pk값이 있어야 한다.
-
-
 
 
 
@@ -270,7 +269,9 @@ public class Member {
   - db에서 미리 키값을 몇개를 가져와서 한번에 사용하는 방법이라고 생각하면된다.
   - 그렇다면 여러번 왔다갔다하지 않고 한번에 호출로 영속성 컨텍스트에 id값을 부여할 수 있다.
 
-
+- IDENTITY전략과 동일한 문제가 있다. 이전에 hibernate: call next value for USER_PK_SEQ 를 사용하여 기본키를 가져오기 때문에 IDENTITY와 다르게 쿼리문을 실행하지 않는다. 
+  ==> 시퀀스값을 계속 DB에서 가져와야하기 때문에 성능 저하를 일으킬 수 있다.
+  ==> 따라서 allocationSize의 크기를 적당히 설정하여 성능저하를 개선시킨다.
 
 #### Table전략
 

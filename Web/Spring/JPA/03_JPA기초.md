@@ -14,7 +14,7 @@
 
 ## @Entity
 
-- Entity를 사용해야 JPA에서 Entity를 사용하는 class구나라고 인식하게 된다.
+- @Entity를 사용해야 JPA에서 Entity를 사용하는 class구나라고 인식하게 된다.
 
 
 

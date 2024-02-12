@@ -85,8 +85,6 @@ member.setUserName("회원1");
 
 ![image-20230204184814642](./04_.assets/image-20230204184814642.png)
 
-
-
 - EntityManager에 member가 영속된 상태
 - 이때는 DB에 저장이 되지는 않는다.
 - 그럼 언제 DB에 저장되지?
@@ -287,7 +285,7 @@ query = em.createQuery("select m from Member as m", Member.class);
 List<Member> members = query.getResultList();
 ```
 
-- 쿼리문을 쳤을 때 저장소에 넣고 있으면 진행기 안되기 때문
+- 쿼리문을 쳤을 때 저장소에 넣고 있으면 진행이 안되기 때문
 
 
 
