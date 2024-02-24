@@ -113,7 +113,7 @@ Oracle Connection & Server Process
   - 테이터를  차례차례로 읽혀진다. = Table Full Scan
   - Mulit 블록을 I/O단위로 사용가능 하다
     - 즉 DB_FILE_MULTIBLOCK_READ_COUNT 로 설정가능
-    - 임계점이 32정도라고 한다.
+    - **임계점이 32**정도라고 한다.
   - 데이터 읽는 양은 Random I/O보다 많을 수 있으나 대용량의 데이터를 읽을 경우 random I/O보다 훨씬 효율적이다.
 
 - **Random Access**
@@ -124,6 +124,150 @@ Oracle Connection & Server Process
   - 따라서 디스크 Access Time이 중요하게 된다.
     - 디스크 HEAD의 위치를 표면 위의 특정 트랙으로 이동시키는데 시간
   - 대부분의 OLTP 성 Application은 Random I/O Access유형이다. 
+
+
+
+## Randcom I/O 증가량에 따른 성능 변화
+
+- 문제 : Randcom I/O 증가량에 따른 성능
+  1. 1만건의 Record를 Access하기 위해서 **Random I/O시 1000 Block** 이 필요하고 **Full Scan시 십만 Blcok** 필요한 경우 어떤게 더 빠른가?
+     - 보통 **Random I/O**가 더 빠르게 된다.
+  2. 100만건의 Record를 Access하기 위해서 **Random I/O시 십만** Block 이 필요하고 **Full Scan시 십만 천만** 필요한 경우 어떤게 더 빠른가?
+     - **Full Scan**이 더 빠르다
+
+- Random I/O 100배 늘어난 것과 Full Scan 100배 들어난 것을 많은 차이가 있음
+  - Random I/O 100배 늘어난 것이 성능에 더 많은 영향을 주게 된다.
+  - 즉 비율로 생각하면 안된다 (**절대량이 중요하다**)
+  - 절대량이 늘어날 수록  H/W적인 제약으로 인하여 성능이 급격하게 저하됨
+
+분포도가 좋다 : 해당값의 유니크한 정보가 많다라는 뜻이다.
+
+```sql
+select (1/cnt)*100
+from (
+	select count(distinct code) cnt /* select 9 rows */
+	from XXX
+) a
+-- distinct : 중복인 값 제거
+```
+
+- [문제]
+  1. 특정 TABLE의 컬럼값 **분포도가 균일하게 10%**일 경우, 가령 컬럼값 A,B,C,D,E,F,G,H,I,J 열 종류가 모두 균일하게 건수가 같다고 가정하자 (분포토 10%라는 뜻)
+  2. **1억건**이 넘는 대용량 테이블에 해당 컬럼으로 단독 인덱스를 생성할 것인가?
+  3. 만일 동일 테이블에 해당 컬럼값 분포도가 균일하게 **1%라면**, 가령 컬럼값이 100종류이면 모두 균일하게 건수가 같다면 해당 컬럼으로 단독 인덱스를 생성할 것인가?
+- [답변]
+  -  절대량으로 생각해야한다. 즉 1억건이라는 큰 테이블이기 때문에 가령 1%의 분포도를 가지고 있다고 할지라도 단독 인덱스를 사용하는 것은 지양해야한다.
+
+
+
+Table Full Scan과 Random I/O 비교
+
+![image-20240224162744533](./01_Oracle_Architecture.assets/image-20240224162744533.png)
+
+- Index
+  - Access를 해야하는 Record가 증가하면 Block Access도 증가한다.
+  - 즉 읽어야하는 건수의 개수가 적을수록 좋다.
+  - **Random I/O는 신중하게 사용해야한다.**
+- Full Scan
+  - 1건을 Access하나 백만건을 Access하나 어차피 다 확인해야하기 때문에 똑같다.
+
+
+
+## HDD와 Flash Storage 그리고 RAID의 이해 
+
+### Disk Storage의 Stripping
+
+- RAID란
+  - Redundant Array of Independent Disk
+  - 여러개의 디스크를 묶어 하나의 디스크처럼 사용하는 기술
+  - 디스크 I/O병렬화로 인한 성능 향상
+- Storage에 RAID0 Stripping을 한 경우 I/O가 균일하게 모든 DiskDrive에 동시에 수행되어 빠른 시간안에 I/O처리 가능
+
+![image-20240224164110727](./01_Oracle_Architecture.assets/image-20240224164110727.png)
+
+- RAID 0 : 
+- RAID 1 : 미러링 => 가용성을 위함
+- RAID 5 : 패러티을 사용한다. 
+  => 오라클에서는 write병목현상으로 인해 잘 사용하지 않음 
+  => 큰회사에서 잘 사용하지 않음
+  => 
+- RAID 6 : 패러티 Disk가 두개가 있는 것
+  => 안전하게 보관 가능
+- 전반적으로 RAID 1+ 0을 사용한다.
+  - 
+
+### Flash Storage의 폭발적인 성장
+
+- SSD기반 Flash Sotrage을 기반으로 Random I/O를 기존 HDD기반 보다  몇배 이상 향상
+
+
+
+### OLTP와 BATCH 그리고 I/O Latency와 Throughput
+
+- **OLTP Real time processing**
+
+  - **실시간**으로 DB 데이터를 조회/갱신 하는 시스템
+
+  - 대부분의 업무 시스템 (금융/통신/ERP등)
+
+  - 건당 매우 빠른 수행 시간이 생명 (보통 0.01 ~ 1초 이하)
+
+  - 빠른 수행 시간을 위해 I/O Latency가 우선시 됨
+
+    - Latency란?
+      - 시스템에서 I/O가 요청되었을때 이를 수행하는데 걸리는 시간
+      - 즉 I/O Delay시간을 의미한다. (milliseconds단위로 측정)
+
+    
+
+- **Batch Processing**
+
+  - 작업을 몰아 두었다가 **한번에 처리하는 시스템**
+  - 주로 야간, 주말, 월말 등 정산/마감/통계 생성 등 **대량의 테이터를 일괄 처리**할때 사용
+  - 대량의 데티어를 처리 성능을 위해서 I/O Throughput이 우선시 됨
+    - Throughput
+      - 정해진 시간동안 (보통 1초) 얼마나 많은 데이터를 처리할 수 있는지 의미
+      - 만약 주간에 Batch를 돌린다고 할때 특정 Resource만 사용할수 있도록 진행해야한다.
+
+- IOPS(I/O Per Seconds)
+  - 초당 I/O횟수. 
+  - 보통 Sequential, Random으로 분리하여 측정한다.
+  - 일반적으로 IOPS가 높을수록 Latency가 빠름
+  - Throughput은 IOPS * I/O size
+
+
+
+### SQL
+
+- 일반적으로 튜닝은 Instance 튜닝, SQL튜닝으로 나뉜다.
+- 데이터 베이스 명령 = SQL 
+
+![image-20240224172147089](./01_Oracle_Architecture.assets/image-20240224172147089.png)
+
+1. SQL 문 작성
+2. Parser를 진행하므로써 정합성 확인
+3. 쿼리 변환 ==> Optimization으로 효율적으로 변환
+4. 실행 계획으로 변환하게 된다. ==> Cost계산 (인덱스를 탈지, Full Scan을 할지 등)
+
+SQL 활용 능력
+
+- 오라클 아키텍처의 이해
+- 인덱스 활용, 인덱스 적용
+- 조인의 원리, 다양한 데이터 연결 원리 체득
+- 부분 범위처리
+- 집합 기반의 SQL 처리
+- 대용량 데이터 처리방안 (파티셔닝 및 병렬처리)
+- **튜닝 책**으로 진행
+
+
+
+
+
+
+
+
+
+
 
 
 
