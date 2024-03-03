@@ -135,11 +135,89 @@
 
 
 
+### Buffer Cache Hit Ratio
+
+- 시스템이 얼마나 Disk I/O를 줄이고 Buffer Cache를 잘 활용하고 있는지 나타내는 지표
+
+```
+Hit Ratio = (1-(Pphysical reads/Logical Reads)) * 100
+```
+
+- Logical Reads : Buffer Cache Block 엑세스 수
+- Physical Reads : Disk Block 엑세스 수
+
+**일반적으로 90% 이상의 수치 보장이 필요하다.**
 
 
 
+### Bugger Cache Hit Ratio 통계의 함정1
+
+![image-20240302165050863](./03_Oracle_MemoryStructure_SGA.assets/image-20240302165050863.png)
+
+- 질문
+  - 수백, 수천개의 SQL 중 단 1% SQL들의 호출빈도가 **전체 SQL 호출 빈도에 대부분을 차지하게 된다면?**
+    - 즉 강성 SQL (?) 빈도수가 굉장히 높아서 거의 항상 Buffer를 차지하는 애들
+  - Application 전체적으로 SQL들이 Block을 많이 Access해야 되는 잘 튜닝되어 있지 않은 SQL이라면?
+
+- 문제점
+
+  - Accss block수는 작지만 (즉 Buffer차지는 적지만) 호출 빈도수가 매우 높은 경우 전체 Logical Reads는 **호출 횟수 x Access block 수**가 되어 크게 증가 
+
+  - 호출 빈도수가 높으면서 Access block 수는 많은 SQL들이 Buffer chache를 지속적으로 점유 ==> Logical Reads는 크게 증가됨
+
+    - 즉 항상  Buffer chache를 점유하는 애들이 생기게 된다
+
+    - 그러면 Logical Reads가 증가하게 되고 결국 Ratio가 높아지게 된다.
+
+      
+
+  - 문제 : 
+
+    - 이렇게 되면 Ratio는 높아서 좋아보이지만 만약 호출빈도수가 높은 것에 비해 적은 SQL의 **절대량이 1천만건이라면?**
+    - 즉 **절대량이 중요**
+       ==> Buffer Cache Hit Ratio가 99% 일지라도 무조건 좋은건 아닐 수 있음
 
 
+
+![image-20240302171804377](./03_Oracle_MemoryStructure_SGA.assets/image-20240302171804377.png)
+
+- 이렇게 CPU는 22.1%를 사용하지만
+- 그 위에 두 이벤트가 점유하는 시간이 매우 높게 된다.
+
+![image-20240302171916640](./03_Oracle_MemoryStructure_SGA.assets/image-20240302171916640.png)
+
+- 
+
+
+
+### Bugger Cache Hit Ratio 통계의 함정2
+
+상황예시
+
+- Buffer Cache Hit Ratio의 70%로 낮게 나오게 된다.
+- 10GB ==> 40GB로 늘려야할까?
+- 70%로 낮게 나오는 시간 : 새벽
+  - batch 프로그램 큰거 하나가 쓰고 있는 경우다
+- 즉, ratio가 떨어지는 것이 당연한 것이다. ==> 어쩔 수 없음
+- 다이렉트로 바로 IO 엑세스 하는 것이 더 빠를수 있기 때문에 괜찮음
+
+- 
+
+
+
+**결론**
+
+- **Hit Ratio**와 같은 성능 통계 정보는 불균일한 Load가 발생할 경우 **정확한 문제 인식을 못할 가능성이 있음**
+- 따라서 절대 일량 수치 (메모리 Access량, 디스크 Access량)을 기중으로 성능 평가가 필요하다.
+- Buffer Cache Hit Ratio외에 **Load Profile + Wait Event를 결합한 분석이 필요**하다.
+
+
+
+[AWR] Report확인하는 법!! 알기
+
+
+
+## Buffer Cache내부의 Block 유형 및 Buffer Pools 유형 
 
 
 
