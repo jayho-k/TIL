@@ -221,23 +221,101 @@ Hit Ratio = (1-(Pphysical reads/Logical Reads)) * 100
 
 
 
+### Buffer Cashe 내 블록 유형
+
+![image-20240306211759271](./03_Oracle_MemoryStructure_SGA.assets/image-20240306211759271.png)
+
+- Free Block
+  - Unused(데이터가 아직 할당이 되지 않은 상태) 
+    + Clean(Read or Load등의 작업이 끝나거나 시작하지 않은 상태)
+- Pinned Block
+  - 주로 Load or Read를 할때 사용
+  - Select * from cust where val = 10
+  - val = 10인 값을 Storage에서 퍼와서 Buffer에 올리게 된다.
+  - Process가 Load하고 있거나 읽고 있는데 다른 Process가 재활용하게 되면 안된다.
+    - 즉 읽고 있는데 다른 프로세스가 와서 다른 Data삽입하거나 Update시키면 안됨
+  - Clean
+    - 재활용이 가능한 상태 = 다른 데이터가 들어올 수 있는 상태
+    - ex) Read or Load등의 작업이 끝난 상태
+- Dirty Block
+  - 데이터가 이미 할당된 이후 다시 데이터가 **수정**되었으나 **아직 disk상의 data file에 Write되지 못한** buffer
+  - val = 4 => val = 5 로 업데이트 되면 Dirty Block 상태가 된다.
+  - 재사용이 불가능하지만 =>Data File로 내려왔으면 다시 재사용 가능한 상태
 
 
 
+### Database Buffer Pools의 유형
+
+![image-20240306215513208](./03_Oracle_MemoryStructure_SGA.assets/image-20240306215513208.png)
+
+- Keep buffer pool
+
+- Recycle buffer pool
+
+- **Non Defaulg Buffer Pools**
+  - DW성, 이력 통계 데이터와 같은 대용량의 데이터를 Access 해야 할 경우 큰 Block Size가 상대적으로 유리하다.
+  - 따라서 Block size에 기술된 size와 다른 block크기를 가진 테이블 스페이스 생성
+    - ex_ 2k, 4k, 16k, 32k => 즉 다른 크기의 Block을 생성할 수 있는 Pool이다
 
 
 
+![image-20240306215832236](./03_Oracle_MemoryStructure_SGA.assets/image-20240306215832236.png)
+
+![image-20240306220110826](./03_Oracle_MemoryStructure_SGA.assets/image-20240306220110826.png)
+
+- Keep, Recycle을 할당 해줄바에 **그냥 Cache_size = 200M로 잡는게 더 나을 듯?**
+- DB_32K_chache_size : Non Default Buffer 또한 이렇게 하지 않고 Direct IO하는게 더 나을 수 있음
+  - 버퍼 캐쉬로 올라간다는 거는 Conventional Path I/O하는 경우 사용하는 것
+  - DW할때 Conventional 한걸 쓰지 않는다.
+  - Conventional Path I/O
+    https://jungmina.com/772
+    - 버퍼를 사용하는 I/O
+    - 데이터가 입력, 조회 될시 항상 메모리를 통해 작업되는 방식이다.
+    - 단점 : Direct보다 느리다. redo log, undo data가 많이 발생한다.
+  - Direct Path I/O
+    - Cache를 거치지 않고 바로 블록에 작업하는 방식
+    - 정렬(Temp Segment에 읽고 쓰기), 병렬작업떄 (Parallel, Append옵션 사용), Direct옵션사용시
+    - 장점 : 
+      - 블록을 대량으로 읽거나 쓸 경우 좋음
+      - 롤백을 하더라도 실제 블록은 그대로 두고 딕셔너리 정보만 롤백
+    - 단점
+      - redo를 사용하지 않아 => 장애 => 다시 입력
+      - 다른 트랜잭션이 DML을 일으키지 못함 => 동시작업  불가
+      - 사용량이 적은 시간대에 하는 것이 좋음
 
 
 
+## Buffer Cache를 증가하는 것은 언제나 성능향상을 시키는가
+
+- 어느 시점 이후로 Buffer Cache를 증가시키더라도 성능향상을 이뤄내지 않는다.
+
+![image-20240306221944457](./03_Oracle_MemoryStructure_SGA.assets/image-20240306221944457.png)
+
+- 특정 시점 이후로 Buffer를 늘려도 Physical 이 줄어들지 않는다.
+- - 
+
+![image-20240306223838218](./03_Oracle_MemoryStructure_SGA.assets/image-20240306223838218.png)
+
+- 버퍼 캐시를 Access하는 것 비용이 소모된다.
+  - 메모리의 Latch나 Lock(정확히 lock은 아님)
+  - 서버 프로세스가 Bucket에서도 잡고, scan할때도 잡는다
+  - 즉 내가 사용하고 있다는 것을 알리는 것
+  - 블럭을 읽을때도 잡는다.
+  - latch잡고 빠지는건 엄청 빠름
+    - 평상시에는 문제가 되지 않음
+    - 하지만 너무 많이 사용하게 되고 임계점이 되면 전체 SQL 성능을 떨어뜨릴수 있을 뿐만 아니라 시스템 안정성을 위협할 수 있음
+    - 즉 악성 Query들이 Latch를 독점하게 될 수 있기 떄문
+- 버퍼 캐시를 Access하는 것은 Latch를 많이 쓸 수 있는 것을 의미한다.
+- 과 같은 비용이 소모된다.
+- 
 
 
 
+![image-20240306223250515](./03_Oracle_MemoryStructure_SGA.assets/image-20240306223250515.png)
 
-
-
-
-
-
-
+- 쿼리 튜닝은 시간을 가지고 튜닝 할 애들을 고르는게 아니라 많은 Block을 점유하는 애들을 기준으로 
+- SQL ordered by Resds : 
+- 버퍼를 늘리더라도 쿼리 튜닝이 안된 Query들이 계속 큰 버퍼를 점유하고 있는 상태가 된다면?
+  - 버퍼를 늘려도 악성 Query들이 버퍼를 더 점유하게 되어 비교적 횟수가 적은 Query들이 버퍼에 또 들어가지 못하게 된다.
+  - 따라서 성능개선이 되지 않을 수 있다. 
 
