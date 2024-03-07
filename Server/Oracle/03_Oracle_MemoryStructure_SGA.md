@@ -319,3 +319,141 @@ Hit Ratio = (1-(Pphysical reads/Logical Reads)) * 100
   - 버퍼를 늘려도 악성 Query들이 버퍼를 더 점유하게 되어 비교적 횟수가 적은 Query들이 버퍼에 또 들어가지 못하게 된다.
   - 따라서 성능개선이 되지 않을 수 있다. 
 
+
+
+## Biffer Cache 크기 설정
+
+![image-20240307213323113](./03_Oracle_MemoryStructure_SGA.assets/image-20240307213323113.png)
+
+- **ASMM => 보통 권장함**
+  - Automatic Shared Memory Management
+  - Shared Memory = SGA를 자동으로 설정해준다.
+  - 위와 같이 설정하면 각각의 기능을 사용할 수 있다.
+  - SGA_TARGET (EX_ 12G)
+    - Shared Pool, DB Cache, JavaPool, Large Pool, String Pool을 자동으로 맞춰줌
+  - SGA_MAX_SIZE
+    - SGA_TARGET 보다 크게 설정하면 된다.
+  - DB_CACHE_SIZE를 설정할 수 있음
+    - 가령 7G로 설정하면 7G 밑으로 떨어뜨리지 마세요 라고 말하는 것
+- AMM
+  - Automatic Memory Management
+  - SGA + PGA 까지 자동으로 설정해준다.
+  - MEMORY_TARGET
+    - SGA + PGA까지 최적화로 설정해줌
+  - MEMORY_MAX_TARGET
+    - MEMOERY_TARGET보다 크게
+    - MEMOERY가 최대로 가질수 있는 크기
+    - MEMOERY_TARGET을 20G 로 잡고 MAX 25로 잡으면 최대 타겟이 증가할 수 있다 
+- 수동으로 크기 설정은 사용하지 말기
+  - 수동을 사용하기 위해선 => DB_CACHE_SIZE제외하고 다 0으로 맞춘다.
+
+```SQL
+SHOW PARAMETER SGA -- SGA 설정 확인 가능 (EX -> MAX_SIZE)
+SELECT * FROM V$SGAINFO; -- 실제 동적으로 SGA가 얼마나 할당이 되었는지 확인할 수 있음
+SHOW PARAMETER DB_CACHE_SIZE
+
+!echo $ORACLE_HOME -- 홈 위치 어디있는지 확인 가능
+!ls $ORACLE_HOME/dbs -- 파일
+
+-- startup no mount pfile => db instance 복구하는 법
+create pfile='위치/dbs/init_ORCL_BKUP_01.ora' from spfile; -- 백업파일 만들기
+
+SHOW PARAMETER SHARED_POOL
+
+
+-- ASMM 사용해보기
+ALTER SET SGA_MAX_SIZE=13G SCOPE=SPFILE; -- 13G로 MAX설정
+ALTER SET SGA_TARGET=12G SCOPE=SPFILE; -- TARGET설정
+-- DB_CACHE_SIZE를 설정했다면 그 크기 이하로 내려가지 않는다. 
+
+
+
+```
+
+- **PFILE(파라미터 파일, initSID.ora)**
+
+  - ![image-20240307220552616](./03_Oracle_MemoryStructure_SGA.assets/image-20240307220552616.png)
+
+  - 오라클을 시작하는데에 필수적인 파라미터들이 정의 되어있는 기본 설정 파일
+
+  - text파일로 구성, 운영체제 Editer에서 수정할 수 있다.
+
+  - 해당 변경건을 적용하기 위해선 PFILE수정 후 DB를 재시작해야한다.
+
+  - initSID.ora파일로 저장된다.
+
+    
+
+- **SPFILE(Server Parameter File)**
+
+  - 9i버전부터 spfileSID.ora가 새로 추가
+
+  - DB가 운영 중에도 파라미터를 수정할 수 있음, 서버를 재시작 하지 않아도 된다.
+
+    - ATER SYSTEM명령 사용
+
+  - SPFILE으 바이너리파일
+
+  - 저장위치 : PFILE과 동일
+
+  - SPFILE은 vi와 같은 Editor로 변경하면 안된다.
+
+  - ```sql
+    ALTER SYSTEM SET large_pool_size=16M SCOPE=BOTH -- 
+    ```
+
+    - SCOPE에 대해서
+      - memory : 
+        - 변경이 현재 상태에만 영향을 미치며, **db가 restartup되면, 변경 이전 값으로 돌아간다.**
+      - spfile : 
+        - 변경내용을 spfile에만 저장하고 현재 상태에는 영향을 미치지 않게한다.
+        - Static Parameter의 경우 이 scope만 지정 가능
+        - 즉 spfile을 사용하더라도 **Static Paramter에 대해서는 DB운영중에 바로 값을 변경하여 재시작 없이 반영하는 것은 불가능** 하다.
+        - Dynamic Parameter
+          - 일부 초기화 변수가 동적
+          - 즉 ALTER SESSION, ALTER SYSTEM 구문을 이용하여 인스턴스가 실행되고 있을 떄 수정할 수 있다는 뜻
+        - Static Parameters
+          - 메모리와는 상관없이 Parameter파일을 변경하는 것
+          - 하지만 효과가 즉시 발휘되지 않고 restartup해야 발휘된다.
+      - both
+        - 변경 내용을 현재 상태에도 바로 반영, spfile에도 반영
+        - 이후 rebooting시에도 영향을 미치도록 하는 것
+
+![image-20240307221950599](./03_Oracle_MemoryStructure_SGA.assets/image-20240307221950599.png)
+
+
+
+## Buffer Cache 크기 Advice 기능 이해
+
+> - **Buffer Cache의 크기 설정**에 대한 **Advice 정보**를 제공한다.
+> - DB_CACHE_ADVICE초기화 파라미터가 ON되어야한다.
+> - 버퍼를 키우면 성능이 얼마나 향상이 되는지 또는 줄이면 얼마나 감소하는지 확인 가능
+
+![image-20240307224142010](./03_Oracle_MemoryStructure_SGA.assets/image-20240307224142010.png)
+
+- SIZE_FATOR = 1기준으로 감소했을때, 증가했을때의 성능지표를 알수 있음
+- SIZE FATOR의 증감에 따라 **ESTD_PHYSICAL_READS**의 증감을 확인 => 증감을 할지 조언
+- ESTD_PHYSICAL_READS_FATOR = 1 이런식으로 더 편하게 볼 수 있음
+
+![image-20240307225220791](./03_Oracle_MemoryStructure_SGA.assets/image-20240307225220791.png)
+
+- buffer를 늘려도 성능이 개선되지 않는다는 것을 뜻함
+- 하지만 줄이면 성능이 많이 감소
+- 하지만 **보통 AWR의 Buffer Pool Advisory**를 확인한다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
