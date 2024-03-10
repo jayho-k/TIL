@@ -443,6 +443,204 @@ ALTER SET SGA_TARGET=12G SCOPE=SPFILE; -- TARGET설정
 
 
 
+## Buffer Cache에 적재된 Block의 상태 및 Object들의 정보 확인하기
+
+- V$DB는 실시간으로 Buffer Cache에 적재되어 있는 Block들에 대해 Object정보 및 Block 상태 정보 제공 (DBA_OBJECTS)와 조인하여 Object명 조회
+-  가끔 Buffer Cache에 어떤 정보들이 저장되어있는지 확인해야할 필요가 있을때가 있다.
+
+![image-20240310160519823](./03_Oracle_MemoryStructure_SGA.assets/image-20240310160519823.png)
+
+- STATUS가 가장 중요하다.
+  - free : 사용하지 않는 상태
+  - xcur : server process가 exclusive하게 잡아놓음
+  - scur : 
+  - cr : commit이 아직 안된 상태
+  - read : 읽고 있는 상태
+  - mrec : buffer가 update되었는데 아직 DataFile에는 접근 하려는? 상태
+  - irec : 
+
+- Buffer가 free인지 상태를 확인해야한다.
+
+```sql
+-- SGA로 버퍼의 용량 확이 가능
+SELECT * FROM V$SGAINFO;
+
+-- Buffer Cache 상태 확인
+select * from v$bh;
+
+-- BUFFER CACHE내에 올라가 있는 Object들의 정보와 Block상태 조회
+-- status에 따라서 block이 얼마나 올라가 있는지 확인하는 것
+-- SGA에 버퍼 얼마나 확이 후에 각각 얼마나 차지하는지 확인
+SELECT 
+	  O.OBJECT_NAME
+	, BH.STATUS
+	, COUNT(*) NUMBER_OF_BLOCKS
+	, COUNT(*)*8000/1024168 SIZE_MB -- Block하나당 8k이기 때문에 count(*)*8000진행
+FROM
+	DBA_OBJECTS O, V$BH BH -- 조인
+WHERE O.DATA_OBJECT_ID = BH.OBJED -- 이걸로
+	AND O.OWNER != 'SYS' -- SYS인건 제외 
+GROUP BY O.OBJEC_NAME, BH.STATUS
+ORDER BY 3 DESC;
+
+-- BUFFER CACHE다 내림 -> FREE상태
+ALTER SYSTEM FLUSH BUFFER_CACHE;
+```
+
+- Direct I/O가 되면 버퍼캐쉬를 타지 않는다. ==> FULL SCAN을 돌리면 타지 않음
+
+
+
+## Oracle Conventional Path I/O와 Direct Path I/O
+
+![image-20240310163951620](./03_Oracle_MemoryStructure_SGA.assets/image-20240310163951620.png)
+
+- Convention
+  - 버퍼 캐쉬 거쳐서 Read하는 것 
+  - 버퍼에 없음? => storage에서 찾음 => Data를 바로 가져오지 않고 버퍼캐쉬에 저장 후 가져온다.
+  - 보통 Index를 경유한 테이블 Random Access, 
+  - 작은 테이블 (thredhold보다 낮으면)=> Full Scan
+- Direct
+  - 서버프로세스가 Buffer Cache를 거치지 않는다 => 직접 Storage에 R/W 수행
+  - 가져올 Data의 용량이 굉장히 크게 되면 buffer cache가 가득차게 된다. 
+    즉 버퍼에 올려놨던 Data를 내리고 다시 Random I/O가 진행 
+  - 즉 대용량 테이블의 Full Scan, Parallel Query, Temp segment I/O, Insert 시 SQL Hint 
+    /\*+ append*/를 적용한 SQL
+    -  Insert 시 SQL Hint  사용시 (DML)시에는 테이블 전체에 대해서 Exlcusive Lock이 필요
+
+
+
+## SQL 실행 계획의 이해, Hard Parsing, Soft Parsing
+
+![image-20240310170729649](./03_Oracle_MemoryStructure_SGA.assets/image-20240310170729649.png)
+
+
+
+**문제**
+
+![image-20240310171504302](./03_Oracle_MemoryStructure_SGA.assets/image-20240310171504302.png)
+
+- 최종 결정된 실행 계획은 수많은 선택의 요소를 상호 => Cost를 비교하여 최적을 선택
+- 하지만 이를 위해 **많은 CPU 및 기타 자원을 소모**
+- 특히 OLTP와 같은 초당 수십~수백개의 SQL이 동시에 들어올 경우 반드시 SQL 및 실행계획의 공유가 필요
+- 실행계획을 만드는데 비용이 굉장히 많이 들게 된다.
+
+
+
+![image-20240310172046892](./03_Oracle_MemoryStructure_SGA.assets/image-20240310172046892.png)
+
+- Hard Parsing이 높아지면 CPU부하 
+  => 특히 Library Cache의 Latch 관련 자원 사용률이 매우 높아 져서 시스템 장애를 일으킬수 있음
+
+
+
+## Shared Pool 구조
+
+![image-20240310173413456](./03_Oracle_MemoryStructure_SGA.assets/image-20240310173413456.png)
+
+- Library Cache
+  - 가장 중요하다.
+  - SQL과 프로시저 SQL 모두 보관한다.
+  - SQL을 공유하도록 만드는 것이 중요하다.
+- Data Dictionary Cache
+  - 테이블/ 인덱스 들의 Object 정보도 빠르게 정보가 오가야하기 때문에 보관해놓게 된다.
+- Result Cache
+  - 결과 값을 보관한다.
+  - DW와 같이 새벽에 만들어 놓으면 주시간에는 값이 변경되지 않는다.
+  - 이럴때 사용하기 위해서 존재
+- Reserved Pool
+  - 매우 큰 PL/SQL 패키지와 같은 대용량 SQL관련 오브젝트들 저장
+
+
+
+## Bind 변수 SQL
+
+![image-20240310175420600](./03_Oracle_MemoryStructure_SGA.assets/image-20240310175420600.png)
+
+- 
+
+공유 강화를 위한 초기화 파라미터 설정
+
+```sql
+ALTER SYSTEM SET CURSOR_CHARING = 'FORCE';
+-- Oracle 9iR2 이전 버전에서는 버그 발생 할 수 있음
+
+
+show parameter cusor_sharing;
+-- CURSOR_CHARING이 force인지 exact인지 확인가능
+```
+
+- Literal 변수 SQL을 Bind변수를 사용한 것과 유사하게 SQL을 공유하게 되고 동일한 실행계획을 가진다.
+
+
+
+## Shared Pool 주요성능 이슈
+
+- Literal SQL
+- 매우 큰 PL/SQL 패키지 => Shared Pool에서 관리하기가 애매함
+- Soft Parsing을 했는데도 너무 빈번해서 Latch를 잡고 있는 경우
+
+![image-20240310180759403](./03_Oracle_MemoryStructure_SGA.assets/image-20240310180759403.png)
+
+- Close() 수행 전에 ResultSet 등을 먼저 Close해야한다. 
+- V$LIBARARYCACHE : shared sQL AREA를 볼 수 있음
+- V$ROWCACHE : data dictionary cache 부분 확이 
+- V$SHARED_POOL_ADVICE : ADVICE를 확인하고 늘릴지 확인하면 된다.
+
+
+
+## Shared Pool의 주요 Data Dictionary 및 모디터링 방안
+
+```sql
+-- LIBRARYCACHE를 확인
+SELECT * FROM V$LIBRARYCACHE;
+
+-- PIN HIT RATIO
+SELECT SUM(PINHITS), SUM(PINS), SUM(PINHITS)/SUM(PINS) FROM V$LIBRARYCACHE
+```
+
+- PINS, PINHITS가 성능의 주요지표이다.
+  - PINS : 이미 고정되어 있는것
+  - PINHITS : 이미 고정되어있는 것을 가져오는 수
+  - 이 둘로 HIT RATIO를 계산할 수 있음
+- RELOADS
+  - 떨어졌는데 다시 필요해서 다시 올린경우  => 즉 높으면 안좋음
+
+
+
+```SQL
+-- DATA DICTIONARY CACHE확인
+SELECT * FROM V$ROWCACHE;
+
+-- GET PERCENTAGE 확인하는 쿼리
+SELECT PARAMETER,
+		SUM(GETS),
+		SUM(GETMISSES),
+		100*SUM(GETS-GETMISSES) / SUM(GETS) PCT_SUCC_GETS,
+		SUM(MODIFICATIONS) UPDATES
+FROM V$ROWCACHE
+WHERE GETS>0
+GROUP BY PARAMETER;
+
+-- ADVICE
+SELECT * FROM V$SHARED_POOL_ADVICE;
+
+-- LIBARARY_CACHE_MEMORY
+SELECT * FROM LIBARARY_CACHE_MEMORY;
+
+-- SGA의 FREE메모리를 별도로 가져올 수 있다.
+SELECT * FROM V$SGASTAT WHERE NAME = 'FREE MEMORY';
+
+
+
+
+
+```
+
+
+
+
+
 
 
 
