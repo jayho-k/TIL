@@ -641,6 +641,52 @@ SELECT * FROM V$SGASTAT WHERE NAME = 'FREE MEMORY';
 
 
 
+## ASMM개요와 주요파라미터
+
+
+
+**ASMM**
+
+- SGA_TARGET 파라미터를 통해 DB_CACHE_SIZE, SHARED_POOL등의 SGA Component크기를 동적으로, 그리고 사용량에 따라 자동 변경
+
+
+
+**메모리 관련 주요 초기화 파라미터**
+
+- MEMORY_TARGET
+- MEMORY_MAX_TARGET
+- SGA_TARGET
+- SGA_MAX_SIZE
+- PGA_AGGREGATE_TARGET
+- PGA_AGGREGATE_LIMIT
+- DB_CACHE_SIZE
+- SHARED_POOL_SIZE
+
+이정도만 익혀도 대부분은 해결할 수 있음
+
+### ASMM 
+
+- SGA_TARGET과 SGA_MAX_SIZE를 기반
+- SGA_MAX_SIZE
+  - SGA의 최대 메모리 크기이다.
+  - 정적 초기화 파라미터 => 변경을 반영하기 위해선 **인스턴스 재기동해야함**
+  - 인스턴스 최초 시동 시 메모리를 할당함
+- SGA_TARGET
+  - SGA_MAX_SIZE내에서 동적으로 변경 가능하다.
+  - **운영중에 변경 가능**
+
+![image-20240312005433155](./03_Oracle_MemoryStructure_SGA.assets/image-20240312005433155.png)
+
+- 운영중 동적 변경 불가능 => scope = spfile로만 가능
+
+
+
+
+
+
+
+
+
 
 
 
