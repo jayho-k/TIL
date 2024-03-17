@@ -52,7 +52,7 @@
 
 - 문제점
 
-  - 소가 고정되어 있기 때문에 메모리 상에 빈 공간이 많이 발생할 수 있어 비효율적이고, 로드하려는 위치에 이미 다른 프로세스가 존재할 수 있다. 
+  - 주소가 고정되어 있기 때문에 메모리 상에 빈 공간이 많이 발생할 수 있어 비효율적이고, 로드하려는 위치에 이미 다른 프로세스가 존재할 수 있다. 
 
   
 
@@ -203,8 +203,6 @@
 ### Paging Table
 
 <img src="https://github.com/jayho-k/TIL/raw/master/CS/operating_system/07_Memory_Management.assets/image-20220322135416784.png" alt="image-20220322135416784" style="zoom:67%;" />
-
-
 
 - 주소변환을 위한 table
 - table에서 각각의 번호 => **엔트리**

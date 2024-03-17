@@ -681,6 +681,194 @@ SELECT * FROM V$SGASTAT WHERE NAME = 'FREE MEMORY';
 
 
 
+## ASMM 파라미터 설정 방법
+
+```sql
+show parameter memory -- 메모리 확인 가능
+
+show parameter sga_target -- 타겟
+show parameter sga_max_size -- max사이즈
+
+select * from v$sgainfo -- 실제 sga component별로 할당되어있는 것을 확인할 수 있음
+
+alter system set sga_target=9g scope=both -- both로 가능
+
+show parameter db_cache_size -- 이렇게 하면 ==> db 캐쉬는 0으로 된다.
+-- 설정할 수 있으나 바로 증가하거나 하지 않는다.
+
+show parameter shared_pool -- 0으로 뜨지만 실제로는 조금씩 설정이 되어있다.
+-- ASMM을 통해 자동으로 설정되어있다. 
+
+```
+
+- SGA_TARGET 을 0이상 설정
+  - 자동으로 SHARED_POOL_SIZE, DB_CACHE_SIZE 등이 설정
+- SGA_TARGET 을 0으로 설정
+  - 수동으로 설치 해줘야함
+- SGA_TARGET = 8G, SGA_MAX_SIZE=10G 라면 SGA는 최소 8G부터 할당되어 최대 10G까지 할당가능함
+- 메모리 크기를 증가시킬시 Granule 단위로 증가함. SGA 크기가 1GB이상이면 Granule단위 크기는 16MB
+  - Granule은 16MB로 늘어나는 것을 말한다. 
+- ASMM 상에서 SHARED_POOL_SIZE=2G와 같이 명확하게 값을 설정할 수 있다. 이 경우 지정된 값은 최소한으로 할당되는 값이며 증가 후 다시 줄여도 시간을 가지고 값이 설정된다.
+  - 즉 긴급하게 SHARED_POOL_SIZE를 늘리면 바로 적용
+  - 하지만 값을 줄일때는 시간을 가지고 천천히 감소하게 된다.
+
+
+
+## ASMM설정시 유의사항
+
+```SQL
+SHOW SGA --
+-- FIXED SIZE : 내부적으로 반드시 사용되어야하는 고정 사이즈
+-- VARIABLE SIZE : S.P, J.P, L.P 등 + (10G(MAX) - 8G(TARGET)) => Variable size
+-- DATABASE BUFFERS
+-- REDO BUFFERS
+```
+
+- shared pool 사이즈를 늘리게 되면 Buffer Cache사이즈는 줄어들게 된다.
+  - 고정된 target 값이 동일하기 때문에 target값 안에서 할당하게 되는 것이다
+- 그리고 줄이게 되면 바로 줄어들지 않는다.
+
+
+
+**자주하는 실수**
+
+```sql
+-- 현재 MAX가 10G인 경우
+ALTER SYSTEM SET SGA_TARGET=11G SCOPE=BOTH; -- 에러 코드가 뜬다. MAX보다 크기 때문
+
+-- SCOPE를 SPFILE로 할경우
+-- 에러가 뜨지 않음, 물론 MAX도 같이 코치면 상관없음 = DB를 내리지 않은 상태에서
+ALTER SYSTEM SET SGA_TARGET=11G SCOPE=SPFILE; 
+
+-- 이렇게 반영시키고 DB를 죽일경우 확인하기
+CRAETE PFILE FROM SPFILE;
+shutdown immediate; -- 이렇게 되면 기동이 되지 않는다.
+startup -- 에러코드가 뜨게 된다. 
+
+-- 다시 재기동하는 절차
+-- pfile을 수정해야한다. ==> 백업으로 pfile과 spfile을 받아두는것이 좋음
+exit
+sqlplus "/as sysdba"
+create spfile from pfile; -- 파일이 하나 만들어짐
+startup
+
+
+
+```
+
+- SPFILE로 해놓고 DB를 내리게 되면 문제가 발생한다.
+  - 
+
+
+
+## Linux HugePafes를 이용하여 Oracle SGA 설정하기
+
+### 가상메모리 관리 - Paging
+
+![image-20240317170146139](./03_Oracle_MemoryStructure_SGA.assets/image-20240317170146139.png)
+
+- 메모리 단편화 등의 문제를 해결하기 위해 가상메모리와 물리 메모리 공간을 연속적으로작은 블록으로 나눔 => 가상 메모리 공간의 블록은 Page라고 함
+- Page Table을 통해 페이지와 Physical 메모리를 매핑
+- **리눅스** => **Page 크기가 4K**
+- 하지만 물리적인 메모리의 크기가 수십GB ~ 수TB이상 커지면서 Page Table관리를 위한 리소스 비용이 커지게 되었음
+
+
+
+### 리눅스 메모리 관리  - Huge Page
+
+![image-20240317172206061](./03_Oracle_MemoryStructure_SGA.assets/image-20240317172206061.png)
+
+- 리눅스 기본 Page 크기 **4KB => 2MB** 단위로 사용하는 것을 Huge Page라고 한다.
+
+- Huge Page는 상대적으로 **적은 수의 관리 정보**를 가지고 메모리 페이지를 관리
+
+  - Page Table크기가 줄어서 좀 더 많은 물리적 메모리를 사용할 수 있음
+
+- Huge Page는 일반 Page와 다르게 메모리 swap되지 않음
+  (**Orable SGA는 최대한 메모리 Swap되지 않아야함**)
+
+  - 메모리가 오랫동안 남아있는 것이 좋기 때문이다. 
+
+  - 메모리 Swap이란?
+    - 메모리를 쫒아내는 것을 의미 (Backing store로 쫒아냄)
+    - swapping이 지원 되려면 Run time binding으로 해줘야한다
+      - 이유?
+      - 쫒겨났다가 들어올때 비어있는 곳으로 들어오면 좋기 때문에
+      - 즉 메모리 주소가 바뀌는 것이 낫기 때문이다
+      - 메모리 주소 바뀌는 것 ? => Run time binding
+
+
+
+### Oracle DB에 Huge Page 설정하고 SGA활용하기
+
+![image-20240317172748134](./03_Oracle_MemoryStructure_SGA.assets/image-20240317172748134.png)
+
+- Huge Page는 SGA크기보다 커야한다. ==> 왜냐하면 Huge Page에 SGA가 들어가야하기 때문이다.
+  - 하지만 11.2.0.3이상부터 Huge Pages가 SGA보가 작을 경우 모자라는 영역은 Normal Page를 사용한다.
+- **USER_LARGE_PAGES= only**로 설정 후 재 기동 하는 것이 맞는 설정이다.
+  - 만약 모자라게 되면 **아예 기동이 안되게끔 해주는 것이 맞다**
+  - 그래야 DBA가 보고 반응할 수 있기 때문이다!
+
+```sql
+show sga -- 11g로 잡혀 있음
+
+-- linux
+-- 동적으로 메모리 변하는 값을 알 수 있음
+-- Huge Page를 확인 할 수 있음
+-- 현재 size 2MB로 잡혀 있음
+-- total 개수 : 7258개
+-- 2MB * 7258 = 14.5G
+-- 2MB의 크기가 작게 되면 PageTables의 크기가 더 커지게 된다.
+cat /proc/meminfo 
+
+-- DB
+ALTER SYSTEM SET SGA_MAX_SIZE=20G SCOPE=SPFIILE; -- MAX사이즈 20G로 변경
+STARTUP
+
+-- linux
+-- HUGE PAGE FREE가 사려진것을 볼 수 있음
+-- 이유: 20G로 바꾸었기 때문에 총 14.5G가 되어있었는데 20G로 바꿨기 때문
+cat /proc/meminfo 
+
+-- 따라서 더 늘려야 한다.
+-- ORAACLE BASE.COM으로 가면 ==> 스크립트가 존재한다.
+vi hugepages_setting.sh
+-- setting된것을 복붙해서 넣는다 (스크립트는 폴더에 존재)
+
+chmod +x huge* 
+./hugepages_setting.sh
+-- hugepages의 설정 개수를 추천해준다.
+
+
+-- 이제 적용시키면 된다. 설정 추천 개수를 사용하면서
+exit
+sysctl -w vm.nr_hugepages-10245
+cat /proc/meminfo -- 동적 메모리 확인 ==> 바뀌어있는걸 확인할 수 있음
+
+cat /etc/sysctl.conf -- 파일을 열고 vm.nr_hungepages=7258을 변경한다.
+sysctl -w vm.nr_hugepages-10245 -- 이렇게 진행
+
+reboot
+
+show parameter memory -- memory max, target이 0 ==> AMM설정 안되어 있음 확인
+```
+
+- 주의
+  - AMM에서는 안된다.
+  - 가급적이면 USE_LARGE_PAGES=only로 설정하는 것이 좋음
+  - `sysctl -w vm.nr_hugepages = 값설정` 만하게 되면 reboot할때 적용이 안된다.
+  - 따라서 `/etc/sysctl.conf` 파일에서 `vm.nr_hugepages`값을 스크립트 실행값으로 변경해주어야한다.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

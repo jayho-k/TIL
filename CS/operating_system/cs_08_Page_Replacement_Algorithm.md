@@ -62,7 +62,7 @@ https://code-lab1.tistory.com/59
 2. OS (PCB check)
    - 주소와 접근권한 맞는지 확인
    - 빈 page (빈 공간) 존재 => 넣어줌
-   - 없음? => **교체 알고리즘(Page Replacement Algorithm)**
+   - 빈공간이 없다면? => **교체 알고리즘(Page Replacement Algorithm)** => 빈공간을 만듦
 3. invalid => valid로 바꿔줌
 
 
