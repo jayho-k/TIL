@@ -23,7 +23,7 @@ from Test1 -- 4초
 
 -- 2. create index
 -- 시간이 오래걸릴까?
-
+``
 -- 3. rename
 rename Test1_tmp to Test1
 ```

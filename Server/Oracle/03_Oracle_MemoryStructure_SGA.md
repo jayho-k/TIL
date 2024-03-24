@@ -861,19 +861,146 @@ show parameter memory -- memory max, target이 0 ==> AMM설정 안되어 있음 
 
 
 
+## Redo Log Buffer 개요
+
+### DML
+
+- Insert, Update, Delete => DML Transaction의 Commit, Rollback을 명시해야한다.
+- 보통 Commit은 알아서 해준다.
+- Transaction 단위로 대량의 데이터 변경 작업도 빠르게 수행되어야 한다.
+- 완벽하게 저장되어야하며 어떠한 상황에서도 완벽하게 복구 되어야한다.
+
+![image-20240324165514440](./03_Oracle_MemoryStructure_SGA.assets/image-20240324165514440.png)
+
+- Commit을 하기 전에 Redo Log Buffer에 값을 저장해 놓게 된다.
+- 그리고 한번에 Redo Log File에 값을 저장한다.
 
 
 
+### Redo Log Buffer의 역할
+
+- LOG_BUFFER 파라미터를 사용하여 Buffer 크기를 조절할 수 있다.
+  - 보통 수십 MB정도로 설정 = 최대 100MB정도로 진행
+    - 크게 잡는다고 하더라고 성능향상이 크게 되지 않는다.
+
+- Redo Log Buffer를 사용하는 이유
+  - 하나씩 I/O접근을 하면 비용이 너무 높기 때문에 되도록 buffer에 모아서 File Write를 진행하게 된다.
+  - 모든 데이터의 변경정보를 메모리에 임시보관
+
+- ReboLog Buffer 에서 Online Log File write조건
+  - 사용자가 Commit할 경우
+  - Redo log buffer가 1/3정도 찬경우
+  - Buffer cache의 free공간이 없어서 변경 데이터를 Flush해야할 경우 Log Writer가 redoo log buffer도 함께 redi log에 write한다.
+    - DML을 날리면 DB Buffer에도 작업을 한다. 즉 DB Buffer Cache에 값을 올린다.  그리고 그 값들이 Redo log buffer에도 넘어가게 된다.
+    - 이때 Buffer cache에 공간이 부족할때 Aging out을 하고 싶은데 사용자가 Commit을 치지 않은 상태 ==> 이럴때 Redo Log Buffer에는 이미 값이 존재할거고 Online File Wirite를 진행한다.
 
 
 
+### Redo Log Buffer의 활용
+
+![image-20240324171900199](./03_Oracle_MemoryStructure_SGA.assets/image-20240324171900199.png)
+
+1. Buffer Cache에 값이 올라가게 된다. (DB에서 작업)
+   - DML등으로 데이터 변경이 이루어짐
+   - Buffer Cache의 해당 Block내 값을 변경한 뒤에 바로 Redo Log Buffer에 변경 정/후 값을 전달  
+2. 변경된 Data가 Redo Log Buffer로 가게 된다.
+   - **변경 전 후 값을 모두 가지고 있다.**
+3. 조건에 따라서 Log Writer을 통해 Redo Log File에 Write를 진행하게 된다.
 
 
 
+- **보통 문제가 있을 경우 => 굉장히 빈번하게 수행이 될 경우**
+  - 보통 Redo Log buffer를 늘리기 보다 Redo Log File을 더 빠른걸로 Storage로 바꿔주는 작업이 필요할 수 있음
+  - 왜냐하면 Buffer size늘려도 딱히 별로 효과가 없을 가능성이 높음
 
 
 
+## Online Redo Log File의 이해
 
+![image-20240324174201714](./03_Oracle_MemoryStructure_SGA.assets/image-20240324174201714.png)
+
+1. Commit 되지 않은 값 또는 조건이 되기 전까지 Buffer에 값을 저장해 놓고 있음
+2. Online Redo Log File 에 모든 변경사항 기록
+   - Commit 발생할 경우 기록되는 일차 파일 => 데이터 복구를 위해 중요함
+   - 그룹으로 다중화 되어있음
+     - 즉 Redo Log File1을 Wirte할 때 다중화 되어있는 또 다른 Redo Log File2에도 똑같이 Write를 진행한다.
+     - 따라서 데이터를 잃으면 안되기 때문 
+3. Online Redo Log File이 가득 차게 되면 Log 스위치라는게 넘어가게 된다. 즉 다른 Log File로 넘어가게 된다. ==> 이때 Archive Log File 로 떨어뜨려진다.
+   - 별도의 Archive Log Filie로 생성하고 Log Switch가 일어남
+   - DB 복구 시 매우 중요한 파일이므로 별도의 Tape등의 Storage로 백업 수행
+
+**복구 시나리오나 메커니즘 ==> 상세하게 공부필요**
+
+
+
+### Redo Log File 내용
+
+- 트랜잭션의 시작되었음을 알리는 구분자
+- 트랜잭션 고유명
+- DML 되고 있는 Object명 (Table 명)
+- 트랜잭션 Before Image (변경 전 데이터)
+- 트랜잭션 After Image (변경 후 데이터)
+- Commit이 되었음을 알리는 구분자
+
+
+
+### 온라인 리두 로그 파일 구조
+
+![image-20240324175959684](./03_Oracle_MemoryStructure_SGA.assets/image-20240324175959684.png)
+
+- Online Redo File을 하나씩만 가지고 있지 않는다. 보통 쌍둥이 멤버로 그룹으로 가지고 있는다.
+-  운영 DB에서는 동일 그룹내의 이구 로그 파일 멤버들을 물리적으로 분리된 디스크에 다중화 하는 것은 필수다. => **최소 2개 이상**
+- Log Switch를 진행하면서 더이상 Switch할 곳이 없다면 첫번째 Log 그룹으로 Switch 하게 된다.
+  첫번째 그룹이 초기화 됨 
+
+- 그룹
+  - 복사본 모음
+  - 동시에 저장
+  - 최소 두개의 온라인 리두 로그파일 그룹 필요
+    
+- 파일 멤버
+  - 각 멤버는 동일한 로그 시퀀스 번호 및 크기를 가진다.
+    - ex_ 그룹 3까지 갔을때 #3을 가지고 더이상 switch할 곳이 없다면 **그룹 1로 가지만 #4의 시퀀스를 가지게 된다.**
+
+
+
+### Online Redo Log File작동 방법
+
+![image-20240324181559962](./03_Oracle_MemoryStructure_SGA.assets/image-20240324181559962.png)
+
+1. DML 작동
+2. Buffer Cache에 저장 (dirty block이 생김)  + Redo Log Buffer 에 저장
+3.  Redo Log Buffer 에 저장
+   - 조건 / commit, 1/3, Buffer가득 일 경우 Redo Log 그룹에 넘어가게 된다.
+   - Redo Log 그룹에 Data가 넘어갔다고해서  Buffer Cache에 있는 Data가 넘어가지 않는다..
+     왜냐하면 Buffer Cache는 Data File에 넘겨줘야하기 때문에 redo Log Group과는 무관하다.
+4. Redo Log Buffer => Log Switch
+   - Log Switch를 할때 각 Control File, Data File, Redo File 모두 정합성을 맞추는 작업을 진행하게 된다.
+
+
+
+### Online Redo Log Group과 File에 대한 주요 Data Dictionary
+
+```sql
+-- Online Redo Log Group의 수, 현재 Log Group, Sequence Num 등을 조회
+V$THREAD
+groups : 그룹의 개수
+
+
+-- Redo Group과 Member에 대한 정보
+V$LOG
+어디가 current인지 확인 할 수 있음
+ACTIVE란? => RECOVERY에 필요한 그룹이라는 것을 명시하기 위해서 있는 것
+
+-- Online Redo Log File에 대한 상태와 위치
+V$LOGFILE
+memebr : 파일 위치를 알 수 있음
+
+-- 강제로 SWITCH해보기
+ALTER SYSTEM SWITCH LOGFILE; -- 406이 409로 업데이트 되고 CURRENT가 넘어가게 된다.
+
+
+```
 
 
 
