@@ -209,14 +209,211 @@ GROUP BY A.SUPPLIER_ID, B.SALES_REP_ID;
 
 ## 수동으로 PGA 설정 시 Parallel Query 적용 유의 사항
 
-
-
 절대 SYSTEM LEVEL에서 하면안되고 SESSION LEVEL에서 해야한다.
 
 ![image-20240402233320677](./04_PGA.assets/image-20240402233320677.png)
 
 - 즉 수동으로 진행할때 하나가 아니라 Parallel이므로  할당 값 * 병렬 개수가 되게 되어 서버가 터질 수 있다
 - 그래서 hidden parameter를 수정해서 진행하는 방법이 있는데 이부분을 찾아봐야할듯 하다
+
+
+
+## 시스템 부하 유형에 따른 PGA와 SGA크기 설정
+
+![image-20240413151037743](./04_PGA.assets/image-20240413151037743.png)
+
+- OLTP
+  - Pysical Memory가 몇인지 확인 필요
+  - 
+- DSS
+  - PGA가 높다. 
+  - SGA에 가장 많이 차지하는 것 = BUFFER CACHE
+    - DIRECT IO를 하면 BUFFER CACHE에 올라가지 않는다.
+    - 즉 DIRECT IO를 많이 하는 유형같은 경우에는 SGA를 높게 잡을 필요가 없다.
+    - Pareller Query 같은 경우 무조건 direct I/O
+    - 대량 테이블끼리 join, group by 등을 많이 한다. 따라서 상황에 따라서 PGA를 늘려줘야할 수도 있다.
+      - 7:3/ 8:2 까지 잡아도 된다.
+    - 만약 용량이 300GB처럼 굉장히 클 경우에는 20%로 하면 60GB나 된다.
+      - 이때 OS에서 쓴다고해도 2GB밖에 사용하지 않는다. 따라서 
+  - DW, Batch 등등
+
+
+
+
+
+```sql
+-- ESTD_EXTRA_BYTES_RW 확인 => HIT RATIO // 실시간으로 돼서 DBA를 많이 본다.
+SELECT * FROM V$PGA_TARGET_ADVICE
+```
+
+![image-20240413153234884](./04_PGA.assets/image-20240413153234884.png)
+
+- 사실 DBA_HOST_PGA_TARGET_ADVICE를 많이 본다.
+  - 기간에 따라서 볼 수 있기 때문이다.
+
+
+
+## CURSOR 매커니즘
+
+![image-20240413155858229](./04_PGA.assets/image-20240413155858229.png)
+
+- **Cursor**
+
+  - 서버 프로세스내의 Private SQL area를 가리키는 일종의 Pointer를 지칭
+
+  - Cursor는 클라이언트 프로세스가 서버의 데이터를 가져오기 위해 가지는 일종의 Pointer임
+
+    
+
+- **매커니즘**
+
+  1. 클라이언트에서 SQL을 던진다.
+  2. 그럼 서버 프로세스를 거치고 Sared SQL Area라는 공간에 실행계획을 저장하게 된다.
+     - 이때 SQL ID 값을 가지고 있을 것
+  3. 서버 프로세스에서 Buffer Cache/ Disk에 있는 값을 가져오게 된다.
+  4. Private SQL Area에 값을 저장하게 된다.
+  5. 클라이언트 프로세스가 Data를 가져오게 되는데 이때 Cusor의 개념을 사용하게 된다.
+     - 클라이언트가 가져오려는 값의 Point를 가지고 있다.
+
+
+
+### 추가 설명
+
+```sql
+SELECT * FORM CUSTOMERS WHERE ADDRESS = '서울'
+```
+
+![image-20240413160922000](./04_PGA.assets/image-20240413160922000.png)
+
+- PL/SQL, JDBC등은 CUSOR에 대한 개념을 객체화시킨 것
+- PL/SQL
+  1. Declare : SQL을 선언하게 된다.
+  2. Open : 
+     - 서버 프로세스가 sql의 위치가 어디에 있는지 확인하게 된다.
+     - 즉 어떻게 가져와야할지 알아내는 과정
+  3. Fetch
+     - Data를 가져오는 과정
+     - Arrary Size에 따라서 값을 Data를 가져오게 된다.
+     - 가져오고나서 또 fetch를 진행 => 즉 Data를 달라고 또 요구를 하게 된다.
+     - 예시
+       - 1000건의 Data 존재
+       -  Arrary size = 10 / 
+       - fetch를 100번 진행해야함
+  4. Close
+     - 반드시 끝이 나면 close를 해줘야한다.
+     - 서버 프로세스가 끝나면 메모리를 반납해야한다. 하지만 close를 하지 않으면 반납하지 않음
+       - 즉 Memory Leak이 발생하게 된다. 
+     - 왜냐하면 cusor의 개수가 정해져 있기때문에 cusor가 바닥날 수 있기 때문이다.
+
+- JDBC
+  1. Create PreparedStatement
+  2. ResultSet = Execute Query
+     - ResultSet 이 반환값이 Cusor를 가져오게 된다.
+  3. ResultSet next()
+     - Data를 다 가져올때까지 next를 진행한다.
+  4. ResultSet close()
+     - 요즘은 connection close를 하면 ResultSet도 close되게 된다.
+     - Connection Pool를 사용하게 되면 connection이 close되는 것이 아니라 Pool로 돌아가게 된다.
+
+![image-20240413165134128](./04_PGA.assets/image-20240413165134128.png)
+
+- 조건
+  - 같은 SQL을 2개의 서버 프로세스가 쿼리 진행
+- 진행
+  1. 각각 같은 SQL을 보냈기 때문에 SGA에서는 같은 주소값을 참조
+  2. 하지만 PGA에서는 각각 Data를 저장하게 된다.
+  3. 그렇게 2개의 Client Process와 2개의 PGA가 서로 Cusor를 통해 통신하게 되고 Data를 가져오게 된다. 
+
+
+
+```sql
+SELECT * FROM CUSTOMERS WHERE ROWNUM > 11;
+```
+
+- CUSTOMERS 의 데이터 개수 약 1000만개
+  - 하지만 `SELECT * FROM CUSTOMERS` 를 진행하게 되면 굉장히 빠르게 값을 가져오게 된다.
+  - 가능한 이유 : 
+    - FETCH를 적당선에서 끊기 때문이다. 따라서 약 500개 데이터를 따로 가져오게 된다.
+    - 즉 부분범위 처리를 하게 된다.
+    - ARRARY에 넣을 수 있는 부분만 빠르게 넣고 처리하는 것
+
+```SQL
+-- TRACE 설정
+SET AUTOTRACE TRACEONLY
+SELECT * FROM CUSTOMERS WHERE ROWNUM >= 1000;
+
+-- ARRAY SIZE 100으로 수정
+SET ARRARYSIZE 100;
+SELECT * FROM CUSTOMERS WHERE ROWNUM >= 1000;
+
+```
+
+- ARRYAR SIZE 수정 전
+
+<img src="./04_PGA.assets/image-20240413170327079.png" alt="image-20240413170327079" style="zoom:80%;" />
+
+- SQL *Net roundtrips to/from client 가 68번 실행되었다.
+  - 즉 Arrary Size = 1000/68 => 약 15 (defualt)
+
+
+
+- ARRYAR SIZE 수정 후
+
+<img src="./04_PGA.assets/image-20240413170701783.png" alt="image-20240413170701783" style="zoom:80%;" />
+
+- SQL *Net roundtrips to/from client 가 11번 실행되었다.
+- ARRRY SIZE가 크면 수행속도가 더 빠른가?
+  - 100이상부터는 크게 상관없으나 BATCH를 진행할 때는 크게 잡는 경우가 많음
+    - 하지만 1000이상이어도 성능상으로 유의미하지 않음
+  - 하지만 Server Process 메모리가 많이 먹게 된다.
+
+
+
+```sql
+-- sysdb
+show parameter open*
+show parameter open_cusor 
+```
+
+![image-20240413172345318](./04_PGA.assets/image-20240413172345318.png)
+
+- 사용할 수 있는 cusor의 개수가 지정되어 있음
+- 보통은 cusor size를 1000개 정도로 늘려주게 된다.
+  - 서버 프로세서의 메모리를 제어하겠다는 의미
+  - 요즘은 RAM성능이 좋기 때문에 1000개 정도로 설정해도 된다.
+- Open Cusor를 이정도까지 늘리는 것은 프로그램의 잘못이다.
+
+
+
+- 예시
+  - PL/SQL
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+	CUSOR emp_cur -- 커서 정의
+	IS
+	SELECT * FROM emp WHERE DEPTNO = 10;;
+BEGIN
+	OPEN emp_cur; -- 커서 OPEN 
+	LOOP
+	FETCH emp_cur INTO emp_rec; -- 하나씩 변수에 넣기
+	EXIT WHEN emp_cur%NOTFOUND; -- 더이상 없으면 끝내기
+		DMBS_OUTPUT.PUT_LINE(emp_rec.tmpno || ' ' || emp_rec.name);
+	END LOOP;
+	CLOSE emp_cur; -- CLOSE를 꼭 진행해줘야 메모리 누수를 막을 수 있음
+END;
+```
+
+
+
+## AMM (Automatic Memory Management)
+
+
+
+
+
+
 
 
 
