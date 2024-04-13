@@ -1,5 +1,11 @@
 # 04_DataDictionary
 
+> 대부분의 데이터 사전 정보는 Dictionary cache(SGA > Shared Pool)에 유지된다. DBMS가 동작하는 동안 사용자 접근을 검증하고, 스키마 객체의 상태를 입증하기 위해 수시로 접근해야하기 때문이다. 모든 정보는 LRU(Least Recently Used) 알고리즘에 의해서 메모리 내에 저장된다. 분석된 정보는 일반적으로 캐시 안에 유지된다. 테이블과 테이블의 컬럼을 설명하는 ‘COMMENTS’ 컬럼은 자주 접근하지 않는 한 캐시에 저장되지 않는다.
+>
+> https://sshplendid.github.io/blog/dev/oracle/2015/12/28/oracle-data-dictionary/
+
+
+
 
 
 ## 1. DB 성능 분석을 위한 주요 구성요소 및 분석 방법론

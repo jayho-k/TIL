@@ -214,6 +214,153 @@ select * from table where customid = 1000;
 
 
 
+## Latch, Enqueue, Mutex의 이해
+
+
+
+### Oracle Latch와 Lock(Enqueue)의 개요
+
+- 모두 Lock 개념
+- DBMS에서 Lock은 update를 진행할 때 Record에 
+
+![image-20240413175019858](./06_Wait_Event.assets/image-20240413175019858.png)
+
+- **Lock (Enqueue)**
+
+  - 요청한 순서를 보장
+
+  - 즉 줄을 세우고 그것을 관리하는 관리자를 세워 순서를 보장하게끔 하는 매커니즘
+
+  - 하지만 굉장히 느리게 된다. CPU입장에선 답답함
+
+    
+
+- **Latch**
+
+  - 요청 순서와 상관없이 먼저 온 순서대로 바로 일을 처리하도록 진행
+
+  - 요청 순서는 보장 안됨
+
+  - 일 처리 시간이 매우 빠르게 된다.
+
+    
+
+- 즉 시스템 마다 관리하는 방법이 다를 수 있음
+
+
+
+### Latch, Enqueue, Mutex 비교
+
+![image-20240413175542608](./06_Wait_Event.assets/image-20240413175542608.png)
+
+- Latch
+
+  - Mutex와 비슷한 구조를 가지고 있다.
+
+    - 즉 OS의 Mutax를 참고하여 Oracle Kernal에 구현했음
+
+  - **SGA 내부의 데이터 구조**의 접근 제어를 위해 사용한다.
+
+    - SGA에서는 굉장히 많은 사용자에 대한 요청을 처리해야한다.
+
+  - CPU Register에 직접 Access하는 CPU로직 구현 ==> 매우 빠름
+
+  - 순서를 보장하지는 않으나 일부 Latch는 순서를 보장함
+
+  - RAC일 경우에 SGA내부에 정보가 존재하기 때문에 로컬 인스턴스에서만 볼 수 있다.
+
+  - (Latch경우 => exclusive하다)
+
+  - 2가지 모드
+
+    - willing-to-wait : 요청 실패시 다시 요청 하는 것
+    - no-wait : 요청 실패시 그냥 다른 애 찾는 것
+
+    
+
+- Lock(Enqueue)
+
+  - 테이블, DB Block등 Object에 접근제어를 위해 사용 => 트랜잭션 단위 
+  - OS FIFO => 느림
+  - 락 획득 실패 => 요청은 큐로 관리, 순서대로 서비스 된다.
+    (nowait 모드 예외)
+  - 6가지 모드로 요청 가능 (row level로 갈 것인지 등)
+    - null
+    - row share
+    - row exclusive 
+    - share : 여러 Process가 접근이 가능한 경우 (보통 Read일 경우)
+    - share row exlusive
+    - exlusive : 다른 Process가 잡았으면 다른 Process는 기다려야함 
+
+
+
+
+
+## Cache buffer chains와 cache buffer lru chains이해 및 개선 방안
+
+![image-20240413181858297](./06_Wait_Event.assets/image-20240413181858297.png)
+
+- Concurrency 때문에 발생한다.
+  - 자주 Access하는 Hot Block때문에 wait event가 발생한다.
+
+
+
+![image-20240413183600477](./06_Wait_Event.assets/image-20240413183600477.png)
+
+- **Buffer Cache에 특정 Block을 찾는데 비용이 많이 발생하게 된다.**
+- latch : cache buffer chains
+  - 특정 서버 프로세스가 Block을 Access하기 위해선 Bucket을 잡아야한다.
+  - 이때 발생하는 latch가 latch : cache buffer chains 이다.
+
+- latch : cache buffer lru chains
+  - LRU에서 data를 찾을 때도 latch를 잡아야한다. (scan할때)
+  - 이때 발생하는 latch가 latch : cache buffer lru chains이다.
+
+- Hot Block
+  - 많은 Server Process가 동일한 Data를 요구함
+  - 이로 인해 똑같은 Hash Bucket과 LRU의 Latch의 Latch를 획득하기 위해 Server Process가 경합이 일어남 ==> **Hot Block**
+  - 주로 대량 범위를 Access하는 악성 SQL들이 빈번하게 Cache Buffer를 사용하면서 발생하는 Wait Event이다. 
+
+**HOT block 예시**
+
+![image-20240413190934584](./06_Wait_Event.assets/image-20240413190934584.png)
+
+- 한번 Access하는데 24k Block을  Access진행 = 24k
+- DB buffer block = 8k
+  - 24k * 8k => 200M정도 된다.
+  - access횟수도 많음
+
+- **조치**
+  - 대량 범위의 I/O를 빈번하게 수행하는 SQL을 튜닝해야한다.
+  - Block 내부의 데이터를 hot block을 회피 할 수 있도록 재정렬해야한다.
+    - Partitioning 사용
+
+
+
+### Hash Partition을 통한 Hot block 개선
+
+> https://zzanggoo.tistory.com/70
+
+![image-20240413193327947](./06_Wait_Event.assets/image-20240413193327947.png)
+
+- Partitioning key 값에 hash 함수를 적용하여 data를 분할하는 방식
+- 성능 향사의 목적으로 나온 개념이다.
+  - 특정 범ㅇ위에 분포도가 몰려서 각기 size가 다르게 되는 것을 보완하며, 일정 분포를 가지 파티션을 나누고 균등한 데이터 분포도를 이용한 병렬처리로 퍼포먼스를 향상 시킬 수 있음
+- 파티션 수를 2의 제곱근으로 설정해야한다.
+  - 보통 32 이상부터 성능향상이 이루어졌다. (경험)
+- null 값은 첫번째 파티션에 위치한다.
+- 보통은 SQL 튜닝으로 해결하지만 해결이 안될 경우 이 lv까지 내려와야한다.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
