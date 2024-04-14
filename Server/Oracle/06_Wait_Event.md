@@ -353,9 +353,199 @@ select * from table where customid = 1000;
 
 
 
+## Buffer Busy Waits 이해 및 개선 방안
+
+### Buffer Busy Waits란
+
+![image-20240414162812747](./06_Wait_Event.assets/image-20240414162812747.png)
+
+- 서버 프로세스가 Buffer cache내 block을 Access하기 위해선 해당 Block에 대한  Lock을 획득해야한다.
+- 동시에 **여러 서버 프로세스들이 동일한 buffer block에 Access 할 경우** 경합이 발생하게 된다.
+  - 즉 전반적으로 **Hot Block에 대한 것**
+
+- Row Level Lock
+
+  - 오라클에 경우 Row 락과 Block락을 둘다하게 되는데, Row => TS를 걸게된다.
+
+  - 잡고 있는 Lock에 대한 무게가 크다.
+
+  - Row를 Update하거나 할 때 거는 Lock이다. 
+
+    
+
+- Block Level Lock 
+
+  - Block 단위 Lock은 가벼운 Lock이다.
+  - Select를 진행할 때 또한 Lock을 획득해야한다.
+  - Block Lv 에 Lock을 획득한 뒤에 Row Lv Lock인 TS를 걸어야한다.
+  - 해당 메모리에 접근하기 위한 Lock, 공유 메모리이기 때문
+
+- Hot Block 예시 1)
+  - select * from customer where name like '김%'
+  - 위와 같은 Query는 김씨가 많고(범위가 넓음), 자주 호출된다?
+    - Hot Block이 될 가능성 높음 
+
+- Hot Block 예시 2)
+  - 범위가 좁은데 인덱스를 scan할떄 나타날 때가 종종 있음
+  - 리프 블럭을 scan할때 특정 leaf block만 access할 경우가 있을 수 있다.
+  - 왜냐하면 PK를 보통 sequence 같이 순차적으로 늘리는 경우가 많음
+    - 한쪽 leaf block만 쪼개져서 확장되는 경우가 생길 수 있음
+    - 이로 인해서 한쪽 leaf node들의 block에 값만 계속 차는 경우가 생길 수 있음
+    - 그럼 그쪽으로만 Access를 하게 되어서 Hot Block이 발생할 수 있음
 
 
 
+### Buffer Busy Wiats 해결 방안
+
+1. **대량 범위의 I/O를 수행하는 SQL 튜닝** [가장 중요!!]
+2. **Hash Partition**등으로 Block 내부의 데이터를 hot block을 회피 할 수 있도록 재 정렬
+   - Hash Partition을 할 순 있지만 영향도 check하는 것이 굉장히 힘든 일이 될 수 있다.
+3. **Reverse Index**는 Index Block의 Buffer Waits 자체는 해결할 수 있지만 rance scan등이 기존과 다른 결과를 초래하므로 **적용금지**
+   - range scan 없이  무조건 = 로 index를 탄다면 고려해볼 순 있으나 그런 경우가 거의 없음
+   - index의 key값이 1234였으면 4321로 바꾸는 것
+   - 분산이 되었으나 range sacn할때 그냥 full scan으로 들어간다 => 부하가 많이 들어감
+   - equal 조건밖에 안됨
+
+
+
+## Free buffer wait, DB file parallel write, write complete waits이해 및 개선 방안
+
+<img src="./06_Wait_Event.assets/image-20240414173239885.png" alt="image-20240414173239885" style="zoom:80%;" />
+
+- **Free buffer waits**
+  - Free Buffer가 부족하여 DBWR에게 Dirty Buffer를 디스크에 Wirte하여 비워 줄 것을 요청하면서 대기하는 Wait
+  - Free buffer가 나올때까지 기다리는 것
+    - Free buffer : 사용하지 않거나 사용이 가능한 상태 
+    - Buffer에 올려야 하는데 여유공간이 없는 상태라고 볼 수 있음
+  - Dirty Buffer에 경우 다시 DBWR로 인해서 DB에 Write해줘야 Free Buffer로써 사용할 수 있음
+  - **발생 원인**
+    - Free Buffer Wait보통 Dirty buffer가 많아서 발생한다기 보다는 대량 범위를 Access하는 악성 SQL에 의해서 발생한다. 
+      ==> 한번에 너무 많은 공간을 차지하기 때문에 발생하게 된다.
+    - 이런 것들이 자주 호출되게 된다.
+- **db file parallel write**
+  - DBWR이 Dirty block을 Storage의 데이터 파일에 Write 수행 시 대기하는 Wait
+  - parallell Query랑은 아무상관없음
+- **write complete waits**
+  - DBWR이 write하고 있는 버퍼 블록을 서버 프로세스가 읽기 위해서 대기하는 Wait
+  - 지금 write 중이니 complete할 때까지 기다리라는 
+
+
+
+### 발생 원인 및 개선 방안
+
+1. 대량 범위를 Access하는 악성 SQL
+   - **SQL 튜닝** 및 **Direct I/O**로 유도 가능한지 검토 
+     - 시간보다 **최소 block을 사용하도록 튜닝하는 것을 목표로 해야함**
+   - OLTP program 튜닝
+     - index 튜닝 60~70%
+     - sql 튜닝 나머지정도 된다.
+2. 느린 Storage I/O Write 성능
+   - **db file parallel write의 wait 시간** 검토 후 Storage 성능 점검
+     - 약 10~20ms 정도된다면 storage 성능을 고려해봐야한다.
+   - DBWR 숫자 증가 
+     (보통 Storage I/O가 Async I/O 지원되면 한 개로도 충분
+       db_wireter_process = CPU/8 권장)
+3. DBWR이 많은 잡업량
+   - checkpoint가 많이 발생하는지 확인
+     - FAST_START_MTTR_TARGET이 지나치게 작을 경우 발생 가능하다.
+     - 복구시간을 얼마나 빠르게 Recovery할 것이냐에 대한 parameter
+     - 즉 복구 시간을 빠르게하기 위해서 자주 저장을 해주는 느낌이다.
+     - 따라서 check point가 매우 자주 일어나게 된다.
+4. Wirte complete wait, db fiile parallel write가 일반적으로 나타난다면 보통은 Storage I/O성능 이슈
+
+
+
+
+
+## Log File Sync와 Log File Parallel Wirte 이해 및 개선 방안
+
+log file sync는 DML을 사용한다면 친근하게 만나는 wait event이다.
+
+![image-20240414183036081](./06_Wait_Event.assets/image-20240414183036081.png)
+
+- **Log File Sync**
+
+  - Server Process가 DML 수행 후 Commit을 하는 순간에 log file sync라는 wait event를 발생하면서 대기한다.
+
+    - 즉 LGWR에게 Write 요청 후 기다리는 것
+
+  - 주로 매우 빈번한 commit이 발생하거나 redo log file의 I/O 시스템 성능이 좋지 않을 떄 발생
+
+    - RAID5일때 많이 발생
+    - DML이 많은 것과 commit이 자주 발생하는 것은 다르다.
+
+    
+
+- **Log File Parallel Write**
+
+  - LGWR도 log file parallel write라는 wait event를 발생하고  OS에게 write 요청 후 대기
+  - sync와 마찬가지 이유로 주로 발생한다.
+
+
+
+### 발생 원인 및 개선 방안
+
+1. 너무 빈번한 Commit으로 발생. Commit의 단위를 줄여야한다.
+
+   - 너무 상세하게 업무적으로 분리된 Transaction별로 Commit을 수행한다면 이들을 통합하여 하나의 Tansaction으로 통합 
+
+     - ![image-20240414184259832](./06_Wait_Event.assets/image-20240414184259832.png)
+
+     - 트랜잭션 설계가 잘못된 경우이므로 수정해준다.
+
+     - 하지만 동시접속자 수가 많고, 개별 commit을 날린다고 해서 일어나는 경우는 많지 않음
+
+       
+
+   - **PL/SQL For loop** 내에서 **1건당 Commit**을 할 때 발생
+
+     - 여러 건을 한번에 Commit하는 것으로 수정
+
+     - ```sql
+       Cursor c1 IS
+       select id
+       	, name 
+       from customer;
+       
+       Begin
+       	For cus_rec in c1;
+       	Loop
+       		update customer_address set addr = `  ` where id = cur_rec.id;
+       		commit_interval := commit_interval + 1;
+       		
+       		-- commit을 100번당 한번씩 하도록 짠다 / N번당 한번
+       		if MOD(commit_interval,100) = 0 then commit; 
+       		end if
+       	END Loop
+       ```
+
+     - Arrary Proccessing을 통하여 진행하도록한다.
+
+
+
+2. system이 RAID 5 일경우 I/O Write 성능 이슈가 발생한다.
+
+   - system이 RAID 5일 경우 DML이 많은 시스템일 경우 log file sync가 빈번하게 발생한다.
+
+   - 따라서 RAID 1+0 구성 권고
+
+   - Storage DR을 Sync 레벨로 구성한 경우 DR시스템의 거길에 따라 lof file sync가 빈번하게 발생하여 성능 영향을 끼칠 수 있음
+
+     - sync 모드 : commit이 되면 DR에서도 commit이 되고 현 시스템이 ACK까지 받아야 1 commit이 된다.
+       - 즉 sync모드로 시스템을 구성할 경우 **150~200km 정도 거리제약**이 있다.
+       - **async를 고려해야한다.**
+
+   - **리두 버퍼 크기가 너무 클 경우** 기록해야할 데이터가 늘어나 log file sync 대기시간 증가 가능
+
+     - 즉 한번에 저장해야할 것들이 많기 때문에
+
+       - 막 1G까지 늘어남? => 다른 문제들이 생기게 됨 / IO양이 못따라감
+
+       - **100M 이상 잡는건 아니라고 생각함** => 이것도 크게 잡은 것
+
+       - 40~100M 사이
+
+         
 
 
 
