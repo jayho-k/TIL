@@ -547,6 +547,54 @@ log file sync는 DML을 사용한다면 친근하게 만나는 wait event이다.
 
          
 
+## Log buffer sapce, log file switch completion, log file switch의 이해
+
+![image-20240422224415751](./06_Wait_Event.assets/image-20240422224415751.png)
+
+### Log buffer space
+
+- 정의
+
+  - Redo Log Buffer 파일에 들어가기 위해서 기달리는 event
+
+- 원인
+
+  - Redo Log Buffer는 1/3이 차면 LGWR을 이용하여 Storage에 저장을 하게 된다.
+
+  - 하지만 
+
+    1. Redo Log Buffer가 극도로 작을 경우
+    2. DML이 굉장히 많을 경우
+
+    - 빠르게 Redo Log Buffer를 점유하는 상황이 발생하여 wait 발생
+
+  - 따라서 LGWR을 빠르게 만들어 줘야한다.
+
+- 해결
+
+  - Redo Log Buffer를 최소 10M이상 증가시킨다. (크기가 너무 작을 경우 )
+  - I/O성능을 높여준다.
+  - redo Log를 최대한 쓰지 않는 방향으로 진행한다.
+    - **insert /*+append\*/  from table**
+      - 하지만 이걸 써도 redo log file이 남는다. 요즘은 드라마틱하게 줄어들진 않음
+    - **Table을 Nologging으로 바꾸는 방법**
+      - 이렇게 되면 table복구를 할 수 없다. 따라서 이런식으로 batch를 치지 않음
+      - 따라서 보통 batch성 table들을 Nologging을 사용한다.
+      - batch성 table : 테이블 조합해서 만들어 낼 수 있는 table들
+      - 중요한 Table일 경우 Nologging을 사용하지 않는 것이 맞음
+
+### log file switch completion
+
+- 정의
+  - Redo Log File Group이 다 차게 되면 다른 Group으로 switch를 하게 된다.
+  - 하지만 너무 다른 그룹들이 너무 빨리차서 다음 Group이 아직 DB 파일에 Check Point를 진행하고 있는 경우 또는 Archive를 수행하고 있는 경우에 wait로 오래기다리게 되는 경우 발생하게 된다.
+- 해결
+  - Log file switch completion/ log file switch의 경우 redo log file크기를 증가시킨다.
+
+
+
+
+
 
 
 
