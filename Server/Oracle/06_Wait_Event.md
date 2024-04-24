@@ -593,21 +593,127 @@ log file sync는 DML을 사용한다면 친근하게 만나는 wait event이다.
 
 
 
+## Library cache 상세 구조
+
+![image-20240423222356482](./06_Wait_Event.assets/image-20240423222356482.png)
 
 
 
+- Library Cache자체는 각각의 LCO를 획득해야한다.
+
+  - SQL을 가지고 SQL과 관련된 LCO를 찾아야한다.
+
+  - 그래서 여러 정보들을 찾아서 작업을 진행한다.
+
+    
+
+- col에 대한 Index를 Rebuild하거나 drop하거나 Index 추가하는 등 작업을 진행
+
+  - 그럼 LCO가 변경이 된다.
+  - ALTER TABLE DROP / ALTER INDEX와 같은 DDL이 수행되면 LCO에 대한 변경이 반영되어야한다.
+  - 따라서 Library Cache내의 해당 **LCO들에 대한 Latch/Lock이 수행되어야한다.**
+
+- LCO (Library Cache Object)
+  - SQL을 수행하기 위한 여러 오브젝트에 대한 정보 보유
+  - SQL, Package, Procedure, 테이블, 인덱스 등
+    - SQL에서 참조하는 Obejct들의 구성
+    - 참조 권한
+    - SQL 및 실행 계획 관련 메모리 영역 포인터
+  - 오래되거나 Invalidate된 SQL은 Aging out을 적용
+
+- Dependency Table
+  - SQL이 참조하는 Table
+    - View, Procedure, Trigger
+
+- Child Table
+  - 밑에 설명
+
+- Data Block
+  - SQL 및 실행계획 관련한 메모리 영역 포인터
+    - 파스 트리(parse tree)가 만들어진다
+    - index 무엇을 타는지 등
 
 
 
+### SQL 다중 버전 관리
+
+![image-20240423230656119](./06_Wait_Event.assets/image-20240423230656119.png)
+
+- 호출하는 스키마가 다름
+  - 스키마 명 : TOM
+  - 스키마 명 : BRAD
+    - 즉 유저가 다른데 Table이 똑같은 경우가 있음
+      - 믹싱, 극판, 화성의 유저가 각각있는데 Table이름은 같지만 데이터가 다름
+      - SQL자체가 똑같음
+    - 이러한 경우 때문에 다중 버전을 관리해야한다.
+  - 위 같은 경우
+    - 1개의 Parent LCO
+    - 2개의 Child LCO를 가지고 있음
+
+- Parent LCO
+  - SQL 자체만 가지고 있음
+- Child LCO 
+  - 모든 LCO에 관한 정보를 모두 가지고 있음
 
 
 
+![image-20240423222356482](./06_Wait_Event.assets/image-20240423222356482.png)
+
+- Latch 보다 Mutax가 조금 더 빠르다
+
+  - 하지만 전반적으로 다 적용되지는 않고 Library cache쪽이 Mutax로 좀 바뀌었다.
+
+- **library cache : mutex X**
+
+  - SQL Syntax 체크 및 LCO 탐색하는데 mutax 사용
+
+    
+
+- **Libarary cache lock**이 기본적으로 들어감
+
+  - parsing
+    - soft parsing : 오랫동안 잡고 있진 않는다.
+    - hard parsing 
+      - **Cursor : pin S wait on X 이벤트도 발생**하게 된다.
+  - mode
+    - shared mode
+      - soft parsing이 되면 shared mode가 적용이 된다.
+    - exclusive mode
+      - Hard Parsing, PL/SQL과 같이 LCO를 exclusive 하게 잡아야하는 것들이 exclusive mode로 보통 진행된다.
+        - 정보를 저장해놔야하기 때문에 exclusive 하게 잡음
+
+  
+
+- **Latch : shared pool**
+
+  - 신규 SQL이 들어오면 신규 메모리가 잡혀야한다.
+
+  - 그럴때 Latch에 shared pool이 잡히게 된다.
+
+    
+
+- **Kksfbc child completion**
+
+  - child LCO를 만들기 위해서 대기하는 wait
+  - 보통 Cursor : pin S wait on X 이벤트와 같이 발생한다고 보면 된다.
 
 
 
+### 해결방안
 
-
-
-
-
+1. Dynamic/ Literal SQL 빈도가 높은지 확인
+   - 반드시 Static SQL 적용 (변환이 어려울 경우 CURSOR_SHARING=FORCE 적용)
+2. Shared Pool 크기 증가가 필요한지 확인
+   - Library Cache, Data Dictionary Cache Hit Ratio 95~99% 이상 유지
+   - V$HARED_POOL_ADVICE 등을 참조하여 적정 Shared Pool 크기 산정
+3. 동시 접속 부하가 많은 업무 시간에 DDL 수행 금지
+   - ALTER TABLE, 특히 INDEX 생성, Rebuild등의 작업은 동시 접속 부하가 많을 시 금지
+     - col 추가, modify, index 등등 절대 금지
+     - table에 대해 analize 금지
+4. 크기가 큰 PL/SQL 패키지는 Age out 되지 않게 pinning 고려
+   - execute dnms_shared_pool.keep('패키지 명')
+5. 버그 등을 의심
+   - version up등을 하면서 버그가 나오는 경우가 많음
+   - 보통 Library cache에서 버그가 많이 나옴
+   - Mutex를 썼을때 버그가 많이 발견된 적도 종종 었었음
 
