@@ -34,11 +34,65 @@
 
 ## AWR 만드는 방법
 
+- DBA 권한을 가지고 있으면 AWR을 만들 수 있음
+- AWR의 Default는 html이다.
+
 ```sql
-cd $ORACLE_HOME/rdbms/admin
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql
+
+Enter value for report_type: text -- report type을 text로 하겠다는 뜻
+
+Enter value for num_days: -- 몇일치의 데이터를 가지고 report를 뽑을지 
+
+Enter value for report_name: awrrpt_test_01 -- 이름 정하기
+
+
+------------------
+
+execute dbms_workload_repository.create_snapshot; -- 이렇게하면 snapshot하나가 만들어진다.
+-- 시간 경과 후
+execute dbms_workload_repository.create_snapshot;
+-- 이렇게 2개를 찍고 비교 가능
+
+------------------
+-- 다시 작성 후
+Enter value for begin_snap: 299
+Enter value for end_snap: 300 -- 내가 찍었던 snapshot 활용
+```
+
+
+
+## Toad, sql developer에서 AWR
+
+```sql
+
+execute dbms_workload_repository.create_snapshot;
+execute dbms_workload_repository.create_snapshot;
+ 
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql -- @을 치면 파일을 실행할 수 있음
+Enter value for report_type: html
+Enter value for num_days:
+Enter value for begin_snap: 190
+Enter value for end_snap: 191
+
+dba 권한 sql developer 접속
+성능 클릭 - awr - awr report viewer - 190~191 
+
 
 
 ```
+
+
+
+## AWR Report 항목
+
+
+
+
+
+
+
+
 
 
 
