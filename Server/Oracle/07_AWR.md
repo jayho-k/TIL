@@ -154,7 +154,7 @@ dba 권한 sql developer 접속
 - 초당 4500 블록
   - 거의 Random Access라면 정상 운용 힘듦
   - 하지만 scan이 어느정도 있다면 안정성 있게 운영 가능
-    
+  
 - 안정적
   - Physical Reads : 10000 block
   - Db file Sequential read : 30% (random)
@@ -164,6 +164,53 @@ dba 권한 sql developer 접속
 
 
 ## Wait Event와 Load Prifile의 결합 분석 예제
+
+![image-20240604212858561](./07_AWR.assets/image-20240604212858561.png)
+
+- Logical reads : 
+  - 초당 12만 block을 읽는다.
+  - 0.12M * 8K(block 단위) => 초당 1GB
+-  Physical Read
+  - 초당 3K block을 읽는다.
+  - 3K * 8K => 초당 24MB 정도
+- 질문
+  - 현 시스템은 Logical I/O, Physical I/O의 사용량이 많은 시스템인가?
+  - Physical read의 량은 상당수준 높은 편이다.
+  - 특히 Logical Read가 매우 많음
+  - 이를 감안할때 자주 수행되는 SQL이 많은 Block을 Access하여 사용됨을 알 수 있음 
+
+
+
+![image-20240604212914855](./07_AWR.assets/image-20240604212914855.png)
+
+- 문제 : 
+  - **log file sync가 오래 걸리는 것 + Random I/O가 많은 것이 문제**
+    - Random I/O시 바랫ㅇ하는 DB file sequential read가 일정 수준이상 존재
+    - Random I/O에 대한 보강 필요
+    - Log file sync가 상당수준 이상으로 SQL 수행 성능에 영향을 미침
+  - time이 34ms => 많이 느리게 나온 것
+  - User I/O와 Commit을 합치면 28% 정도이므로 많은 비율을 차지 한다.
+  - CPU를 사용하는 양이 60~70%정도 됐었다.
+  - 사례
+    - sync DR을 해서 늘어났었어음 (논외)
+- 해결
+  - SSD 교체
+  - Random I/O를 많이 잡아먹는 SQL이 무엇인지 파악하기
+    - 즉 SQL 튜닝 필요
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
