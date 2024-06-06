@@ -90,24 +90,40 @@ dba 권한 sql developer 접속
 
 - Report Summary로 시작을 해야한다.
   - Load Profile과 Top 10 wait event를 출발점으로 가져가는 것이 중요하다.
+  
   - Load Profile
     - Logical Read : 버퍼 캐시를 Access하는 것
+    
     - Physical Read : 
       - 초당 2000이라고 가정
+      
       - 8k * 2k => 16M
+      
+        
+    
   - Instance Efficiency Perventage
     - 인스턴스에 대한 효율을 말한다.
+    
+      
+    
   - Wait Event TIme
     - wait들의 Time이 얼마나 되는지를 확인해야한다.
-    - 그리고 이 wait들의 비율이 DB CPU보다는 작아줘야한다.
-      - DB CPU가 썼다는 뜻은 버퍼캐시 read 즉 Logical Read를 많이 했다는 뜻이된다. 
-      - 나머지는 대표적으로 IO read를 한다. (db file scattered read, ddb file sequential read)
-      - 
--  SQL Statistics
+    
+    - 그리고 이 **wait들의 비율이 DB CPU보다는 작아줘야한다.**
+      - **DB CPU가 썼다는 뜻은 버퍼캐시 read 즉 Logical Read를 많이 했다는 뜻**이된다. 
+      
+      - 나머지는 대표적으로 IO read를 한다. (db file scattered read, db file sequential read)
+      
+        
+  
+- SQL Statistics
+
 - Advisory Statistics
   - size를 어떻게 정해야 할지에 대해서 advise해준다.
 
-- 위 3개 이외는 3개의 상세하게 설명하는 버전이다.
+    
+  
+- 위 3개 이외는 3개를 상세하게 설명하는 버전이다.
 
 
 
@@ -121,7 +137,7 @@ dba 권한 sql developer 접속
 
 - 주의
   - wait만 보는 방향성이 생기면 안된다.
-  - DB의 성능 지표인 **Load Prifile과 Wait Event가 어떻게 시스템의 CPU Usage와 Wait로 연계**되어 있는지 확인하는 것이 중요
+  - DB의 성능 지표인 **Load Profile과 Wait Event가 어떻게 시스템의 CPU Usage와 Wait로 연계**되어 있는지 확인하는 것이 중요
 - 추천
   - Load Profile과 Wait Event를 같이 확인하는 것을 추천
   - DB와 CPU를 결합하고 어떻게 연계되었는지 확인하는 것이 필요
@@ -133,7 +149,7 @@ dba 권한 sql developer 접속
 ![image-20240518000934350](./07_AWR.assets/image-20240518000934350.png)
 
 - Wait Event의 경우 CPU Time 대비하여 db file sequential read의 %가 높음
-  - 문제가 있는 system인 것은 맞으나 Load Prifile을 확인해봐야함
+  - 문제가 있는 system인 것은 맞으나 Load Profile을 확인해봐야함
 - Load Profile에서 Logical reads 초당 10786으로 높지 않고 Physical reads는 더 낮다
   - 따라서 CPU가 애초에 적게 일을 하고 있을 확률이 높음 => 거의 30%정도 밖에 일을 하지 않을 것임
   - 즉 개선은 필요하다 급한건 아니며, 시스템을 upgrade할 필요가 없음
@@ -185,7 +201,7 @@ dba 권한 sql developer 접속
 
 - 문제 : 
   - **log file sync가 오래 걸리는 것 + Random I/O가 많은 것이 문제**
-    - Random I/O시 바랫ㅇ하는 DB file sequential read가 일정 수준이상 존재
+    - Random I/O시 바랫하는 DB file sequential read가 일정 수준이상 존재
     - Random I/O에 대한 보강 필요
     - Log file sync가 상당수준 이상으로 SQL 수행 성능에 영향을 미침
   - time이 34ms => 많이 느리게 나온 것
@@ -200,21 +216,116 @@ dba 권한 sql developer 접속
 
 
 
+## AWR Report - Load Profile 상세
 
+> - load prifile만 보고 어떤 유형의 부하가 얼마만큼 가해지고 있는지 확인하는 연습이 필요하다.
+> - 이를 통해서 어떤ㄴ한 유형의 Application이 주로 구동되어 있는지 알 수 있다.
 
+![image-20240606205741715](./07_AWR.assets/image-20240606205741715.png)
 
+- 보는 방법
 
+  - Per Second : 초당만 봐도 충분하다.
 
+  - Per Transaction : commit or roll back 당 지표
 
+    - 하나의 Transaction이 얼마만큼의 부하를 일으키고 있는지 확인할 수 있음
+    - 이 시스템이 OLTP인지, Batch인지, DSS형인지 등을 확인할 수 있음
 
+    
 
+- **중요한 부분**
 
+  - **DB time / CPU**
 
+    - Wait를 합하지 않고 오직 CPU를 사용한 시간 / 크게 중요하지 않음
 
+      
 
+  - **Physical Read**
 
+  - **Physical write :** 
 
+    - batch와 관련 있음
 
+    - 초당 몇 백 MB를 write하는 경우에는 physical write가 높을 수 있다.
 
+      
 
+  - **Redo size**
 
+    - redo log size의 증가 크기
+
+    - **Redo file switch를 최대 5분정도로 본다.** 즉 5분은 넘기면 안됨
+
+    - 예시 
+
+      - 645K * 900초(가정) = 570MB => **약 15분** 뒤에 switch가 일어남
+
+      - 비교적 빠른 시스템에 해당된다. 전혀 작은 경우가 아님 
+
+        
+
+  - **Logical Read**
+
+    - Buffer cache read block 수
+
+    - 예시
+
+      - 0.14MB * 8K = 1GB
+
+        
+
+  - **Block changes**
+
+    - DML로 변경된 block의 수
+
+      
+
+  - **Read IO Requests, Write IO Request**
+
+    - read, write 요청 횟수
+
+    - Physical read write와 비슷하나 1block을 요구했는지 mulit block을 요구했는지에 따라 다를 수 있음
+
+      
+
+  - **Read/ Write I/O :** 
+
+    - read/ write 크기
+
+    - Read IO Request * 8k
+
+      
+
+  - **User calls** 
+
+    - client가 요청한 call 수
+
+    - Parse, Excute 포함
+
+      
+
+  - **Execute**
+
+    - SQL의 실행 횟수 
+
+    - 보통은 User call보다 Execute가 작다. 하지만 예제에서는 높은데 PL/SQL문 때문에 그렇다.
+
+      - 성능이 그렇게 좋지 못한 상태
+
+    - Transaction 한번 당 27번 Execute 발생 => 높음 => 확인 필요  
+
+      
+
+  - **Rollback**
+
+    - Transaction 실행 시 Rollback 횟수
+
+    - Rollback이 많으면 system이 이상한것이다.
+
+      
+
+  - **Transaction** : 
+
+    - Rollback + Commit
