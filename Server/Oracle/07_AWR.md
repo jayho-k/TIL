@@ -329,3 +329,60 @@ dba 권한 sql developer 접속
   - **Transaction** : 
 
     - Rollback + Commit
+
+
+
+## Load Profile Wait Event 사례
+
+![image-20240612232321312](./07_AWR.assets/image-20240612232321312.png)
+
+- **case1**
+
+  - Redo size
+
+    - 24k 정도면 빈번하게 일어나고 있지 않음
+    - 24k * 600 = 14MB/10분당 => DML 부하가 많지 않음
+
+  - Logical Reads
+
+    - 높다고 봐야한다. (사실 145k이면 높지는 않은데 Physical Read와 같이 봐야함)
+
+    - Physical이 1M가 정도인데 Logical은 1G가 나옴
+
+    - 버퍼 캐시가 굉장히 크게 잡아놓았다. 따라서 굉장히 높게 잡힘
+
+    - 즉 Over spec이다. 왠만한것들이 다 버퍼에 올라가 있다고 봐야한다.
+
+    - 하지만 sequentiail read가 5미리 세컨드가 나온다. 따라서 SSD로 바꾸던가 해야하지만 user 입장에서는 크게 체감을 느끼진 못할 것
+
+      
+
+- **case2**
+
+  - Logical 과 Physical이 굉장히 크다.
+    - 그럼 batch성 시스템인가?
+    - 아니다. 왜냐하면 user calls가 초당 679번 발생한다.
+    - OLTP라고 봐야한다.
+  - 하지만 IO를 사용하는것을 보면 
+  - **wait event**
+    - PX Deq Credit : send blkd와 db file scattered read를 보면 parell query를 살펴봐야한다.
+
+
+
+![image-20240612234403673](./07_AWR.assets/image-20240612234403673.png)
+
+- Case3 : 전형적인 하이브리드 => batch와 같이 사용
+  - Logical : 1G
+  - Physical  : 34M
+  - user calls : 1600
+  - Executes : 800 => user calls가 1600인데 수행은 800개?
+  - transaction : 초당 4개
+  - wait Event
+    - db fiel sequential read => 41.0%로 굉장히 높음
+      - 즉 Rendom I/O가 굉장히 많이 일어나고 있다.
+      - Avg Wait : 4ms로 굉장히 높게 나옴
+
+
+
+
+

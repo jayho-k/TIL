@@ -314,20 +314,126 @@ workspace란?
 
 ## Source Code Management
 
-Git
+**Repository**
 
 - 일반적으로 신규 소프트웨어 빌드를 생성하는 젠킨스 작업은 중앙 리포지터리로 커밋된 최신 코드에서 작동
+
 - 젠킨스가 푀신 코드를 다운로드해 빌드할 수 있도록 Repo URL을 추가해야한다.
+
 - 개인 Repo일 경우
+
   - username, pw, ssh 개인키 등을 제공해야한다.
 
+  - Windows 자격 증명 관리자에서 자격증명을 추가하면 Credentials 트롭다운 메뉴에서 자격증명 항목을 선택하지 않더라고 URL 필드에 에러가 발생하지 않는다.
+
+    
+
+**Build Branch**
+
+- 기본  
+  - 마스터 브랜치를 기준으로 변경사항을 확인
+  - 원격 Repo의 브랜치에서 코드를 다운로드한다.
+- 다른 브랜치를 지정하고 싶다면 이 옵션에 브랜치를 추가하면 된다.
 
 
 
+## Build Triggers
+
+> 젠킨스에서 작업에 착수하는 시점을 설정할 수 있음
+
+- **Trigger builds remotely**
+
+  - Meaning
+
+    - git repo같은 외부 서비스에서 젠킨스 작업을 시작할 수 있음
+    - 개발자가 코드를 master branch에 merge하면 젠킨스 작업이 시작
+
+  - Options
+
+    - Polling Source Code Repository
+      - 특정 시간 간격마다 소스코드 리포지터리의 변경여부를 확인
+      - 변경이 있다면 즉시 작업을 시작
+    - Triggering Jenkins Job from SCM on a specific event
+      - 특정 이벤트가 발생할 경우 작업을 시작하도록 설정
+      - 코드가 특정 브랜치에 병합될 때 발생하는 병합 이벤트
+      - 이 옵션같은 경우 Trigger Build Remotely옵션을 선택해야한다.
+
+  - how to use
+
+    - `<젠킨스_URL>/job/<작업_이름>/build?token=<토큰_이름>`
+      - **젠킨스_URL** : 젠킨스 인스턴스에 접근하기 위한 URL
+      - **작업_이름** : 젠킨스 작업 이름. 표시 이름이 아닌 작업이름을 입력해야함
+      - 토큰 이름 : 시작하는 데 사용할 엑세스 토큰
+
+    
+
+- **Buiild after other projects are build**
+
+  - Meaning
+
+    - 다른 작업을 완료한 후에 이 작업을 시작하고 싶을때 사용
+    - ex
+      - 현재 작업이 CompileJavaApplication이라는 선행 작업의 결과로 생성되는 아티팩트를 사용하는 경우, 이 옵션을 선택하고 CompileJavaApplication을 Project to watch에 추가하는 식으로 현재 작업을 설정
+
+  - Options
+
+    - Trigger only if buiild is stable
+
+    - Trigger even if the build is unstable
+
+      - 컴파일은 성공했지만 Unit test는 실패한 경우 unstable
+      - 이 경우에도 Trigger 실행하도록 설정
+
+    - Trigger even if the build fails
+
+      - 실패하거나 중단된 경우에도 작업시작
+
+        
+
+- **build periodically**
+
+  - Meaning
+
+    - 매일, 매월, 매주 같은 특정 시간과 간격에 따라 빌드를 시작할 수 있음
+
+    - 윈도우의 작업 스케줄러나 유닉스 시스템의 cron 작업과 같은 기능을 제공
+
+    - **CI/CD원칙에 부합하지 않는다.**
+
+      - CI/CD는 코드에 변경이 발생하는 즉시 빌드가 진행되고 그 결과를 피드백하는 방식이기 때문이다.
+      - 따라서 유용한 경우는 애플리케이션이 빌드돼 테스트 환경에 배포된 후, E-E 테스트를 실행하는 작업을 시작하는 경우 유용하다.
+
+    - ```
+      MINUTE HOUR DOM MONTH DOW
+      DOM : DAY OF MONTH
+      SOW : DAY OF WEEK
+      
+      매월, 매일, 모든 요일마다 오전 8시 45분에 실행
+      45 8 * * *
+      ```
+
+- **GitHub hook trigger for GISTcm polling**
+
+- **Poll SCM**
+
+  - 일정시간 마다 SCM을 확인해서 코드변경이 있는 경우 빌드를 진행한다.
 
 
 
+## Build Steps
+
+> - 1개 이상의 step을 하나씩 실행하는 식으로 현재 작업에 할당된 task를 수행할때 사용
+> - 배치파일 실행, 빌드 도구 실행 등
+
+- how to use
+  - 윈도우 터미널의 명령을 실행하는 step을 추가하고 싶은 경우
+    - Execute Windows batch command
+    - echo "Hi there"
+  - 여러 개의 step을 추가할 수 있으며, 위 부터 순차적으로 실행
 
 
 
+## Post-Build Action
 
+> - 할당된 Task가 완료된 이후 수행하려는 작업이 있을 떄 사용
+>   - ex_ email
