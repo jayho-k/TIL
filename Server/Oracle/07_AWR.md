@@ -384,5 +384,172 @@ dba 권한 sql developer 접속
 
 
 
+## AWS Report SQL Statistics
+
+> - SQL ordered by Elapsed Time (수행 시간) 
+>
+> - SQL ordered by CPU Time (CPU 시간)  : CPU를 얼마나 썼느냐
+>
+> - SQL ordered by User I/O Wait Time (User I/O Wait 시간) 
+>
+> - **SQL ordered by Gets (Buffer Cache access block 수)** : Access를 한 block을 줄이는게 튜닝
+>
+> - **SQL ordered by Reads (Physical(Storage) access block 수)**
+>
+> - SQL ordered by Physical Reads (UnOptimized) 
+>
+>   : Optimized가 안된 것들/ 신기술을 쓰면 줄일수 있음
+>
+> - SQL ordered by Executions (호출/수행 횟수)
+>
+> - SQL ordered by Parse Calls (Parsing 횟수) 
+>
+> - SQL ordered by Sharable Memory (shared pool 점유) 
+>
+> - SQL ordered by Version Count •Complete List of SQL Text
+
+- 대부분 GETS와 READS로 많이 본다.
+  - DB CPU의 비율이 높으면 좋다. 왜냐하면 Buffer를 많이 사용하고 있는 것이기 때문이다.
+    - 하지만 Buffer를 너무 많이 쓰면 안좋다.
+    - 왜냐하면 어느순간에 버퍼가 내려와야하기 떄문이다.
+
+
+
+예시 : 총 2시간동안 데이터
+
+![image-20240616000031273](./07_AWR.assets/image-20240616000031273.png)
+
+- Buffer Gets : 2시간동안 Buffer를 얻은 개수
+- Gets Per Exec : 
+  - 한번 수행할 때 마다 Get한 Block수 
+  - 1번 수행할 때 마다 9k * 8k = 72M를 가져가게 된다.
+
+- 3번쨰 : 1번 access할떄마다 10G정도 가져가게 된다. ==> **굉장히 큼**
+
+- 문제점
+
+  - 자주 사용되는 SQL들이 매우 많은 Buffer Cache를 차지하고 있다.
+
+  - 상대적으로 다른 SQL들이 Buffer Cache를 사용할 확률이 적어지며 SQL의 수행속도가 저하되게 된다.(1번째)
+
+  - 자주 호출되지 않는 특정 SQL도 매우 많은 Buffer Cache를 사용하고 있기 때문에 SQL에 대한 튜닝이 필요해 보인다. (3번째)
+
+
+
+## Advisory Statistics
+
+> - Buffer Pool Advisory 
+> - PGA Aggr Summary 
+> - PGA Aggr Target Stats 
+> - PGA Aggr Target Histogram 
+> - PGA Memory Advisory 
+> - Shared Pool Advisory 
+> - SGA Target Advisory 
+> - Streams Pool Advisory 
+> - Java Pool Advisory
+
+PGA Memory Advisory 
+
+![image-20240616142453267](./07_AWR.assets/image-20240616142453267.png)
+
+- PGA Target Est (MB) : PGA 예상 크기
+- Size Factr : 현재 설정된 PGA 크기 대비 예상 PGA 크기 비율
+- W/A MB Processed : PGA 사용 효율 예측시 고려된 SQL Work Area
+- Estd Extra W/A MB Read/Written to Disk : PGA 크기 변경 시 예측되는 temp tablespace I/O 발생 크기
+- Estd PGA Cache Hit %
+- Estd PGA Overalloc Count : PGA 크기 변경시 예상되는 추가 메모리 할당 수
+
+
+
+
+
+![image-20240616143216525](./07_AWR.assets/image-20240616143216525.png)
+
+
+
+## Instance Diifiency Percentages
+
+> - 버퍼 캐시, Library Cache, PGA , Redo, Parsing, Latch등의 요소에 대한 주요 Ratio 지표를 축약하여 나타냄
+
+![image-20240616144329213](./07_AWR.assets/image-20240616144329213.png)
+
+- **Buffer Nowait % :** 
+  - Buffer Cache에 접근하기 위해 Wait하지 않은 비율. **99%이상 유지**
+  - 만약 낮다면 Hot block 경합에 따른 Wait 의심 (주로 Buffer busy)
+  - 보통 wait event에서 확인 가능
+- **Redo Nowait %**
+  - Redo (Buffer + redo log) 접근시 Wait 하지 않은 비율. **99%이상 유지**
+  - 만약 낮다면 Redo 관련 Wait 경합 의심
+- **Buffer Hit %**
+  - Buffer Cache Hit Ratio. OLTP에서 95% 이상 유지. 이슈 시 SQL 튜닝 또는 Buffer 크기 증가
+- In-memory Soft %
+  - PGA내의 SORT AREA 메모리 내에서 Sorting된 비율. OLTP에서 95% 이상 유지. 이슈 시 PGA 크기 증대
+- Library Hit %
+  - Library Cache에서 밀려나지 않고 최초 로딩이 아닌 경우)이 아닌 비율. OLTP에서 95% 이상 유지
+- Soft Parse %
+  - Soft Parsing 비율. 95% 이상 유지 노력. 이슈 시 Shared Pool 크기를 키우거나, Soft Parsing 유도
+- Execute to Parse %
+  - 1 - Parsing 대비 Execute 비율
+- Latch Hit
+  - Latch 획득 시 대기(Latch Free)하지 않은 비율. 99% 이상 유지
+- Parse CPU to Parse Elapsed
+  - SQL 파싱 시 전체 수행 시간 대비 CPU 사용 시간 비율. 100 - Parsing 시 I/O Wait 등으로 Wait 비율.  이슈시 Shared Pool 크기 증가
+  - 보통은 SQL 파싱을 할 때 CPU를 바로 사용하지만 큰 PL/SQL 같은 경우 I/O를 끌어다 쓸때가 있다. 
+- % Non-Parse CPU
+  - Parsing하는데 사용되지 않은 CPU 비율. 
+  - 즉 100 - CPU가 SQL Parsing에 소모한 비율 이슈 시 Shared Pool 크기를 키우거나, Soft Parsing 유도
+
+
+
+## Host CPU, CPU, IO Profile, Shared Pool Statistics 등
+
+- Host CPU : 정확하지 않기로 유명
+- Instance CPU 
+  - 서버 하나에 2개 인스턴스 올릴 수 있음
+  - 해당 ORCL에 대한 정보이다.
+- IO Profile
+  - I/O와 관련된 정보
+  - Physical Read Write와 관련된 정보를 세세하게 나눈것이라고 보면된다.
+  - Load Profile을 I/O만 계산해서 뿌려주는 것
+
+
+
+## I/O Stats
+
+> - TableSpace 단의 read를 할 때 I/O의 성능이 얼마나 나오는지 확인하기 위함
+
+![image-20240616153053376](./07_AWR.assets/image-20240616153053376.png)
+
+- Buffer Cache Read를 5G정도 했다는 뜻
+  - 초당 765번 요청
+- Direct Read가 0인 이유는 거의 Buffer에서 읽는 다는 뜻이다.
+
+
+
+![image-20240616153450840](./07_AWR.assets/image-20240616153450840.png)
+
+- 자주 사용하지 않는 Av Rd가 높은 것은 별로 문제가 되지 않는다
+  - 가령 20ms 라든가하는 경우
+  - 하지만 **자주 사용하는 경우 Av Rd가 높은 것은 문제가 된다.**
+  - 이런경우 I/O가 전반적으로 성능이 나오지 않는다는 뜻이다
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

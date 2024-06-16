@@ -84,7 +84,13 @@ antacartica
 #             passCnt+=1
 
 #     return passCnt
+
+
 import string
+import sys
+
+sys.setrecursionlimit(10000)
+
 alpha = []
 check_alpha = set(['a','n','t','i','c'])
 
@@ -93,16 +99,38 @@ for al in string.ascii_lowercase:
         continue
     alpha.append(al)
 
-def dp(d,k,st):
+def dp(m,r,st):
 
-    if d==k:
-        # 모든 단어를 하나씩 다 확인 set으로 되어있을 것임
+    if m==len(alpha):
+        if len(st) == r:
+            for s in st:
+                pass
+
+            print(st)
         return
-    
+
+    st += alpha[m]
+    dp(m+1,r,st)
+
+    st = st[:-1]
+    dp(m+1,r,st)
 
 
-    dp(d+1,k,st)
-    dp(d+1,k,st+alpha[d])
+n,k = input().split()
+n,k = int(n),int(k)
+
+word_lst = []
+for _ in range(n):
+    word = input()
+    tmp = ''
+    for i in range(4,len(word)-4):
+        if word[i] in check_alpha:
+            continue
+        tmp+=word[i]
+
+    word_lst.append(set(tmp))
+
+# dp(0,k-5,'')
 
 
 
