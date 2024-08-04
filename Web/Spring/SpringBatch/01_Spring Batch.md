@@ -159,9 +159,130 @@ public class HelloJobConfiguration {
          - 운영에서 수동으로 스크립트 생성 후 설정하는 것을 권장
            - **운영에서는 always로 하는 것은 위험하다.**
 
+
+
 ### DB 테이블 구성
 
+- Meta Data를 저장한다.
+
 ![image-20240802232506323](./01_Spring Batch.assets/image-20240802232506323.png)
+
+- **Job 관련 테이블**
+
+  - **BATCH_JOB_INSTANCE**
+
+    - Job이 실행될 때 JobInstance 정보가 저장
+    - Job_name, job_key를 키로 하여 하나의 데이터가 저장
+    - 동일한 job_name, job_key로 중복 저장될 수 없음
+
+  - **BATCH_JOB_EXECUTION**
+
+    - job의 실행 저보가 저장
+    -  job 생성, 시작, 종료시간, 실행 상태, 메시지 등을  관리
+
+  - **BATCH_JOB_EXECUTION_CONTEXT**
+
+    - Job과 함께 실행되는 JobParameter 정보를 저장
+
+  - **BATCH_JOB_EXECUTION_PARAMS**
+
+    - Job의 실행동안 여러가지 상태정보, 공유 데이터를 직렬화 (Json)해서 저장
+    - Step간 거로 공유가 가능하다
+
+    
+
+- **Step 관련 테이블**
+
+  - **BATCH_STEP_EXECUTION**
+    - Step의 실행정보가 저장
+  - **BATCH_STEP_EXECUTION_CONTEXT**
+    - Step 별로 저장되며 Step간 서로 공유할 수 없음
+    - Step의 실행동안 여러가지 상태 정보, 공유데이터를 직렬화해서 저장
+
+
+
+### DB Table Columns
+
+#### **BATCH_JOB_INSTANCE**
+
+- JOB_INSTANCE_ID : 고유하게 식별할 수 있는 기본 키
+- VERSION : 업데이트 될 때 마다 1씩 증가
+- JOB_NAME : JOB을 구정할 떄 부여하는 이름 (잡을 생성할 떄 string으로 지정해준다.)
+- JOB_KEY : Job_name과 jobParameter를 합쳐 해싱한 값을 저장
+
+
+
+#### **BATCH_JOB_EXECUTION**
+
+- JOB_EXECUTION_ID : 기본키, JOB_INSTANCE와 일대 다 관계
+- VERSION : 업데이트 될 때마다 1씩 증가
+- JOB_INSTANCE_ID : JOB_INSTANCE의 키 저장
+- CREATE_TIME : 생성 시점
+- START_TIME : 시작 시점
+- END_TIME : 종료 시점 / **Job 실행 중 오류 시 값이 저장되지 않을 수 있음 (NULL)**
+- STATUS : 실행 상태를 저장 (COMPLETED, FAILED, STOPPED)
+- EXIT_CODE : 실행 종료 코드
+- EXIT_MESSAGE : 실패일 경우 원인
+- LAST_UPDATED : 마지막 실행 시점
+
+
+
+#### **BATCH_JOB_EXECUTION_PARAMS**
+
+- JOB_EXECUTION_ID : 식별 키, JOB_EXECUTION과 일대다
+- TYPE_CD : STRING, LONG, DATE, DOUBLE 타입 정보
+- KEY_NAME : 파라미터 키 값
+- STRING_VAL 
+- DATE_VAL
+- LONG_VAL
+- DOUBLE_VAL
+- IDENTIFYING : 식별 여부 (TRUE, FALSE) => 식별할지말지 
+
+
+
+**BATCH_JOB_EXECUTION_CONTEXT**
+
+- JOB_EXECUTION_ID
+- SHORT_CONTEXT : JOB의 실행 상태정보, 공유데이터등의 정보를 문자열로 저장
+- SERIALIZED_CONTEXT : 직렬화된 전체 ㅓㄴ텍스트
+
+
+
+**BATCH_STEP_EXECUTION**
+
+- STEP_EXECUTION_ID : Step 의 실행정보를 고유하게 식별할 수 있는 기본 키 
+- VERSION : 업데이트 될 때마다 1씩 증가 
+- STEP_NAME : Step 을 구성할 때 부여하는 Step 이름 
+- JOB_EXECUTION_ID : JobExecution 기본키, JobExecution 과는 일대 다 관계 
+- START_TIME : 실행(Execution)이 시작된 시점을 TimeStamp 형식으로 기록 
+- END_TIME : 실행이 종료된 시점을 TimeStamp 으로 기록하며 Job 실행 도중 오류가 발생해서 Job 이 중단된 경우 값이 저장되지 않을 수 있음 
+- STATUS : 실행 상태 (BatchStatus)를 저장 (COMPLETED, FAILED, STOPPED…) 
+- COMMIT_COUNT : 트랜잭션 당 커밋되는 수를 기록 
+- READ_COUNT : 실행시점에 Read한 Item 수를 기록 
+- FILTER_COUNT : 실행도중 필터링된 Item 수를 기록 
+- WRITE_COUNT : 실행도중 저장되고 커밋된 Item 수를 기록 
+- READ_SKIP_COUNT :  실행도중 Read가 Skip 된 Item 수를 기록 
+- WRITE_SKIP_COUNT : 실행도중 write가 Skip된 Item 수를 기록 
+- PROCESS_SKIP_COUNT : 실행도중 Process가 Skip 된 Item 수를 기록 
+- ROLLBACK_COUNT : 실행도중 rollback이 일어난 수를 기록 EXIT_CODE 실행 종료코드(ExitStatus) 를 저장 (COMPLETED, FAILED…) 
+- EXIT_MESSAGE : Status가 실패일 경우 실패 원인 등의 내용을 저장 
+- LAST_UPDATED : 마지막 실행(Execution) 시점을 TimeStamp 형식으로 기록
+
+
+
+**BATCH_STEP_EXECUTION_CONTEXT**
+
+- STEP_EXECITION_ID
+- SHORT_CONTEXT
+- SERIALIZED_CONTEXT
+
+
+
+
+
+
+
+
 
 
 
