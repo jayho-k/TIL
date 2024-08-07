@@ -321,51 +321,54 @@ public class HelloJobConfiguration {
 
 
 
-
-
-
-
-## 03_ExcutionContext
-
-
-
-
-
-
-
 ## 04_JobRepository / JobLauncher
 
+#### **기본 개념**
+
+- 배치 작업 중의 정보를 저장하는 저장소 역할
+- Job이 언제 수행되었고, 언제 끝났으며, 몇 번이 실행되었고 실행에 대한 결과 등의 배치 작업의 수행과 관련된 모든 meta data를 저장한다.
+  - JobLauncher, Job, Step 구현체 내부에서 CRUD 기능을 처리
 
 
 
+#### **JobRepository 설정**
+
+- @EnableBatchProcessing 선언하면 JobRepository가 자동으로 빈으로 생성됨
+- BatchConfigurer 인터페이스를 구현하거나 BasicBatchConfigurer를 상속해서 JobRepository설정을 커스터마이징 할 수 있다.
+  - JDBC 방식으로 설정 
+    - 내부적으로 AOP 기술을 통해 트랜잭션 처리
+    - 트랜잭션 isolation이 기본값 (최고 수준)
+      - 다른 레벨 (READ_COMMITED, REPEATABLE_READ)로 지정가능
+    - 메타 테이블의 TABLE PREFIX를 변경할 수 있음. (기본값 BATCH_)
+  - InMemory방식으로 설정
+
+![image-20240805192754377](./02_Domain.assets/image-20240805192754377.png)
+
+- extends BasicBatchConfigurer를 해줘여한다. 
 
 
 
+## JobLauncher
 
+#### **기본 개념**
 
+- 배치 Job을 실행시키는 역할
+- 인자 (Job, JobParameters) => return Execution
+- 스프링 부트 배치가 구동되면 JobLauncher 빈이 자동 생성 된다.
+  - DI를 받으면 된다. (직접 구동하고 싶을 경우)
+- Job실행
+  - JobLauncher.run(Job, JobParamters)
+  - 스프링 부트 배치에서는 JobLauncherApplicationRunner가 자동적으로 JobLauncher를 실행
+  - **동기적 실행**
+    - taskExecutor를 SyncTaskExecutor로 사용할 경우 (default)
+    - **스케줄러에 의한 배치처리에 적합** 
+      => 배치처리시간이 길어도 상관없는 경우
+  - **비 동기적 실행**
+    - taskExecutor가 SimpleAsyncTaskExecutor로 설정할 경우
+    - JobExecution을 획득한 후 Client에게 바로 JobExecution을 반환하고 배치처리를 완료한다.
+    - HTTP 요청에 의해 배치처리에 적합함, 배치처리 시간이 길 경우 응답잉 늦어지지 않도록 함
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![image-20240805201243869](./02_Domain.assets/image-20240805201243869.png)
 
 
 
