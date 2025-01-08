@@ -151,7 +151,95 @@ Thread-0: run()
 
 
 
+## Runnable
 
+- 실무에서 이 방법을 많이 사용한다.
+- 쓰레드 생성 방법
+  1. Thread  클래스 상속 받기
+     - 단점 
+       - 상속의 제한 : 자바는 단일 상속만 허용, 이미 다른 클래스 상속 받고 있으면 Thread class 상속 x
+       - 유연성 부족
+  2. Runnable 인터페이스 구현하기
+     - 장점 
+       - 인터페이스라 상속에 자유로움
+       - 코드 분리 가능
+       - 여러 스레드가 동일한 Runnable 객체를 공유할 수 있음
+
+```java
+public class HelloRunnable implements Runnable{ // 상속
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + ": run()");
+    }
+}
+```
+
+- 이 방법을 쓰면 **스레드와 작업을 분리**할 수 있다.
+
+
+
+```java
+// 중첩 클래스
+public class InnerRunnableMainV1 {
+    
+    public static void main(String[] args) {
+
+        log("main() start");
+
+        Runnable runnable = new MyRunnable();
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        log("main() end");
+    }
+    
+    // 중첩 클래스 : 여러 군데에서 안쓸거 같고 이 class 안에서만 사용할거 같을 때 사용
+    static class MyRunnable implements Runnable{
+        @Override
+        public void run() {
+            log(": run()");
+        }
+    }
+}
+
+
+// 익명 클래스
+public class InnerRunnableMainV2 {
+    public static void main(String[] args) {
+
+        log("main() start");
+
+        // 익명 class : 특정 method 안에서 간단하게 쓸 때
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                log("run()");
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        log("main() end");
+    }
+}
+
+// 람다
+public class InnerRunnableMainV3 {
+    public static void main(String[] args) {
+
+        log("main() start");
+
+        // lambda 로 가능
+        Thread thread = new Thread(() -> log("run()"));
+        thread.start();
+
+        log("main() end");
+    }
+}
+
+
+
+```
 
 
 
