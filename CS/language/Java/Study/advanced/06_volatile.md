@@ -219,7 +219,7 @@ static class MyTask implements Runnable{
 
     
 
-- **스러드 종료 규칙**
+- **스레드 종료 규칙**
 
   - 한 스레드에서 Thread.join()을 호출하면, join 대상 스레드의 모든 작업은 join()이 반환된 후의 작업보다 happens-before관계를 가진다.
 
