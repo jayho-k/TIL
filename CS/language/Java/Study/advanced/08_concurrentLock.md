@@ -82,6 +82,119 @@ LockSupport.parkNanos(2000_000000); // parkNanos 2초
 
 
 
+## ReentranctLock
+
+- `void lock()`
+
+  - lock을 획득한다.
+
+  - 락을 획득했다면, 락이 풀릴 때까지 스레드는 WAITING 상태
+
+  - 이 메서드는 interrupt에 응답하지 않는다.
+
+    
+
+- `void lockInterruptibly`
+
+  - 락 획득을 시도하되, 다른 스레드가 자신에게 인터럽트 할 수 있도록 한다.
+
+  - 만약 다른 스레드가 이미 락을 획득했다면, 현재 스레드는 락을 획득할 떄까지 대기
+
+  - 대기 중에 인터럽트가 발생하면 InterruptedException 이 발생하며 락 획득을 포기
+
+    
+
+- `boolean tryLock()`
+
+  - 락 획득을 시도하고, 즉시 성공 여부를 반환
+
+  - 만약 다른 스레드가 이미 락을 획득했다면 `false` , 그렇지 않으면 `true`
+
+    
+
+- `boolean tryLock(long time, TimeUnit unit)`
+
+  - \+ 특정 시간 동안 대기
+
+    
+
+- `void unlock`
+
+  - 락을 해제한다.
+
+  - 락을 해제하면 락 획득을 대기중인 스레드 중 하나가 락을 획득할 있게 된다.
+
+  - 락을 가지고 있는 스레드가 호출해야한다.
+
+  - 그렇지 않으면 `IllealMonitorStateExceprtion` 이 발생
+
+    
+
+- `Condition newCondition()`
+
+  - Condition 객체를 생성하여 반환한다.
+
+  - 락과 결합되어 사용되며, 스레드가 특정 조건을 기다리거나 신호를 받을 수 있도록 한다.
+
+    
+
+
+
+### 공정성
+
+### Non-fair mode 
+
+- 성능 우선
+- 선검 가능
+- 기아 현상 가능성 
+
+### Fair mode
+
+- 공정성 보장
+- 기아현상 방지
+- 성능 저하
+
+
+
+## 예제
+
+![image-20250113083304561](./08_concurrentLock.assets/image-20250113083304561.png)
+
+```java
+@Override
+public boolean withdraw(int amount) {
+
+    log("거래 시작 : " + getClass().getSimpleName());
+
+    lock.lock(); // lock을 걸면 try finally를 통해 unlock을 해준다. // 변경 된 부분
+    try{
+        log("[검증 시작] 출금액 : " + amount + " , 잔액 : " + balance);
+        if(balance < amount){
+            log("[검증 실패]");
+            return false;
+        }
+        log("[검증 완료] 출금액 : " + amount + " , 잔액 : " + balance);
+        sleep(1000);
+        balance = balance - amount;
+        log("[출금 완료] 출금액 : " + amount + " , 잔액 : " + balance);
+    }finally {
+        lock.unlock(); // lock 해제 // 변경 된 부분
+    }
+    log("거래 종료 : " + getClass().getSimpleName());
+    return true;
+}
+```
+
+- **주의**
+  - lock을 걸면 unlock을 무조건 해줘야한다.
+  - 따라서 예기치 못하게 종료될 때를 대비해 **finally로 unlock을 진행해 줘야한다.**
+
+
+
+
+
+
+
 
 
 
