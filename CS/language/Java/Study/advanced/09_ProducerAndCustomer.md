@@ -212,6 +212,244 @@ Process finished with exit code 0
 
 
 
+## 예제2 : Lock을 가지고 있는 상태에서 대기하는 경우 => 무한 대기
+
+```java
+@Override
+public synchronized void put(String data) {
+    while (queue.size() == max){
+        log("[put] 큐가 가득 참, 생산자 대기");
+        sleep(1000);
+    }
+    queue.offer(data);
+}
+
+@Override
+public synchronized String take() {
+    while(queue.isEmpty()){
+        log("[poll] 큐가 비어있음, 소비자 대기");
+    }
+    return queue.poll();
+}
+```
+
+
+
+<img src="./09_ProducerAndCustomer.assets/image-20250114085258465.png" alt="image-20250114085258465" style="zoom:67%;" />
+
+- 위와 같이 P3는 1초마다 깨어나서 Queue가 비어있는지 확인하게 된다.
+- 하나밖에 없는 락을 가지고 자다 깨어나니 당연히 data가 빌 수 없는 상태가 된다.
+- 따라서 c1은 락을 가질 수 없고, Block 상태로 무한정 대기하게 된다.
+
+- 주의!!
+  - **임계 영역 안에서 락을 들고 대기하는 것은 문제!**
+  - 즉 마치 열쇠를 가진 사람이 안에서 문을 잠궈버린 것과 같음
+  - 락을 양도 하면 어떨까?
+
+
+
+## 예제 3코드 : Object - wait, notify
+
+```java
+@Override
+public synchronized void put(String data) {
+    while (queue.size() == max){
+        log("[put] 큐가 가득 참, 생산자 대기");
+        try {
+            wait(); // RUNNABLE -> WAITING 락 반납
+            log("[put] 생산자 깨어남");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    queue.offer(data);
+    log("[put] 생산자 데이터 저장, notify() 호출");
+    notify(); // 대기 스레드, WAIT -> BLOCKED
+}
+
+@Override
+public synchronized String take() {
+    while(queue.isEmpty()){
+        log("[take] 큐가 비어있음, 소비자 대기");
+        try {
+            wait();
+            log("[take] 소비자 꺠어남");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    String data = queue.poll();
+    log("[take] 소비자 데이터 획득, notify()호출");
+    notify();
+    return data;
+}
+
+```
+
+<img src="./09_ProducerAndCustomer.assets/image-20250114195251213.png" alt="image-20250114195251213" style="zoom:67%;" />
+
+<img src="./09_ProducerAndCustomer.assets/image-20250114195316731.png" alt="image-20250114195316731" style="zoom:67%;" />
+
+- **put()**
+
+  - Queue 가 가득 찼는지 확인
+
+  - 가득 찼으면 wait 실행 (RUNNABLE -> WAITING 락 반납)
+
+  - wait set으로 대기
+
+  - queue.offer(data); 실행 후 notify 해줌으로써 wait set에 값이 있으면 깨운다. ( 대기 스레드, WAIT -> BLOCKED)
+
+    
+
+- **take()**
+
+  - Queue 가 가득 비어있는지 확인
+  - 비어있으면 wait 실행 (RUNNABLE -> WAITING 락 반납)
+  - wait set으로 대기
+  - queue.poll(); 실행 후 notify 해줌으로써 wait set에 값이 있으면 꺠운다. ( 대기 스레드, WAIT -> BLOCKED)
+
+
+
+### Wait Set (스레드 대기 집합)
+
+- **모든 객체는 각자의 락(모니터 락) 과 대기 집합**을 가지고 있다.
+  - 둘(락, 대기 집합)은 한 쌍으로 사용된다.
+  - 락을 획득한 객체의 대기 집합을 사용해야한다. 
+    => 만약 다른곳에서의 객체의 락을 가져왔으면 그 객체의 대기집합을 사용해야한다.
+  - interface를 사용했으면 그 **구현체(참조 값)의 Lock 과 Wait Set 을 사용하게 된다.**
+- synchronized 임계 영역 안에서 Object.wait()를 호출하면 스레드는 대기(WAITING) 상태에 들어간다.
+- **notify를 통해 어떤 thread가 깨어 날지 모른다.**
+  - **wait set(대기 집합) 에서 나간다고 lock을 획득했다는 뜻은 아니다.**
+  - `BLOCKED` 상태로 변경되며, lock을 획득하기 위해 기다린다.
+
+
+
+### Wait Set의 한계
+
+- `notify()` 를 통해 **어떤 thread가 깨어 날지 모른다.**
+  - 큐에 데이터가 없는데 소비자를 깨워! => 그럼 락을 획득해도 다시 wait set으로 가야함
+    - 왜냐하면 data가 없으니까!
+    - 그렇게 때문에 비효율적임 : **같은 종류의 스레드를 깨울 때 비효율이 발생**
+- **누구를 깨울 수 있을지 정할 수 있다면?**
+
+
+
+### BLOCKED 상태?
+
+- lock 대기 : lock을 얻기 위해 대기하는 곳
+- `BLOCKED` 상태는 락 대기 집합에서 대기한다고 보면된다.
+
+
+
+
+
+## Lock Condidion
+
+> - Lock, ReentrantLock, Condition으로 다시 구현
+
+### Condition
+
+- `Condidion condition = lock.newCondition()`
+- Condition은 ReentrantLock을 사용하는 스레드가 대기하는 스레드 대기 공간이다.
+
+- **condition.await()**
+
+  - Object.wait() 과 유사한 기능
+
+  - 지정한 condition에 현재 스레드를 대기(WAITING) 상태로 보관한다.
+
+  - **`ReentrantLock`에서 획득한 락**을 반납하고 대기 상태로 condition에 보관된다.
+
+    
+
+- **condition.signal()**
+
+  - Object.notify() 와 유사한 기능
+  - **지정한 `condition`**에서 대기중인 스레드를 하나 깨운다. 깨어난 스레드는 condition에서 빠져나온다.
+
+
+
+
+
+## Condition 분리
+
+<img src="./09_ProducerAndCustomer.assets/image-20250114213829751.png" alt="image-20250114213829751" style="zoom:67%;" />
+
+- consumerCond : 소비자 전용Condition 대기 공간
+- producerCond : 생산자 전용Condition 대기 공간
+
+- 규칙
+  - 생산자가 queue에 도달하고 일을 마치면(data 생성) consumer에 있는 소비자를 깨워준다.
+  - 소비자가 queue에 도달하고 일을 마치면(data 소비) producer에 있는 생산자를 깨워준다.
+
+```java
+public class BoundedQueueV5 implements BoundedQueue{
+
+    private final Lock lock = new ReentrantLock();
+    
+    // 락은 묶여서 돌아가는 것
+    private final Condition producerCond = lock.newCondition();
+    
+    // 락은 묶여서 돌아가는 것 = 즉 lock 은 1개 대기 공간은 2개
+    private final Condition consumerCond = lock.newCondition(); 
+    private final Queue<String> queue = new ArrayDeque<>();
+    public final int max;
+
+    public BoundedQueueV5(int max) {
+        this.max = max;
+    }
+
+    @Override
+    public void put(String data) {
+
+        lock.lock();
+        try{
+            while (queue.size() == max){
+                log("[put] 큐가 가득 참, producerCond.await();");
+                try {
+                    producerCond.await(); // 변경점
+                    log("[put] 생산자 깨어남");
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            queue.offer(data);
+            log("[put] 생산자 데이터 저장, consumerCond.signal()");
+            consumerCond.signal(); // put() : 생산자가 사용 => 소비자를 깨워준다.
+        }
+        finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public String take() {
+
+        lock.lock();
+        try{
+            while(queue.isEmpty()){
+                log("[take] 큐가 비어있음, consumerCond.await()");
+                try {
+                    consumerCond.await(); // 변경점
+                    log("[take] 소비자 꺠어남");
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            String data = queue.poll();
+            log("[take] 소비자 데이터 획득, producerCond.signal() 호출");
+            producerCond.signal(); // take() : 소비자가 사용(일 끝내고) => 생산자를 깨워준다.
+            return data;
+        }finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
+
+
 
 
 

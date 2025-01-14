@@ -16,7 +16,11 @@ public class ProducerTask implements Runnable{
     public void run() {
 
         log("[생산 시도] " + request + " -> " + queue);
-        queue.put(request);
+        try {
+            queue.put(request);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         log("[생산 완료] " + request + " -> " + queue);
 
     }

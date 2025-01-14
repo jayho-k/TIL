@@ -2,7 +2,8 @@ package thread.bounded;
 
 public interface BoundedQueue {
 
-    void put(String data);
+    void put(String data) throws InterruptedException;
 
     String take();
+
 }

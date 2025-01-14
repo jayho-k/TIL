@@ -9,21 +9,14 @@ public class BoundedMain {
 
     public static void main(String[] args) {
 
-        BoundedQueue queue = new BoundedQueueV1(2);
+        //BoundedQueue queue = new BoundedQueueV1(2);
+        //BoundedQueue queue = new BoundedQueueV2(2);
+//        BoundedQueue queue = new BoundedQueueV3(2);
+        BoundedQueue queue = new BoundedQueueV5(2);
 
-        //producerFirst(queue);
-        consumerFirst(queue);
+        producerFirst(queue);
+        //consumerFirst(queue);
 
-    }
-
-    private static void consumerFirst(BoundedQueue queue) {
-        log("== [소비자 먼저 실행] 시작, "+ queue.getClass().getSimpleName() + "==");
-        ArrayList<Thread> threads = new ArrayList<>();
-        startConsumer(queue, threads);
-        printAllState(queue, threads);
-        startProducer(queue, threads);
-        printAllState(queue, threads);
-        log("== [소비자 먼저 실행] 종료, "+ queue.getClass().getSimpleName() + "==");
     }
 
     private static void producerFirst(BoundedQueue queue){
@@ -37,12 +30,24 @@ public class BoundedMain {
 
     }
 
+    private static void consumerFirst(BoundedQueue queue) {
+        log("== [소비자 먼저 실행] 시작, "+ queue.getClass().getSimpleName() + "==");
+        ArrayList<Thread> threads = new ArrayList<>();
+        startConsumer(queue, threads);
+        printAllState(queue, threads);
+        startProducer(queue, threads);
+        printAllState(queue, threads);
+        log("== [소비자 먼저 실행] 종료, "+ queue.getClass().getSimpleName() + "==");
+    }
+
+
+
     private static void startConsumer(BoundedQueue queue, ArrayList<Thread> threads) {
 
         System.out.println();
 
         log("소비자 시작");
-        for (int i =0; i<=3; i++){
+        for (int i =0; i<4; i++){
             Thread consumer = new Thread(new ConsumerTask(queue), "consumer" + i);
             threads.add(consumer);
             consumer.start();
