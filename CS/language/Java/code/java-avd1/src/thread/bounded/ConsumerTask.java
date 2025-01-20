@@ -14,7 +14,12 @@ public class ConsumerTask implements Runnable{
     @Override
     public void run() {
         log("[소비 시도] ?  <-  " + queue);
-        String data = queue.take();
+        String data = null;
+        try {
+            data = queue.take();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         log("[소비 시도] ? "+ data + " <-  " + queue);
 
 

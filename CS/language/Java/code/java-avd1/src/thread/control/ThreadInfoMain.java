@@ -12,7 +12,7 @@ public class ThreadInfoMain {
         Thread mainThread = Thread.currentThread();
 
         log("mainThread = " + mainThread);
-        log("mainThread.threadId() = " + mainThread.threadId()); // 중복되지 않음
+        log("mainThread.threadId() = " + mainThread.getId()); // 중복되지 않음
         log("mainThread.getName() = " + mainThread.getName()); // 중복 될 수 있음
         log("mainThread.getPriority() = " + mainThread.getPriority()); // default = 5
         log("mainThread.getState() = " + mainThread.getState()); // runnable thread가 실행 될 수 있는 상태
@@ -20,7 +20,7 @@ public class ThreadInfoMain {
 
         Thread myThread = new Thread(new HelloRunnable(), "myThread");
         log("myThread = " + myThread);
-        log("myThread.threadId() = " + myThread.threadId()); // 중복되지 않음
+        log("myThread.threadId() = " + myThread.getId()); // 중복되지 않음
         log("myThread.getName() = " + myThread.getName()); // 중복 될 수 있음
         log("myThread.getPriority() = " + myThread.getPriority()); // default = 5
         log("myThread.getState() = " + myThread.getState()); // NEW :

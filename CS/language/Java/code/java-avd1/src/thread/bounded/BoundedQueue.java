@@ -4,6 +4,6 @@ public interface BoundedQueue {
 
     void put(String data) throws InterruptedException;
 
-    String take();
+    String take() throws InterruptedException;
 
 }

@@ -1,6 +1,8 @@
 package thread.bounded;
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 import static util.MyLogger.log;
 import static util.ThreadUtils.sleep;
@@ -11,11 +13,14 @@ public class BoundedMain {
 
         //BoundedQueue queue = new BoundedQueueV1(2);
         //BoundedQueue queue = new BoundedQueueV2(2);
-//        BoundedQueue queue = new BoundedQueueV3(2);
-        BoundedQueue queue = new BoundedQueueV5(2);
+        //BoundedQueue queue = new BoundedQueueV3(2);
+        //BoundedQueue queue = new BoundedQueueV5(2);
+        //BoundedQueue queue = new BoundedQueueV6_1(2);
+        BoundedQueue queue = new BoundedQueueV6_2(2);
 
-        producerFirst(queue);
-        //consumerFirst(queue);
+
+        //producerFirst(queue);
+        consumerFirst(queue);
 
     }
 
@@ -47,7 +52,7 @@ public class BoundedMain {
         System.out.println();
 
         log("소비자 시작");
-        for (int i =0; i<4; i++){
+        for (int i =0; i<3; i++){
             Thread consumer = new Thread(new ConsumerTask(queue), "consumer" + i);
             threads.add(consumer);
             consumer.start();
