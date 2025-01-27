@@ -21,22 +21,42 @@ table[i-1][j]: 그 무게일때 최대 가치
 1535 , 4781 , 7579
 '''
 
+from pprint import pprint
+
 n,k = map(int,input().split())
+
 bag = [[0,0]] + [list(map(int,input().split())) for _ in range(n)]
-dpTable = [0]*(k+1)
+dpTable = [[0]*(k+1) for _ in range(n+1)]
+
 
 for y in range(1,n+1):
-    tmpDpTable = [0]*(k+1)
     for x in range(1,k+1):
-        w,v = bag[y][0], bag[y][1]
+        w,v = bag[y]
         if x < w:
-            tmpDpTable[x] = dpTable[x]
+            dpTable[y][x] = dpTable[y-1][x]
         else:
-            tmpDpTable[x] = max(dpTable[x-w]+v, dpTable[x])
+            dpTable[y][x] = max(dpTable[y-1][x], dpTable[y-1][x-w]+v)
 
-    dpTable = tmpDpTable
+pprint(dpTable[n][k])
 
-print(dpTable[k])
+
+
+# n,k = map(int,input().split())
+# bag = [[0,0]] + [list(map(int,input().split())) for _ in range(n)]
+# dpTable = [0]*(k+1)
+
+# for y in range(1,n+1):
+#     tmpDpTable = [0]*(k+1)
+#     for x in range(1,k+1):
+#         w,v = bag[y][0], bag[y][1]
+#         if x < w:
+#             tmpDpTable[x] = dpTable[x]
+#         else:
+#             tmpDpTable[x] = max(dpTable[x-w]+v, dpTable[x])
+
+#     dpTable = tmpDpTable
+
+# print(dpTable[k])
 
 
 # from pprint import pprint
