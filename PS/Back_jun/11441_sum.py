@@ -10,6 +10,9 @@
 
 """
 
+import sys
+
+
 n = int(input())
 lst = list(map(int,input().split()))
 sum_lst = [0]
