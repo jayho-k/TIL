@@ -390,9 +390,9 @@ public class BoundedQueueV5 implements BoundedQueue{
     
     // 락은 묶여서 돌아가는 것
     private final Condition producerCond = lock.newCondition();
-    
     // 락은 묶여서 돌아가는 것 = 즉 lock 은 1개 대기 공간은 2개
     private final Condition consumerCond = lock.newCondition(); 
+    
     private final Queue<String> queue = new ArrayDeque<>();
     public final int max;
 
