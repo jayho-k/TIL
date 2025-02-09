@@ -51,8 +51,4 @@ public class SumTaskMainV1 {
             return sum;
         }
     }
-
-
-
-
 }

@@ -216,21 +216,167 @@ es.shutdown();
 
 ## Future 활용
 
+- 1~50 까지 더하기
+- 51~100까지 더하기
+
+```java
+public class SumTaskMainV1 {
+    
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+
+        SumTask task1 = new SumTask(1, 50);
+        SumTask task2 = new SumTask(51, 100);
+        ExecutorService es = Executors.newFixedThreadPool(2);
+
+        Future<Integer> future1 = es.submit(task1);
+        Future<Integer> future2 = es.submit(task2);
+
+        Integer sum1 = future1.get();
+        Integer sum2 = future2.get();
+
+        log("task1 res = " + sum1);
+        log("task2 res = " + sum2);
+
+        int sumAll = sum1 + sum2;
+        log("sumAll = " + sumAll);
+
+        es.shutdown();
+    }
+
+    static class SumTask implements Callable<Integer>{
+
+        int startValue;
+        int endValue;
+
+        public SumTask(int startValue, int endValue){
+            this.startValue = startValue;
+            this.endValue = endValue;
+        }
+
+        @Override
+        public Integer call() throws Exception {
+
+            log("start");
+            int sum = 0;
+            for (int i = startValue; i <= endValue; i++){
+                sum += i;
+            }
+            log("end, res = " + sum);
+
+            return sum;
+        }
+    }
+}
+```
+
+- 만약 future를 사용하지 않는다면?
+  - 그냥 단일 스레드가 작업한 것처럼 동작하게 된다.
+  - 즉 작업 submit 하면 완료될 때 까지 기다리게 된다. 
+    따라서 future 라는 객체가 있어서 get()에서 waiting을 하는 것
+
+- 따라서 get() 은 나중에 한번에 해야한다. 
 
 
 
+### 잘 못 사용한 예시
+
+```java
+SumTask task1 = new SumTask(1, 50);
+SumTask task2 = new SumTask(51, 100);
+
+ExecutorService es = Executors.newFixedThreadPool(2);
+
+Future<Integer> future1 = es.submit(task1); // non-blocking
+Integer sum1 = future1.get(); // 대기 1
+
+Future<Integer> future2 = es.submit(task2); // non-blocking
+Integer sum2 = future2.get(); // 대기 2
+```
+
+- 위와 같이 쓰면 대기 1를 하고 또 대기 2가 하게 된다.
+  - **즉 위와 같은 경우는 싱글스레드를 사용하는 것과 다르지 않음**
+
+```java
+Integer sum1 = es.submit(task1).get(); // 대기 1
+Integer sum2 = es.submit(task2).get(); // 대기 2
+```
+
+- 위 같은 경우도 동일한 결과가 나온다.
+- 즉 잘 못 사용한 예시
 
 
 
+**정리**
+
+- submit() 으로 모두 던지고 난 뒤에 마지막에 한번에 get()으로 받아야한다.
 
 
 
+## Method
+
+```java
+boolean cancel(boolean mayInterruptIfRunning);
+```
+
+- 기능 : 아직 완료되지 않은 작업을 취소한다.
+- 매개 변수 (mayInterruptIfRunning) 
+  - `cancel(true) `: Future를 취소 상태로 변경한다. 이때 작업이 실행 중이라면 Thread.interrupt()를 호출해서 작업을 중단.
+  - `cancel(false) `: Future를 취소상태로 변경. 단! 이미 실행 중인 작업을 중단하지는 않는다. 
+    => 큐에 있으면 바로 취소 상태로 둘텐데, 이미 실행이 되고 있으면 바로 중단시키지는 않음
+- 반환 값
+  - `true` : 작업이 성공적으로 취소된 경우 
+  - `false` : 작업이 이미 완료되었거나 취소할 수 없는 경우
+- 참고
+  - 취소 상태의 `Future`에 `Future.get()`을 호출하면 `CancellationException` 런타임 예외가 발생한다.
 
 
 
+```java
+boolean isCancelled();
+```
+
+- 기능 : 작업이 취소되었는지 여부 확인
+- return : true, false
 
 
 
+```java
+boolean isDone();
+```
+
+- 기능 : 작업이 완료되었는지 여부 확인
+- return : true, false
+  - 작업이 정상적으로 완료되었거나, 취소되었거나, 예외가 발생하여 종료된 경우 true 반환
+
+
+
+```java
+State state();
+```
+
+- 기능 Future의 상태를 반환. 자바 19 이상
+  - `RUNNING` : 
+  - `SUCCESS`
+  - `FAILED`
+  - `CANCELLED`
+
+
+
+```JAVA
+V get();
+V get(long timeout, TimeUnit unit);
+```
+
+- 기능  : 작업이 완료될 떄까지 대기하고, 완료되면 결과를 반환
+- return : V
+- 예외
+  - InterruptedException : 대기 중에 현재 스레드가 인터럽트된 경우 발생
+  - ExecutionException : 작업계산 중에 예외가 발생한 경우
+
+- timeout : 대기할 최대 시간
+- unit : timeout 매개변수의 시간 단위 지정
+  - 예외 + TimeoutException
+  - 나머지 위와 동일
 
 
 
