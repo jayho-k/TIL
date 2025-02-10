@@ -372,11 +372,191 @@ V get(long timeout, TimeUnit unit);
 - 예외
   - InterruptedException : 대기 중에 현재 스레드가 인터럽트된 경우 발생
   - ExecutionException : 작업계산 중에 예외가 발생한 경우
-
 - timeout : 대기할 최대 시간
 - unit : timeout 매개변수의 시간 단위 지정
   - 예외 + TimeoutException
   - 나머지 위와 동일
+
+
+
+### Cancel
+
+```java
+public class FutureCancelMain {
+
+    //private static boolean mayInterruptIfRunning = true;
+    private static boolean mayInterruptIfRunning = false;
+
+    public static void main(String[] args) {
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        Future<String> future = es.submit(new MyTask());
+
+        sleep(3000);
+
+
+        // 일정시간 후 취소 시도
+        log("future.cancel(" + mayInterruptIfRunning  + ") 호출");
+        boolean result = future.cancel(mayInterruptIfRunning);
+        log("cancel(" + mayInterruptIfRunning  + ") result : " + result);
+        try {
+            log("Future result: " + future.get());
+        }
+        catch (CancellationException e) { // 런타임 예외
+            log("Future는 이미 취소 되었습니다.");
+        }
+        catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Executor 종료
+        es.shutdown();
+    }
+
+    static class MyTask implements Callable<String> {
+
+        @Override
+        public String call() throws Exception {
+            try{
+                for (int i=0;i<10;i++){
+                    log("작업 중 : " + i);
+                    Thread.sleep(1000);
+                }
+            }catch (InterruptedException e){
+                log("인터럽트 발생");
+                return "interrupted";
+            }
+            return "Complete";
+        }
+
+    }
+
+}
+```
+
+- cance(true) : 
+  - Future를 취소 상태로 변경한다. 이떄 작업이 실행중이라면 Thread.interrupt()를 호출해서 작업을 중단한다.
+- cancel(false)
+  - Future를 취소 상태로 변경한다. **단 이미 실행 중인 작업을 중단하지는 않는다.**
+
+#### cance(true) : 
+
+```
+20:57:31.324 [pool-1-thread-1] 작업 중 : 0
+20:57:32.330 [pool-1-thread-1] 작업 중 : 1
+20:57:33.337 [pool-1-thread-1] 작업 중 : 2
+20:57:34.316 [     main] future.cancel(true) 호출
+20:57:34.316 [pool-1-thread-1] 인터럽트 발생
+20:57:34.318 [     main] cancel(true) result : true
+20:57:34.319 [     main] Future는 이미 취소 되었습니다.
+```
+
+- 3초 후 cancel를 하는 로직 
+- 따라서 3초후에 인터럽트가 발생하고 그 즉시 cancel를 하게 된다.
+
+
+
+#### cancel (false)
+
+```
+20:58:33.949 [pool-1-thread-1] 작업 중 : 0
+20:58:34.966 [pool-1-thread-1] 작업 중 : 1
+20:58:35.979 [pool-1-thread-1] 작업 중 : 2
+20:58:36.945 [     main] future.cancel(false) 호출
+20:58:36.948 [     main] cancel(false) result : true
+20:58:36.948 [     main] Future는 이미 취소 되었습니다.
+20:58:36.991 [pool-1-thread-1] 작업 중 : 3
+20:58:38.001 [pool-1-thread-1] 작업 중 : 4
+20:58:39.015 [pool-1-thread-1] 작업 중 : 5
+20:58:40.028 [pool-1-thread-1] 작업 중 : 6
+20:58:41.039 [pool-1-thread-1] 작업 중 : 7
+20:58:42.050 [pool-1-thread-1] 작업 중 : 8
+20:58:43.059 [pool-1-thread-1] 작업 중 : 9
+```
+
+- 3초 후 취소를 해서 인터럽트가 발생
+- **하지만 작업은 끝까지 진행된다.**   하지만 return 값을 못 받는 것은 true일 때와 똑같다.
+
+
+
+## ExecutorService  작업 컬렉션 처리
+
+#### InvokeAll
+
+```java
+public class InvokeAllMain {
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+
+        CallableTask task1 = new CallableTask("task1", 1000);
+        CallableTask task2 = new CallableTask("task2", 2000);
+        CallableTask task3 = new CallableTask("task3", 3000);
+
+        List<CallableTask> tasks = List.of(task1, task2, task3);
+
+        List<Future<Integer>> futures = es.invokeAll(tasks);
+        for (Future<Integer> future:futures) {
+            Integer val = future.get();
+            log("value : " + val);
+        }
+        es.shutdown();
+    }
+}
+
+```
+
+```
+21:29:25.984 [pool-1-thread-3] task3 실행
+21:29:25.984 [pool-1-thread-1] task1 실행
+21:29:25.984 [pool-1-thread-2] task2 실행
+21:29:26.998 [pool-1-thread-1] task1 완료
+21:29:27.995 [pool-1-thread-2] task2 완료
+21:29:28.991 [pool-1-thread-3] task3 완료
+21:29:28.992 [     main] value : 1000
+21:29:28.992 [     main] value : 2000
+21:29:28.993 [     main] value : 3000
+```
+
+- 결과를 다 기다리게 된다.
+- 따라서 task3 (3초) 까지 모두 기다리게 된다.
+
+#### InvokeAny
+
+```java
+public class InvokeAnyMain {
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+
+        CallableTask task1 = new CallableTask("task1", 1000);
+        CallableTask task2 = new CallableTask("task2", 2000);
+        CallableTask task3 = new CallableTask("task3", 3000);
+
+        List<CallableTask> tasks = List.of(task1, task2, task3);
+
+        Integer value = es.invokeAny(tasks);
+        log("value : " + value);
+        es.shutdown();
+    }
+}
+```
+
+```
+21:28:09.952 [pool-1-thread-1] task1 실행
+21:28:09.952 [pool-1-thread-3] task3 실행
+21:28:09.952 [pool-1-thread-2] task2 실행
+21:28:10.967 [pool-1-thread-1] task1 완료
+21:28:10.968 [     main] value : 1000
+```
+
+-  invokeAll 과 반대로 1개만 완료가 된다면 완료가 된다.
+- 따라서 task1(1초) 가 완료가 되면 완료가 되게 된다.
+
+
+
+
+
+
 
 
 
