@@ -2,6 +2,7 @@ rootProject.name = 'large-sacle-system'
 
 
 include 'common'
+include 'common:snowflake'
 
 include 'service'
 include 'service:article'
