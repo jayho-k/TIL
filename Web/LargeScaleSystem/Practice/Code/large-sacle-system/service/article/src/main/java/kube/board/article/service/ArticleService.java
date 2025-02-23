@@ -4,6 +4,7 @@ import kube.board.article.entity.Article;
 import kube.board.article.repository.ArticleRepository;
 import kube.board.article.service.request.ArticleCreateRequest;
 import kube.board.article.service.request.ArticleUpdateRequest;
+import kube.board.article.service.response.ArticlePageResponse;
 import kube.board.article.service.response.ArticleResponse;
 import kube.board.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,19 @@ public class ArticleService {
 
     public void delete(Long articleId){
         articleRepository.deleteById(articleId);
+    }
+
+    public ArticlePageResponse readAll(Long boardId, Long page, Long pageSize) {
+        // [articles, article count]
+        return ArticlePageResponse.of(
+                // mapping => ArticleResponse 로 변경
+                articleRepository.findAll(boardId, (page - 1) * pageSize, pageSize).stream()
+                        .map(ArticleResponse::from)
+                        .toList(),
+                articleRepository.count(
+                        boardId,
+                        PageLimitCalculator.calculatePageLimit(page, pageSize, 10L))
+        );
     }
 
 }
