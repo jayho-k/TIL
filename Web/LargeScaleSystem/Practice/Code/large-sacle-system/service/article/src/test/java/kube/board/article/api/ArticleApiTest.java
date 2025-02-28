@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
 
+
+@SpringBootTest
 public class ArticleApiTest {
 
     RestClient restClient = RestClient.create("http://localhost:9000");
@@ -90,4 +94,31 @@ public class ArticleApiTest {
             System.out.println("articleId = " + article.getArticleId());
         }
     }
+
+    @Test
+    void readAllInfiniteScroll(){
+        List<ArticleResponse> articles1 = restClient.get()
+                .uri("/v1/articles/infinite-scroll?board_id=16pageSize$")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {
+                });
+        System.out.println("first page");
+        for (ArticleResponse articleResponse : articles1){
+            System.out.println("articlesResponse.getArticleId : " + articleResponse.getArticleId());
+        }
+        Long lastArticles = articles1.getLast().getArticleId();
+        List<ArticleResponse> articles2 = restClient.get()
+                .uri("/v1/articles/infinite-scroll?board_id=16pageSize&lastArticleId=%s".formatted(lastArticles))
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {
+                });
+
+        System.out.println("second page");
+
+    }
+
+
 }
+
+
+

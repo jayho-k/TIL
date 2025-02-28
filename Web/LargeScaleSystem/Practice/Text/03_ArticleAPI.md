@@ -1,5 +1,10 @@
 # 03_ArticleAPI
 
+> - 모르는 내용 정리
+> - 페이징 전략
+> - 무한 스크롤 전략
+> - Primary Key 생성 전략
+
 
 
 ## 알지 못하는 내용 모음
@@ -45,24 +50,24 @@
 - 잘 사용할 수 있을 방법
 
   ```java
-      // factory method
-      public static Article create(Long articleId, String title, String content, Long boardId, Long writerId, LocalDateTime createAt, LocalDateTime modifiedAt){
-          Article article = new Article();
-          article.articleId = articleId;
-          article.title = title;
-          article.content = content;
-          article.boardId = boardId;
-          article.writerId = writerId;
-          article.createAt = createAt;
-          article.modifiedAt = modifiedAt;
-          return article;
-      }
+  // factory method
+  public static Article create(Long articleId, String title, String content, Long boardId, Long writerId, LocalDateTime createAt, LocalDateTime modifiedAt){
+      Article article = new Article();
+      article.articleId = articleId;
+      article.title = title;
+      article.content = content;
+      article.boardId = boardId;
+      article.writerId = writerId;
+      article.createAt = createAt;
+      article.modifiedAt = modifiedAt;
+      return article;
+  }
   
-      public void update(String title, String content){
-          this.title = title;
-          this.content = content;
-          modifiedAt = LocalDateTime.now();
-      }
+  public void update(String title, String content){
+      this.title = title;
+      this.content = content;
+      modifiedAt = LocalDateTime.now();
+  }
   
   ```
 
@@ -392,27 +397,92 @@ from (
 
 
 
+## 2. 무한 스크롤
+
+- 가정
+  - 3개의 개시글을 조회하는 기능
+- 효과
+  - 균등한 속도로 가져올 수 있음
+  - 
+
+### 1) 무한 스크롤을 내리는 중 신규 artitlce 생성 될 경우
+
+![image-20250228153252980](./03_ArticleAPI.assets/image-20250228153252980.png)
+
+- offset=3, limit =3 차례
+- 하지만 article = 8 이 신규로 등록되어 중복으로 id = 5가 조회되게 된다.
+  - 원래 7,6,5 가 조회 된 상태에서 스크롤 내림
+  - 8,7,6 / 5,4,3 이라서 해당 유저는
+  - **7,6,5,5,4,3 이렇게 조회가 된 상태로 조회됨**
 
 
 
+### 2) 무한 스크롤을 내리는 중 신규 artitlce 삭제 될 경우
+
+![image-20250228153655586](./03_ArticleAPI.assets/image-20250228153655586.png)
+
+- offset=3, limit =3 차례
+- article = 6의 삭제로 인해 id = 4가 조회되지 않는 현상이 일어난다.
+  - 원래 : 7,6,5 / 4,3,2 이렇게 조회 되어야 함
+  - **하지만 : 7,6,5 / 3,2,1 => 이렇게 조회됨**
 
 
 
-1. 무한 스크롤
+### 해결 방법
+
+![image-20250228153956710](./03_ArticleAPI.assets/image-20250228153956710.png)
+
+- 마지막으로 불러온 데이터를 기준점으로 활용할 수 있다.
+- 즉 article id = 5를 기억하고 id 기준으로 가져오면 됨
+  - 데이터 기준점은 index로 저장되어있다고 가정하면 log시간안에 불러올 수 있음
 
 
 
+## Primary Key 생성 전략
+
+> - DB auto increment
+> - 유니크 문자열 or 숫자
+> - 유니크 정렬 문자열
+> - 유니크 정렬 숫자
+
+### DB auto increment
+
+- 장점
+
+  - 간편하다.
+
+    
+
+- 단점
+
+  - 분산 환경에서 PK가 중복될 수 있음 (여러 DB 마다 auto increment를 할 것이기 때문)
+  - 클라이언트 측에 노출하면 보안 문제 발생 (user_id 1000이면 1000명?인지 확인 가능)
+  - PK 조회 접근일 경우 느릴 수 있음 (Secondary Index + Clustered Index 때문)
 
 
 
+### 유니크 문자열 or 숫자
+
+- 장점
+  - 간단하다.
+  - 정렬이 아니라 랜덤데이터를 삽입하는 것
+- 단점
+  - 성능 저하 가능서 있음	
+    - Clustered Index는 정렬된 상태를 유지한다. (정렬이 아님)
+    - 따라서 범위 조회가 필요할 시에 랜덤 I/O 가 발생하기 때문에, 순차 I/O 보다 성능 저하가 발생한다.
 
 
 
+### 유니크 정렬 문자열
 
-
-
-
-
-
-
+- 장점
+  - 분산 환경 가능
+  - 보안 문제 해결
+  - 랜덤 데이터에 의한 성능 문제 해결
+- 단점
+  - 128 bit 사용
+  - 데이터 크기에 따라, 공간 및 효율이 달라진다.
+    - Clustered index는 PK를 기준으로 만들어진다.
+    - Secondary Index는 데이터에 접근할 수 있는 포인터를 가진다. (PK를 가지고 있음)
+    - 따라서, pk가 크면 클수록 데이터는 더 많은 공간 + 비교 연산에 의한 정렬/조회 비용 증가
 

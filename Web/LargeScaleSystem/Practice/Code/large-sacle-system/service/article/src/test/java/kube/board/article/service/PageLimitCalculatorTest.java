@@ -19,7 +19,6 @@ class PageLimitCalculatorTest {
     void calculatePageLimitTest(Long page, Long pageSize, Long movablePageCount, Long expected){
         Long result = PageLimitCalculator.calculatePageLimit(page, pageSize, movablePageCount);
         Assertions.assertThat(result).isEqualTo(expected);
-
     }
 
 }
