@@ -21,7 +21,7 @@ public class Comment {
     private Long commentId;
     private String content;
     private Long parentCommentId;
-    private Long articleId;
+    private Long articleId; // shard key
     private Long writerId;
     private Boolean deleted;
     private LocalDateTime createdAt;
