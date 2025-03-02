@@ -2,6 +2,79 @@
 
 > - 모르는 개념들
 
+## 모르는 개념들
+
+### @Lock ()
+
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE) // select .... for update
+Optional<ArticleLikeCount> findLockedByArticleId(Long articleId);
+```
+
+```java
+    /**
+     *  Synonymous with <code>OPTIMISTIC</code>.
+     *  <code>OPTIMISTIC</code> is to be preferred for new
+     *  applications.
+     *
+     */
+    READ,
+
+    /**
+     *  Synonymous with <code>OPTIMISTIC_FORCE_INCREMENT</code>.
+     *  <code>OPTIMISTIC_FORCE_IMCREMENT</code> is to be preferred for new
+     *  applications.
+     *
+     */
+    WRITE,
+
+    /**
+     * Optimistic lock.
+     */
+    OPTIMISTIC,
+
+    /**
+     * Optimistic lock, with version update.
+     */
+    OPTIMISTIC_FORCE_INCREMENT,
+
+    /**
+     * Pessimistic read lock.
+     */
+    PESSIMISTIC_READ,
+
+    /**
+     * Pessimistic write lock.
+     */
+    PESSIMISTIC_WRITE,
+
+    /**
+     * Pessimistic write lock, with version update.
+     */
+    PESSIMISTIC_FORCE_INCREMENT,
+
+    /**
+     * No lock.
+     */
+    NONE
+```
+
+
+
+### @Modifying
+
+```java
+@Query(
+value = "update article_like_count set like_count = like_count + 1 where article_id = :articleId",
+nativeQuery = true
+)
+@Modifying // update 하기 위해선 Modifying 있어야함
+int increase(@Param("articleId") Long articleId);
+
+```
+
+
+
 
 
 ## 테이블 설계
@@ -26,7 +99,7 @@
 - 쓰기 트래픽이 비교적 크지 않음
   - 사용자는 게시글을 조회하고, 마음에 드는 게시글을 찾는다.
   - 사용자는 좋아요 액션을 직접 수행한다.
-    
+  
 - 데이터의 일관성이 중요
   - 15명 좋아요 눌렀는데 10명으로 나오면 안된다.
 
@@ -210,6 +283,24 @@ commit;
 - 서비스 정책으로 납득이 되어야 함
 - 데이터 일관성 관리가 필요 (비용 발생)
   - 대기열에서 중복 / 누락이 없이 반드시 1회 보장 등 (메시지 큐 ...)
+
+
+
+
+
+```
+pessimistic-lock-1start
+lockType = pessimistic-lock-1, time = 13118ms
+count = 3001
+
+pessimistic-lock-2start
+lockType = pessimistic-lock-2, time = 14968ms
+count = 3001
+
+optimistic-lockstart
+lockType = optimistic-lock, time = 9748ms
+count = 3001
+```
 
 
 

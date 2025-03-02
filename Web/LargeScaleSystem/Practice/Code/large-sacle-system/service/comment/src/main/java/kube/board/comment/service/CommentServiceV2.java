@@ -1,8 +1,10 @@
 package kube.board.comment.service;
 
+import kube.board.comment.entity.ArticleCommentCount;
 import kube.board.comment.entity.Comment;
 import kube.board.comment.entity.CommentPath;
 import kube.board.comment.entity.CommentV2;
+import kube.board.comment.repository.ArticleCommentCountRepository;
 import kube.board.comment.repository.CommentRepositoryV2;
 import kube.board.comment.service.request.CommentCreateRequestV2;
 import kube.board.comment.service.response.CommentPageResponse;
@@ -22,6 +24,7 @@ public class CommentServiceV2 {
 
     private final Snowflake snowflake = new Snowflake();
     private final CommentRepositoryV2 commentRepository;
+    private final ArticleCommentCountRepository articleCommentCountRepository;
 
     @Transactional
     public CommentResponse create(CommentCreateRequestV2 request){
@@ -41,6 +44,14 @@ public class CommentServiceV2 {
                         )
                 )
         );
+
+        int result = articleCommentCountRepository.increase(request.getArticleId());
+        if (result == 0){
+            articleCommentCountRepository.save(
+                    ArticleCommentCount.init(request.getArticleId(), 1L)
+            );
+        }
+
         return CommentResponse.from(comment);
     }
 
@@ -84,6 +95,7 @@ public class CommentServiceV2 {
     private void delete(CommentV2 comment) {
         // 삭제
         commentRepository.delete(comment);
+        articleCommentCountRepository.decrease(comment.getArticleId());
 
         // 자신이 root 가 아니라면 부모 comment 들 delete
         if (!comment.isRoot()){
@@ -92,6 +104,9 @@ public class CommentServiceV2 {
                     .filter(not(this::hasChildren)) // 자식을 가지고 있으면 안되고,
                     .ifPresent(this::delete); // 상위 댓글 삭제
         }
+
+
+
     }
 
     public CommentPageResponse readAll(Long articleId, Long page, Long pageSize){
@@ -112,5 +127,9 @@ public class CommentServiceV2 {
                 .toList();
     }
 
-
+    public Long count(Long articleId) {
+        return articleCommentCountRepository.findById(articleId)
+                .map(ArticleCommentCount::getCommentCount)
+                .orElse(0L);
+    }
 }

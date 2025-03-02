@@ -1,7 +1,9 @@
 package kube.board.article.service;
 
 import kube.board.article.entity.Article;
+import kube.board.article.entity.BoardArticleCount;
 import kube.board.article.repository.ArticleRepository;
+import kube.board.article.repository.BoardArticleCountRepository;
 import kube.board.article.service.request.ArticleCreateRequest;
 import kube.board.article.service.request.ArticleUpdateRequest;
 import kube.board.article.service.response.ArticlePageResponse;
@@ -19,6 +21,7 @@ public class ArticleService {
 
     private final Snowflake snowflake = new Snowflake();
     private final ArticleRepository articleRepository;
+    private final BoardArticleCountRepository boardArticleCountRepository;
 
 
     @Transactional
@@ -26,6 +29,13 @@ public class ArticleService {
         Article article = articleRepository.save(
                 Article.create(snowflake.nextId(), request.getTitle(), request.getContent(), request.getBoardId(), request.getWriterId())
         );
+        int result = boardArticleCountRepository.increase(request.getBoardId());
+        if (result == 0){
+            boardArticleCountRepository.save(
+                    BoardArticleCount.init(request.getBoardId(), 1L)
+            );
+        }
+
         return ArticleResponse.from(article);
     }
 
@@ -41,7 +51,9 @@ public class ArticleService {
     }
 
     public void delete(Long articleId){
-        articleRepository.deleteById(articleId);
+        Article article = articleRepository.findById(articleId).orElseThrow();
+        articleRepository.delete(article);
+        boardArticleCountRepository.decrease(article.getArticleId());
     }
 
     public ArticlePageResponse readAll(Long boardId, Long page, Long pageSize) {
@@ -58,12 +70,17 @@ public class ArticleService {
     }
 
 
-    public List<ArticleResponse> areaAllInfiniteScroll(Long board_id, Long pageSize, Long lastArticle){
+    public List<ArticleResponse> readAllInfiniteScroll(Long board_id, Long pageSize, Long lastArticle){
         List<Article> articles = lastArticle == null ?
                 articleRepository.findAllInfiniteScroll(board_id, pageSize) :
                 articleRepository.findAllInfiniteScroll(board_id, pageSize, lastArticle);
         return articles.stream().map(ArticleResponse::from).toList();
     }
 
+    public Long count(Long boardId) {
+        return boardArticleCountRepository.findById(boardId)
+                .map(BoardArticleCount::getArticleCount)
+                .orElse(0L);
+    }
 
 }

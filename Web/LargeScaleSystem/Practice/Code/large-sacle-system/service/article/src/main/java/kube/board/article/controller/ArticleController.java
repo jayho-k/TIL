@@ -35,7 +35,7 @@ public class ArticleController {
             @RequestParam(value = "lastArticleId", required = false) Long lastArticleId
 
     ){
-        return articleService.areaAllInfiniteScroll(boardId, pageSize, lastArticleId);
+        return articleService.readAllInfiniteScroll(boardId, pageSize, lastArticleId);
     }
 
     @PostMapping("/v1/articles")
@@ -53,6 +53,9 @@ public class ArticleController {
         articleService.delete(articleId);
     }
 
-
+    @GetMapping("/v1/articles/boards/{boardId}/count")
+    public Long count(@PathVariable Long boardId) {
+        return articleService.count(boardId);
+    }
 
 }
