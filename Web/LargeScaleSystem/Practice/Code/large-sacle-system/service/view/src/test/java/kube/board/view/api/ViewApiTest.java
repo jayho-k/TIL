@@ -20,7 +20,7 @@ public class ViewApiTest {
         for(int i=0; i<10000; i++) {
             executorService.submit(() -> {
                 restClient.post()
-                        .uri("/v1/article-views/articles/{articleId}/users/{userId}", 4L, 1L)
+                        .uri("/v1/article-views/articles/{articleId}/users/{userId}", 5L, 1L)
                         .retrieve();
                 latch.countDown();
             });
@@ -29,11 +29,11 @@ public class ViewApiTest {
         latch.await();
 
         Long count = restClient.get()
-                .uri("/v1/article-views/articles/{articleId}/count", 4L)
+                .uri("/v1/article-views/articles/{articleId}/count", 5L)
                 .retrieve()
                 .body(Long.class);
 
-        System.out.println("count = " + count);
+        System.out.println("count = " + count); // 일반 : 1000개 집계 되어야함 / abusing 적용 : count 1회
     }
 
 }
