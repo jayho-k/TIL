@@ -3,6 +3,8 @@ rootProject.name = 'large-sacle-system'
 
 include 'common'
 include 'common:snowflake'
+include 'common:data-serializer'
+include 'common:event'
 
 include 'service'
 include 'service:article'

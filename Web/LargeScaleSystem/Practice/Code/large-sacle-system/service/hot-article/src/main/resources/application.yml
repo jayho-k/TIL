@@ -1,1 +1,19 @@
-server.port: 9002
+server.port: 9004
+spring:
+  application:
+    name: large-scale-system-hot-article-service
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: large-scale-system-hot-article-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+
+endpoints:
+  large-scale-system-article-service:
+    url: http://127.0.0.1:9000
