@@ -2,6 +2,16 @@
 
 > - Kafka Cluster 
 
+### 모르는 것들
+
+@EnableAsync
+
+@TransactionalEventListener()
+
+@EventListener(), @Async 등 
+
+
+
 
 
 ## 용어 정리
@@ -258,7 +268,7 @@
      - 비즈니스 로직 수행
      - Outbox 테이블에 전송 할 이벤트 데이터 기록
      - commit or abort
-       
+     
   2. **Outbox 테이블을 이용한 이벤트 전송 처리**
      - Outbox 테이블 미전송 이벤트 조회
      - 이벤트 전송
@@ -283,7 +293,7 @@
 
 - 장점
   - 이벤트 전송작업을 직접 개발하지 않을 수 있다.
-    
+  
 - 필요점
   - 올바르게 활용하려면 새로운 기술에 대한 학습 및 운영비용이 발생한다. 
 
@@ -303,7 +313,7 @@
 1. **게시글 생성 / 수정 / 삭제 API**
 2. **Article Table 값, Outbox Table 변경**
    - 추가로 게시글 서비스에서 트랜잭션이 commit이 되면 Message Relay에 이벤트 전달
-     
+   
 3. **Message Relay는 10초 간격으로 Outbox Table 조회**
    - 해당 부분은 2번 과정에서 이벤트 전달이 실패한 이벤트만 조회하도록 한다.
    - 즉 장애 상황에만 발생했을 것이기 때문에 생성된지 10초가 지난 이벤트만 pooling하게 된다.
