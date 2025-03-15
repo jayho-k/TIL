@@ -1,5 +1,8 @@
 package kube.board.view.service;
 
+import kube.board.common.event.EventType;
+import kube.board.common.event.payload.ArticleViewedEventPayload;
+import kube.board.common.outboxmessagerelay.OutboxEventPublisher;
 import kube.board.view.entity.ArticleViewCount;
 import kube.board.view.repository.ArticleViewCountBackUpRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ArticleViewCountBackUpProcessor {
 
+    private final OutboxEventPublisher outboxEventPublisher;
     private final ArticleViewCountBackUpRepository articleViewCountBackUpRepository;
 
     @Transactional
@@ -24,6 +28,14 @@ public class ArticleViewCountBackUpProcessor {
                         )
                     );
         }
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_VIEWED,
+                ArticleViewedEventPayload.builder()
+                        .articleId(articleId)
+                        .articleViewCount(viewCount)
+                        .build(),
+                articleId
+        );
 
     }
 

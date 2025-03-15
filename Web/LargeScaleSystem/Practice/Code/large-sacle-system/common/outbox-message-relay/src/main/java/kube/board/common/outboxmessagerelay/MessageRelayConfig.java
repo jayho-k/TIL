@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 public class MessageRelayConfig {
 
-    @Value("${spring.kafka.bootstrap-server}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     // producer event 들을 전송시키기 위한 Bean

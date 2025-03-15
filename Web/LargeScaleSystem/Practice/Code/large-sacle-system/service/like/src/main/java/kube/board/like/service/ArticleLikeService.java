@@ -1,5 +1,9 @@
 package kube.board.like.service;
 
+import kube.board.common.event.EventType;
+import kube.board.common.event.payload.ArticleLikedEventPayload;
+import kube.board.common.event.payload.ArticleUnlikedEventPayload;
+import kube.board.common.outboxmessagerelay.OutboxEventPublisher;
 import kube.board.common.snowflake.Snowflake;
 import kube.board.like.entity.ArticleLike;
 import kube.board.like.entity.ArticleLikeCount;
@@ -16,6 +20,7 @@ public class ArticleLikeService {
     private final Snowflake snowflake = new Snowflake();
     private final ArticleLikeRepository articleLikeRepository;
     private final ArticleLikeCountRepository articleLikeCountRepository;
+    private final OutboxEventPublisher outboxEventPublisher;
 
 
     public ArticleLikeResponse read(Long articleId, Long userId) {
@@ -26,7 +31,7 @@ public class ArticleLikeService {
 
     @Transactional
     public void likePessimisticLock1(Long articleId, Long userId){
-        articleLikeRepository.save(
+        ArticleLike articleLike = articleLikeRepository.save(
                 ArticleLike.create(
                         snowflake.nextId(),
                         articleId,
@@ -44,8 +49,17 @@ public class ArticleLikeService {
                     ArticleLikeCount.init(articleId, 1L)
             );
         }
-
-
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_LIKE,
+                ArticleLikedEventPayload.builder()
+                        .articleLikeId(articleLike.getArticleLikeId())
+                        .articleId(articleLike.getArticleId())
+                        .userId(articleLike.getUserId())
+                        .createdAt(articleLike.getCreatedAt())
+                        .articleLikeCount(count(articleLike.getArticleId()))
+                        .build()
+                ,articleLike.getArticleId()
+        );
     }
 
     @Transactional
@@ -83,10 +97,22 @@ public class ArticleLikeService {
     @Transactional
     public void unlikePessimisticLock2(Long articleId, Long userId){
         articleLikeRepository.findByArticleIdAndUserId(articleId, userId)
-                .ifPresent(articleLIke -> {
-                    articleLikeRepository.delete(articleLIke);
+                .ifPresent(articleLike -> {
+                    articleLikeRepository.delete(articleLike);
                     ArticleLikeCount articleLikeCount = articleLikeCountRepository.findLockedByArticleId(articleId).orElseThrow();
                     articleLikeCount.decrease();
+
+                    outboxEventPublisher.publish(
+                            EventType.ARTICLE_UNLIKED,
+                            ArticleUnlikedEventPayload.builder()
+                                    .articleLikeId(articleLike.getArticleLikeId())
+                                    .articleId(articleLike.getArticleId())
+                                    .userId(articleLike.getUserId())
+                                    .createdAt(articleLike.getCreatedAt())
+                                    .articleLikeCount(count(articleLike.getArticleId()))
+                                    .build()
+                            ,articleLike.getArticleId()
+                    );
                 });
     }
 

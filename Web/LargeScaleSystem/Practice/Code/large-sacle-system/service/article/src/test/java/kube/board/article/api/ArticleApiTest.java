@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 
-@SpringBootTest
 public class ArticleApiTest {
 
     RestClient restClient = RestClient.create("http://localhost:9000");
