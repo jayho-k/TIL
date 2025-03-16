@@ -1,6 +1,6 @@
 package kube.board.articleread.consumer;
 
-import kube.board.articleread.service.response.ArticleReadService;
+import kube.board.articleread.service.ArticleReadService;
 import kube.board.common.event.Event;
 import kube.board.common.event.EventPayload;
 import kube.board.common.event.EventType;

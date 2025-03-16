@@ -1,7 +1,7 @@
 package kube.board.articleread.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.StringRedisConnection;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
