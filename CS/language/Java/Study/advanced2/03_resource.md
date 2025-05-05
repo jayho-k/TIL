@@ -464,13 +464,30 @@ public class SoTimeoutClient {
 - 클라이언트는 FIN 패킷을 받고 클라이언트 OS에서 FIN에 대한 ACK 전달
 - 클라이언트도 종료를 위해 `socket.close()` 를 호출하면서 FIN 패킷을 보내면 서버의 OS에서도 ACK를 보냄
 
+- `EOF`
+  - -1, null, EOFException 등이 발생
+  - 이 경우 연결을 끊어야한다.
 
+**강제 종료**
 
+<img src="./03_resource.assets/image-20250505143607255.png" alt="image-20250505143607255" style="zoom:67%;" />
 
+- socket이 close가 됐는데 강제로 push를 할 경우
+- 정리 
+  - `java.net.SocketException : Connection reset`
+    - RST 패킷을 받은 이후에 read() 호출
+    - 윈도우 오류 메시지 : 현재 연결은 사용자의 호스트 시스템의 소프트웨어에 의해 중단되었습니다.
+  - `java.net.SocketException : Broken pipe`
+    - RST 패킷을 받은 이후에 wirte() 호출
+    - 윈도우 오류 메시지:  ` write() ` 호출 현재 연결은 사용자의 호스트 시스템의 소프트웨어의 의해 중단되었습니다
+  - `java.net.SocketException : Socket is closed`
+    - 자신이 소켓을 닫은 이후에  네트워크 종료와 예외 정리 `read() ` ,`write()` 호출
 
+네트워크 종료와 예외 정리
 
-
-
+- SocketException, EOFException 은 모두 IOException의 자식이다.
+- 즉 IOException이 발생하면 자원정리를 하면된다.
+- 더 자세히 분류해야하는 경우에만 따로 예외를 구분해서 처리하면 된다.
 
 
 
