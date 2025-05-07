@@ -144,3 +144,70 @@ Accept-Language: en-CA,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,en-GB;q=0.6,en-US;q=0.5
     - gzip, deflate, br, zstd
   - Accept-Language : 웹브라우저가 전달 받을 수 있는 언어 형태
     - en-CA,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,en-GB;q=0.6,en-US;q=0.
+
+
+
+## URL 인코딩
+
+### http 가 ASCII를 사용하는 이유
+
+- 인터넷이 처음 설계되던 시기에 대부분의 컴퓨터 시스템이 ASCII를 사용했기 때문
+- 여전히 많은 시스템이 ASCII를 사용한디.
+- HTTP 스펙은 매우 보수적이고 호환성을 가장 수선시한다.
+
+### 한글을 전달하면?
+
+```
+query: %EA%B0%80%EB%82%98%EB%8B%A4
+decode: 가나다
+```
+
+- 퍼센트(%) 인코딩
+  - 각각의 바이트 앞에 %를 붙이고 한글이면 3개씩 끊어서 계산을 다시하게 된다.
+  - 이렇게 얻은 문자를 16진수 byte로 변경
+  - ex
+    - 한글을 UTF-8 인코딩으로 표현하면 한 글자에 3byte의 데이터를 사용
+    - 가 : `%EA%B0%80`
+
+**% 인코딩, 디코딩 과정**
+
+```java
+String decode = URLDecoder.decode("가", UTF_8); //가 => %EA%B0%80
+```
+
+- 클라이언트 : 가 전송 희망
+- 클라이언트 & 인코딩 :`%EA%B0%80`
+  - "가"를 UTF-8로 인코딩
+  - 각 byte를 16진수 문자로 표현하고 각각의 앞에 `%`를 붙힘
+- 클라이언트 => 서버 전송 : `q=%EA%B0%80`
+- 서버 `%EA%B0%80` ASCII 문자를 전달 받음
+  - `%` 가 붙은  경우 디코딩해야 하는 문자로 인식
+  - `%EA%B0%80`를 3byte로 변환 후 UTF-8로 디코딩 => 문자 "가"를 획득
+
+
+
+## WAS
+
+### WAS(Web Application Server)란?
+
+- 웹(HTTP)를 기반으로 작동하는 서버인데, 이 서버를 통해서 프로그램의 코드도 실행할 수 있는 서버
+  - Application이 들어간 이유는 웹 서버의 역할을 하면서 추가로 애플리케이션 기능도 수행하기 때문이다.
+  - Application은 프로그램 코드도 수행할 수 있는 서버라는 뜻이다.
+- Web Server : 일반적으로 정적인 파일, 사진, 영상을 보내는 서버를 보통 web server라고 한다.
+- 보통 자바 진영에서 WAS라고 하면 서블릿 기능을 포함한 서버를 뜻한다. 하지만 서블릿 기능을 포함하지 않아도 프로그램 코드를 수행할 수 있다면, WAS라고 할 수 있다. 
+
+### Servlet 표준등장
+
+- 각 servlet 마다 인터페이스가 다르기 때문에 표준이 필요해서 나오게 된다.
+- Servlet, ServletRequest, ServletResponse 를 포함한 많은 표준을 제공
+- 현재는 `jakarta.servlet` 로 변경
+  - 오픈 소스
+    - Apache Tomcat
+    - Jetty
+    - GlassFish
+    - Undertow
+
+
+
+
+
