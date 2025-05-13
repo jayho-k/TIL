@@ -239,9 +239,163 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic test-topic \
 
 
 
+## Partition 분배 전력 (Key 없을 때)
+
+<img src="./01_Kafka.assets/image-20250511162931329.png" alt="image-20250511162931329" style="zoom:67%;" />
+
+- 파티션은 message를 Batch 단위로 보낸다.
+
+### Round Robin
+
+- 2.4버전 이전 default 파티션 분배전략
+
+<img src="./01_Kafka.assets/image-20250511163335672.png" alt="image-20250511163335672" style="zoom:67%;" />
+
+- 최대한 메시지를 파티션에 균일하게 분배하려는 전략
+- batch.size와 linger.ms 가 존재하는데 
+  - batch.size : 배치에 message가 다 차게되면 Topic에 보낸다.
+  - linger.ms : 일정 시간이 지나게 되면 Topic에 보낸다..
+- **라운드 로빈의 문제점**
+  - 라운드 로빈은 순차적으로 Partition에 넣는 과정을 가진다.
+  - 이로인해 배치 데이터를 빨리 채우지 못하면서 전송이 늦어지거나 배치를 다 채우지 못하고 전송하면서 전송 성능이 떨어짐
 
 
 
+### Sticky Partition
+
+- 2.4버전 이후 default 파티션 분배전략
+
+<img src="./01_Kafka.assets/image-20250511163744763.png" alt="image-20250511163744763" style="zoom:67%;" />
+
+- 하나의 배치에 메시지를 빠르게 먼저 채워서 보내는 방식
+- 균일하게 Partition에 값을 못보낼 순 있으나, 보통 메시지가 빨리 채워지기 때문에 큰 문제 없음
+
+
+
+##  Consumer Group과 Consumer
+
+**Consumer Group 내 [파티션 개수 = Consumer]**
+
+<img src="./01_Kafka.assets/image-20250511164927870.png" alt="image-20250511164927870" style="zoom:67%;" />
+
+- 모든 Consumer 들은 단 하나의 Consumer Group에 소속되어야 한다.
+- Consumer Group은 하나 이상의 Consumer를 가질 수 있음
+- **보통 파티션의 개수만큼 Consumer의 개수만큼 만들어 준다.**
+  - Partition만 많다고 해도 Consumer개수가 적게 되면 Consumer에서 병목이 생기게 되기 떄문
+  - 순서 보장도 위함
+
+**Rebalancing**
+
+- Consumer Group 내에 Consumer 변화가 있을 때 마다 파티션과 Consumer의 조합을 변경하는 것
+- 즉 Consumer의 개수의 변화 등이 생겼을 때 Rebalancing을 통해 Partition과 Consumer의 조합을 재배치하게 된다.
+
+
+
+**Consumer Group 내 [파티션 개수 < Consumer]**
+
+<img src="./01_Kafka.assets/image-20250511165337307.png" alt="image-20250511165337307" style="zoom:67%;" />
+
+- 파티션의 개수가 Consumer 보다 많다고 해서 두개 이상의 Consumer로 Partition이 조합되지 않는다.
+- 즉 하나의 Partition은 하나의 Consumer와 조합이 되며, 파티션 < Consumer일 경우 Consumer들은 놀게 된다. 
+
+
+
+**Consumer Group간에는 독립적이다.**
+
+<img src="./01_Kafka.assets/image-20250511165607353.png" alt="image-20250511165607353" style="zoom:67%;" />
+
+- **모든 Consumer 들은 고유한 group.id를 가진다.**
+  - 즉 Consumer들은 무조건 Group에 소속되어 있어야한다.
+- Consumer Group 내에 Partition들은 최대한 균등하게 분배
+- 각 Consumer Group간에는 독립적
+
+
+
+### Kafka-consumer-groups 명령어
+
+> - Consumer Group list 정보
+> - Consumer Group과 Consumer 관계 partition등에 대한 상세 정보
+> - Consumer Group 삭제
+> - Producer가 전송한 Log message의 지연 Lag정보
+
+```
+Consumer Group list 정보
+>> kafka-consumer-groups --bootstrap-server localhost:9092 --list
+
+Consumer Group과 Consumer 관계 partition등에 대한 상세 정보
+(group, topic, partition, surrent-offset, log-end-offset, lag 의 정보를 알 수 있음)
+>> kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group group_01
+
+```
+
+- consumer id는 지정할 수 없고, 브로커가 지정하게 된다.
+
+- 모니터링하는 방법
+
+```
+while true
+do
+sleep 5
+명령어 ex) kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group group_01
+done
+
+```
+
+
+
+### Consumer Group 삭제
+
+- **Group은 바로 삭제 되지 않는다. default로 Consumer가 없을 시 7일동안 대기한 뒤에도 Consumer가 없을 경우 Group을 삭제하게 된다.**
+
+- 따라서 바로 삭제를 하고 싶을 경우 명령어를 날려주면된다.
+
+- **delete할 때 consumer가 하나라도 살아 있으면 안된다.**
+
+- ```
+  kafka-consumer-groups --bootstrap-server localhost:9092 --delete --group group_01
+  ```
+
+
+
+## Kafka Configs
+
+- **Broker와 Topic 레벨 Config**
+
+  - Kafka 서버에서 설정되는 Config
+
+    - Broker의 Config 값 : Topic Config에 전체에 설정
+    - Topic의 Config값 : 특정 Topic에 Broker 값이 아닌 특정 값으로 Override할 수 있음
+
+  - server.properties
+
+    - 보통 Broker 재기동이 필요한 static config 
+
+  - kafka-configs
+
+    - 동적으로 변경이 가능한 Dynamic Config 
+
+    
+
+- **Producer와 Consumer 레벨 Config**
+
+  - Client에서 설정되는 Config
+  - Client 레벨에서 설정되기 때문에 Client 수행시 마다 설정
+
+```
+[config 값 확인]
+kafka-configs –bootstrap-server [hostip:port] --entity-type [brokers/topics] –entity-name [broker id/topic name]--all --describ
+
+[config 값 설정]
+kafka-configs –bootstrap-server [hostip:port] --entity-type [brokers/topics] –entity-name [broker id/topic name] --alter --add-config property명=value
+
+[config 값 Unset]
+kafka-configs –bootstrap-server [hostip:port] --entity-type [brokers/topics] –entity-name [broker id/topic name] --alter –-delete-config property명
+
+[log file message 내용 확인]
+kafka-dump-log --deep-iteration --files /home/jayho/data/kafka-logs/multi-topic-0/00000000000000000000.log
+
+
+```
 
 
 
