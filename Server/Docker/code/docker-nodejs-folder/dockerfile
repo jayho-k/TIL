@@ -1,0 +1,17 @@
+# base image
+FROM node:10
+
+# work dir
+WORKDIR /usr/src/app
+
+# pakage copy
+COPY pakage.json ./
+
+# download
+RUN npm install
+
+# 전체 코드 copy
+COPY ./ ./
+
+# ndoe + 엔트리 파일
+CMD ["node","server.js"]
