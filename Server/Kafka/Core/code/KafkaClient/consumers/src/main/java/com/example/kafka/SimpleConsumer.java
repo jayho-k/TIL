@@ -32,15 +32,16 @@ public class SimpleConsumer {
 
 
         while (true) {
-            // 1초동안 기다림
-            // 여러개의 Records를 가지고 있음 왜냐하면 배치단위로 가져올 것이기 때문
+            // 최대 1초동안 기다림
+            // 여러 개의 Records를 가지고 있음 왜냐하면 배치단위로 가져올 것이기 때문
             ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(Duration.ofMillis(1000));
             for (ConsumerRecord record : consumerRecords) {
                 logger.info("key : {}, val : {}, partition : {} ", record.key(), record.value(), record.partition());
+                // poll로 Data를 가져와서 저장등을 수행하는 시간이 오래걸리는 작업 = Main Thread
             }
-
-
         }
+
+
 
 
 

@@ -141,6 +141,9 @@ G1 사이클
    - 해당 프로세스가 일시정지 중에 마킹을 계속할 필요가 없다고 판단된다면?
      - Concurrent Mark Undo Phase가 발생하고 Young-only 단계가 계속된다.
      - 이때는 Remark와 CleanUp이 발생하지 않음
+   - **Marking**
+     - 이전 단계에서 변경된 정보를 토대로 Initial Mark를 수행한다
+     - GC 루트와 직접 연결된 객체들로 부터 시작해 객체 그래프 전체를 탐색
    - **Remark**
      - STW
      - 마킹 최종 확정
