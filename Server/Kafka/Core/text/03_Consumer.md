@@ -309,9 +309,157 @@ while (true) {
 
 
 
+## Offset Commit
+
+<img src="./03_Consumer.assets/image-20250606212253297.png" alt="image-20250606212253297" style="zoom:67%;" />
+
+- __consumer_offset에 offset에 저장이 되어있으면 Consumer가 어느 partition을 잡든 어디까지 읽었는지 알게 되기 때문에 Consumer는 offset을 가지고 있지 않아도 된다.
 
 
 
+### 중복 (duplicate) 읽기 상황
+
+<img src="./03_Consumer.assets/image-20250606213157321.png" alt="image-20250606213157321" style="zoom:67%;" />
+
+1. Consumer #1 이 poll()로 offset 5번 부터 읽고 있는 상태 (아직 완료는 못한 상황)
+2. Consumer #1이 문제가 생겨서 죽음
+3. Rebalancing이 일어나게 됨
+4. Consumer#2 가 poll로 읽어야하는데 Commit 적용이 5로 되어있기 때문에 5번부터 읽어야함
+   - 이렇게 되면 5,6 번을 다시 읽는 상황이 발생
+   - 만약 이렇게 되면 DB을 통째로 rollback을 하든가 아니면 무결성하면 딱히 문제 없을듯
+
+
+
+### 읽기 누락(loss) 상황 
+
+- 이런 상황은 거의 없음
+- 구현을 잘못한거 일듯?
+- 완료되지 않고 Commit을 먼저 찍으면 읽기 누락이 발생
+
+
+
+###  Consumer의 auto commit
+
+- `auto.enable.commit = true` 인 경우 읽어온 메시지를 브로커에 바로 commit 적용을 하지 않는다.
+- `auto.commit.interval.ms`에 정해진 주기(default 5초) 마다 Consumer가 자동으로 Commit을 수행한다.
+
+<img src="./03_Consumer.assets/image-20250606214333273.png" alt="image-20250606214333273" style="zoom:67%;" />
+
+1. 0,1 메시지를 읽어 옴 (3초)
+2. 2,3 메시지를 읽어 옴 (6초) ==> `auto.commit.interval.ms` 의 5초가 넘은 상태
+3. 4,5 메시지를 읽어 올 때 commit을 시행 => Commit은 6으로 찍는게 아니라 4로 찍게 된다.
+
+
+
+## Manual 동기/ 비동기 Commit
+
+해당 메소드를 사용하기 위해선 `enable.auto.commit = false` 로 설정해줘야한다.
+
+- 평소에는 commitAsync를 하고 close 할때나 문제생긴 상황에서 commitSync를 찍게끔 하는 방법도 있음
+
+### Sync
+
+- `commitSync()` 메서드 사용
+- 브로커에 commit 적용이 성공적으로 될 때까지 poll요청 및 블로킹
+  - 즉 while 문이라면 다음 loop로 넘어가지 않는다는 뜻
+  - 브로커에 Commit 적용이 실패할 경우 다시 Commit 적용 요청
+- 따라서 비동기 방식 대비 더 느린 수행시간
+
+- 
+
+```java
+while (true) {
+    ConsumerRecords<String, String> consumerRecords 
+        = kafkaConsumer.poll(Duration.ofMillis(1000));
+
+    logger.info(" ############ loopCnt : {} ConsumerRecord : {} "
+                , loopCnt++, ConsumerRecords.class);
+
+    for (ConsumerRecord record : consumerRecords) {
+        logger.info("key : {}, val : {}, partition : {}", record.key(), record.value(), record.partition());
+    }
+
+    // poll이 batch 단위로 수행되기 때문에 여기서 commit을 찍어야한다.
+    try {
+        kafkaConsumer.commitSync();
+    } catch (CommitFailedException e) {
+        logger.error(e.getMessage());
+    }
+}
+```
+
+
+
+### Async
+
+- `commitAsync()` 메서드 사용
+- poll()을 통해서 읽어오고 해당 메시지들의 마지마 offset을 브로커 commit에 적용
+- 이떄 Commit 적용이 성공적으로 되었는지 기다리지 않고 계속 메시지를 읽어온다.
+- 브로커에 Commit 적용이 실패해도 다시 Commit시도를 안함
+
+```java
+private static void pollCommitAsync(KafkaConsumer<String, String> kafkaConsumer) {
+        try {
+            int loopCnt = 0;
+            while (true) {
+                ConsumerRecords<String, String> consumerRecords 
+                    = kafkaConsumer.poll(Duration.ofMillis(1000));
+                for (ConsumerRecord record : consumerRecords) {
+                    logger.info(record.key(), record.value(), record.partition());
+                }
+
+                kafkaConsumer.commitAsync(new OffsetCommitCallback() {
+                    @Override
+                    public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets
+                                           , Exception exception) 
+                    {
+                        if (exception != null) {
+                            logger.error(offsets, exception);
+                        }
+                    }
+                });
+            }
+        } catch (WakeupException e) {
+            logger.error("wakeup exception has been called");
+        }finally {
+            try {
+                kafkaConsumer.commitSync();
+            } catch (CommitFailedException e) {
+            }
+            finally {
+                logger.info("finally conumer is closing");
+                kafkaConsumer.close();
+            }
+        }
+    }
+```
+
+
+
+### 특정 파티션만 할당
+
+<img src="./03_Consumer.assets/image-20250606231336225.png" alt="image-20250606231336225" style="zoom:67%;" />
+
+```java
+TopicPartition topicPartition = new TopicPartition(topicName, 0);
+kafkaConsumer.assign(Arrays.asList(topicPartition));
+```
+
+
+
+### Topic의 특정 파티션의 특정 offset부터 읽기
+
+<img src="./03_Consumer.assets/image-20250606231354896.png" alt="image-20250606231354896" style="zoom:67%;" />
+
+```java
+TopicPartition topicPartition = new TopicPartition(topicName, 1);
+kafkaConsumer.assign(Arrays.asList(topicPartition));
+kafkaConsumer.seek(topicPartition, 6L);
+```
+
+- 특정 메시지가 누락되었을 경우 해당 메시지를 다시 읽어 오기 위해 유지 보수 차원에서 일반적으로 사용
+- **기존 group id왇 동일한 group id를 사용하면서 commit을 수행하면 __consumer_offsets을 갱신할 수 있기 때문에 유의해야한다.**
+- **따라서 group id를 변경하든가 commit을 찍지 말자**
 
 
 

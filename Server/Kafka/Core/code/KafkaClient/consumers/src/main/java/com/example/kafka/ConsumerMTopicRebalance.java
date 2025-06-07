@@ -1,9 +1,6 @@
 package com.example.kafka;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
@@ -24,12 +21,18 @@ public class ConsumerMTopicRebalance {
         Properties props = new Properties();
         props.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.56.101:9092");
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group-mtopic");
-        
+        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group-assign");
+//        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group-mtopic");
+
         // consumer static member를 설정
         // 각 consumer 마다 값을 바꿔줘야한다.
         props.setProperty(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, "1");
 
+        // 파티션 할당 전략을 round robin으로 바꾸는 방법
+        // props.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, RoundRobinAssignor.class.getName());
+
+        // 파티션 할당 전략을 CooperativeSticky 로 바꾸는 방법
+        // props.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, CooperativeStickyAssignor.class.getName());
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(props);
         kafkaConsumer.subscribe(List.of("topic-p3-t1", "topic-p3-t2"));

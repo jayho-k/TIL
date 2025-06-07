@@ -6,8 +6,6 @@
 
 - #### 프로세스의 문맥(context)?
 
-  - 살아있는 생명체와 비교 ㅋㅋ
-
   - 현재 프로세스가 어떤 상태에 있느냐? 라는 것
 
   - cpu를 얼마나 썼는가? 함수 어떤 실행을 했는가? 등등
@@ -15,8 +13,8 @@
   - ##### 하드웨어 문맥
 
     - Program Counter
-    - 각종 register
-
+  - 각종 register
+  
   - ##### 프로세스의 주소 공간
 
     - code, data, stack(몇개 함수 호출?)
@@ -24,7 +22,7 @@
   - ##### 프로세스 관련 커널 자료구조
 
     - PCB(Process Control Block)
-    - kernel stack
+  - kernel stack
 
 
 
