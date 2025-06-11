@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b37de514-6387-4060-a37f-c347207a0483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../../../../CS/operating_system/03_Process_Management.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/operating_system/03_Process_Management.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/consumers/src/main/java/com/example/kafka/ConsumerMTopicRebalance.java" beforeDir="false" afterPath="$PROJECT_DIR$/consumers/src/main/java/com/example/kafka/ConsumerMTopicRebalance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../text/03_Consumer.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../text/03_Consumer.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/hot-article/src/main/java/kube/board/hotarticle/config/KafkaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/hot-article/src/main/java/kube/board/hotarticle/config/KafkaConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

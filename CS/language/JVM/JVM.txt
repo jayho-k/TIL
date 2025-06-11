@@ -1,0 +1,28 @@
+// JVM 어떤 구성 요소를 가지고 있는지
+// JVM이 메모리를 어떤 식으로 구분하고 있는지
+// class A는 어떤 식으로 로드되는지에 대해서 
+// classloader란?
+class A {
+  private static final String STR = "ABC";
+  private static Long l = Long.valueOf(-1L);
+  private static int i = -1;
+  private static C c = new C();
+  
+  private final String a = "ABC";
+  private final int ii = 1;
+  private C cc = new C();
+
+  public static void main(...) {
+    // JVM Memory에서 무슨 일이 일어나는지 설명해 봅시다.
+    A a = new A();
+    B b = new B();
+  }
+}
+
+class B extends A {
+  // ...
+}
+
+class C {
+  // ...
+}
