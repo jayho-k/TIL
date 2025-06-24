@@ -112,11 +112,11 @@ public class ArticleService {
         return ArticlePageResponse.of(
                 // mapping => ArticleResponse 로 변경
                 articleRepository.findAll(boardId, (page - 1) * pageSize, pageSize).stream()
-                        .map(ArticleResponse::from)
-                        .toList(),
-                articleRepository.count(
-                        boardId,
-                        PageLimitCalculator.calculatePageLimit(page, pageSize, 10L))
+                                        .map(ArticleResponse::from)
+                                        .toList(),
+                                articleRepository.count(
+                                        boardId,
+                                        PageLimitCalculator.calculatePageLimit(page, pageSize, 10L))
         );
     }
 

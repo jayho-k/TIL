@@ -47,6 +47,8 @@ Map m = Collections.synchronizedMap(new HashMap(...));
 static final int hash(Object key) {
     int h;
     // hashCode = 스레드 
+    // 16을 오른쪽으로 시프트 하는 이유는 상위비트와 하위비트를 섞어서 key값이 조금더 
+    // 분산될 수 있게끔 하기 위해서다
     return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
 ```

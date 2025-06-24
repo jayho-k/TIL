@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b37de514-6387-4060-a37f-c347207a0483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/java-avd3/src/main/java/lambda/Procedure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/out/production/java-avd1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/out/production/java-avd1/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/이론/Hash Map.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/이론/Hash Map.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,19 +55,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/jayho/Developer/practice/Server/Kafka/Core/code/KafkaClient/practice/src/main/resources",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/jayho/Developer/practice/Server/Kafka/Core/code/KafkaClient/practice/src/main/resources&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.pratice.kafka.event" />
