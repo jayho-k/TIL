@@ -33,7 +33,12 @@ public class ArticleService {
     @Transactional
     public ArticleResponse create(ArticleCreateRequest request){
         Article article = articleRepository.save(
-                Article.create(snowflake.nextId(), request.getTitle(), request.getContent(), request.getBoardId(), request.getWriterId())
+                Article.create(snowflake.nextId(),
+                        request.getTitle(),
+                        request.getContent(),
+                        request.getBoardId(),
+                        request.getWriterId()
+                )
         );
         int result = boardArticleCountRepository.increase(request.getBoardId());
         if (result == 0){

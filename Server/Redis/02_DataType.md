@@ -76,8 +76,6 @@ OK
 - string을 Linked List로 저장하는 데이터 타입
 - push / pop에 최적화
 
-
-
 ```
 -- queue
 LPUSH queue job1 job2 

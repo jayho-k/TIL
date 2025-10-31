@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b37de514-6387-4060-a37f-c347207a0483" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/java-avd3/src/main/java/lambda/Procedure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/out/production/java-avd1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/out/production/java-avd1/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/이론/Hash Map.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/이론/Hash Map.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd1/src/Main3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd3/src/main/java/lambda/Procedure.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../CS/language/Java/code/java-avd3/src/main/java/lambda/Procedure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Redis/02_DataType.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../Redis/02_DataType.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/common/event/src/main/java/kube/board/common/event/EventPayload.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/common/event/src/main/java/kube/board/common/event/EventPayload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/article/src/main/java/kube/board/article/service/ArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/article/src/main/java/kube/board/article/service/ArticleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/hot-article/src/main/java/kube/board/hotarticle/consumer/HotArticleEventConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../Web/LargeScaleSystem/Practice/Code/large-sacle-system/service/hot-article/src/main/java/kube/board/hotarticle/consumer/HotArticleEventConsumer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

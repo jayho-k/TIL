@@ -11,6 +11,8 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static kube.board.common.event.Event.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class HotArticleEventConsumer {
     })
     public void listen(String message, Acknowledgment ack){
         log.info("[HotArticleEventConsumer.listen] received message={}", message);
-        Event<EventPayload> event = Event.fromJson(message);
+        Event<EventPayload> event = fromJson(message);
         if (event != null) {
             hotArticleService.handleEvent(event);
         }

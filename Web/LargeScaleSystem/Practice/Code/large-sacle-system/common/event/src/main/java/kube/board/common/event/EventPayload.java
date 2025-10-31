@@ -1,4 +1,6 @@
 package kube.board.common.event;
 
-public interface EventPayload {
+import java.io.Serializable;
+
+public interface EventPayload extends Serializable {
 }
