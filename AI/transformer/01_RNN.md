@@ -290,13 +290,27 @@ She opened a saving "bank" account yesterday.
 
 
 
+## Seq2Seq
 
+- 기존 RNN 모델은 입력 Sequence에 대해서 **동기적으로 출력 Sequence를 생성하는 구조**다.
+- 이로 인해서 번역과 같은 경우 어려움이 생김 (어순이 다름 + Token 개수가 다름)
+- 이로 인해 Sequence 를 다른 유형의 Sequence(다른 길이)로 매핑하면서 번역 등의 NLP를 위한 유연한 모델 구성
+- 입력 >> 문맥 Context를 만듦(문맥 Vector)
+  - 즉 단어가 아니라 문장 자체를 벡터화시키는 것이라고 보면 된다.
+  - 
 
+### Seq2Seq with Attention
 
+- 특정 시점의 Decoder Hidden state 별로 Encoder의 모든 Hidden states들과 얼마나 관련되어 있는지 Attention을 계산
+- Decoder의 Hidden State가 생성 될 때마다 Encoder의 모든 Hidden states와 결합 후 Linear 적용 및 Softmax 정규화하여 Attention Score 및 Attention Weight 생성
+-  **Context Vector는 이 Attention Weight를 반영하여 Dynamic 하게 재 생성됨**
+-  새롭게Attention Weight를 반영한 Context Vector는 Decoder 자체의 embedding 입력과 결합하여 다음 시점의 Decoder 입력
 
+<img src="./01_Transformer.assets/image-20251102153240130.png" alt="image-20251102153240130" style="zoom:67%;" />
 
-
-
-
-
-
+1. RNN 모델 사용으로 Context를 생성
+2. Context를 기반으로 h0를 생성 (Decoder)
+3. 그걸 다시 RNN에 넣는데 이때 Decoder에서 생성했던 h0를 삽입해서 h를 다시 학습
+4. Attention을 반영한 Context 생성
+5. 그리고 그것을 기반으로 h1을 생성
+6. 반복
