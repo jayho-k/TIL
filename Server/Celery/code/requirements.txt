@@ -1,0 +1,13 @@
+fastapi
+email-validator
+uvicorn[standard]
+celery[redis]
+redis
+dependency-injector
+pydantic-settings
+sqlalchemy[asyncio]
+asyncpg
+greenlet
+pytest
+pytest-asyncio
+httpx
