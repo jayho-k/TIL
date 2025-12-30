@@ -1,0 +1,12 @@
+db:
+  url: "postgresql+asyncpg://user:password@localhost:5432/dbname"
+
+celery:
+  broker_url: "amqp://guest:guest@localhost:5672//"
+  result_backend: "redis://localhost:6379/0"
+
+minio:
+  endpoint: "localhost:9000"
+  access_key: "minioadmin"
+  secret_key: "minioadmin"
+  bucket: "mybucket"

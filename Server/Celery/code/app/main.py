@@ -6,6 +6,7 @@ from app.core.database import engine, Base
 app = FastAPI()
 
 container = Container()
+container.wire(modules=["app.api.endpoints", "app.tasks.user_tasks"])
 
 @app.on_event("startup")
 async def startup():

@@ -11,3 +11,4 @@ greenlet
 pytest
 pytest-asyncio
 httpx
+PyYAML
