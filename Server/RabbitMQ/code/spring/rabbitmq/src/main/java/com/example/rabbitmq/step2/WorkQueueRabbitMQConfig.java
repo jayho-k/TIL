@@ -1,47 +1,47 @@
 package com.example.rabbitmq.step2;
 
-import com.example.rabbitmq.step1.Receiver;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
-public class RabbitMQConfig {
+public class WorkQueueRabbitMQConfig {
 
     public static final String QUEUE_NAME = "WorkQueue";
 
     @Bean
-    public Queue queue() {
+    public Queue workQueue() {
         // durable : 영속성, 휘발성을 구분하기 위한 옵션
         // false >> queue가 죽으면 메시지가 날아감
         return new Queue(QUEUE_NAME, true);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    public RabbitTemplate workQueueRabbitTemplate(ConnectionFactory connectionFactory) {
         return new RabbitTemplate(connectionFactory);
     }
 
     @Bean
-    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                                    MessageListenerAdapter listenerAdapter) {
+    public SimpleMessageListenerContainer workQueueContainer(ConnectionFactory connectionFactory,
+            @Qualifier("workQueueListenerAdapter") MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(QUEUE_NAME);
         container.setMessageListener(listenerAdapter);
         container.setAcknowledgeMode(AcknowledgeMode.AUTO); // AUTO : default > round robbin 방식
-//        container.setAcknowledgeMode(AcknowledgeMode.MANUAL); // Fair Dispatch를 사용하기 위해선 MANUAL 을 사용해야한다.
+        // container.setAcknowledgeMode(AcknowledgeMode.MANUAL); // Fair Dispatch를 사용하기
+        // 위해선 MANUAL 을 사용해야한다.
         return container;
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(WorkQueueConsumer workQueueTask) {
+    public MessageListenerAdapter workQueueListenerAdapter(WorkQueueConsumer workQueueTask) {
         return new MessageListenerAdapter(workQueueTask, "workQueueTask");
     }
 }
