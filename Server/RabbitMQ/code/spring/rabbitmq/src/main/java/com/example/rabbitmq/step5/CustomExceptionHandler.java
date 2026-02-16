@@ -27,5 +27,4 @@ public class CustomExceptionHandler {
         String routingKey = "log.info";
         logPublisher.publish(routingKey, "Info Log : " + message);
     }
-
 }

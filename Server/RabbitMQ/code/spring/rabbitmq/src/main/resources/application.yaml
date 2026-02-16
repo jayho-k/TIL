@@ -6,5 +6,13 @@ spring:
     port: 5672
     username: admin
     password: admin123
+#    listener:
+#      simple:
+#        retry:
+#        enabled: true # 재시도 활성화
+#        initial-interval: 1000 # 첫 재시도 대기 시간 1초
+#        max-attempts: 3 # 최대 재시도 횟수
+#        max-interval: 1000 # 시도간 최대 대기시간
+#      default-requeue-rejected: false # 재시도 실패 시 자동으로 DL
   server:
     port: 8080
