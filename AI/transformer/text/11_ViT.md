@@ -71,6 +71,33 @@ vit-b-16 >> 이게 픽셀을 16픽셀로 잘랐다는 뜻
 
 
 
+## Vision Transformer 의 Module
+
+- layer가 12라는 건 Transfomer Encoder가 12개 쌓여있다는 뜻
+
+- MLP : Feed Forward
+
+  
+
+<img src="./11_ViT.assets/image-20260220173143555.png" alt="image-20260220173143555" style="zoom:67%;" />
+
+- layer가 12라는 건 Transfomer Encoder가 12개 쌓여있다는 뜻
+
+	1. Image Patch Embedding 을 통해서 Feature를 뽑아내고 Transfomers 에 맞도록 Flatten 하는 과정
+	2. Transformer Encoder를 통해서 학습 과정을 거친다. 
+    - 이떄 특징은 Pre Normalization을 사용하게 된다. (성능이 더 좋음)
+    - 논문 : On Layer Normalization in the Transformer Architecture (참고)
+	3. Classification
+    - MLP : Feed Forward
+
+
+
+
+
+
+
+
+
 
 
 

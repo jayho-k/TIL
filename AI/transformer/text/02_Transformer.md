@@ -99,6 +99,8 @@ The cat sat on the mat
   - 예를 들어 query 를 cat 이라고 하면 cat을 기준으로 나머지 단어들과 관심도가 어떻게 되는지를 계산하게 된다.
 - Key : 관심도 계산을 위해 Query와 연결되어야하는 모든 단어
 - Value : 1차적 Context Vector를 생성하기 위해서 Attention Weights를 적용하는 벡터들
+  -  Context Vector : 단어가 아니라 문장 자체를 벡터화시키는 것이라고 보면 된다.
+
 
 
 
@@ -347,7 +349,7 @@ print(f"attn_weights shape:{attn_weights.shape} context shape:{context.shape}")
 
 - Single Head Attention
   - 문장 내 문맥을 **특정 관계에 집중**
-    
+  
 - Multi Head Attention
   - <img src="./02_Transformer.assets/image-20251103200857712.png" alt="image-20251103200857712" style="zoom:67%;" />
   - 문장 내 다양한 유형의 관계들에 기반하여 attention weight를 적용함
