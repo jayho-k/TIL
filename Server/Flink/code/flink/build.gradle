@@ -1,0 +1,106 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'com.example.flink'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+// Flink 버전 관리
+ext {
+    flinkVersion = '1.18.0'
+    scalaBinaryVersion = '2.12'
+}
+
+dependencies {
+    // Apache Flink dependencies
+    implementation "org.apache.flink:flink-streaming-java:${flinkVersion}"
+    implementation "org.apache.flink:flink-clients:${flinkVersion}"
+
+    // Flink JSON
+    implementation "org.apache.flink:flink-json:${flinkVersion}"
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+
+    // JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+}
+
+// Shadow JAR 설정 (Fat JAR 생성)
+shadowJar {
+    archiveBaseName.set('flink-examples')
+    archiveClassifier.set('')
+    archiveVersion.set('1.0-SNAPSHOT')
+
+    // Flink 관련 파일 제외
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+
+    // Manifest 설정
+    manifest {
+        attributes 'Main-Class': 'com.example.flink.WordCountExample'
+    }
+
+    // 의존성에서 제외할 항목들
+    dependencies {
+        exclude(dependency('com.google.code.findbugs:jsr305'))
+    }
+}
+
+// Java 컴파일 옵션
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// 개별 예제 실행을 위한 태스크들
+task runWordCount(type: JavaExec) {
+    group = 'examples'
+    description = 'Run WordCount Example'
+    mainClass = 'com.example.flink.WordCountExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runWindowing(type: JavaExec) {
+    group = 'examples'
+    description = 'Run Windowing Example'
+    mainClass = 'com.example.flink.WindowingExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runStateManagement(type: JavaExec) {
+    group = 'examples'
+    description = 'Run State Management Example'
+    mainClass = 'com.example.flink.StateManagementExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runCheckpoint(type: JavaExec) {
+    group = 'examples'
+    description = 'Run Checkpoint Example'
+    mainClass = 'com.example.flink.CheckpointExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runEventTime(type: JavaExec) {
+    group = 'examples'
+    description = 'Run Event Time Example'
+    mainClass = 'com.example.flink.EventTimeExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+// Clean 태스크 확장
+clean {
+    delete 'flink-checkpoints'
+    delete 'flink-savepoints'
+    delete 'target'  // IDE가 생성하는 Maven 스타일 출력 폴더 삭제
+}
