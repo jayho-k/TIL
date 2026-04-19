@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/Users/jayho/Developer/practice/AI/vllm/*.md /c/Users/jayho/Developer/practice/CS/Algorithm/*.md)",
+      "WebFetch(domain:milvus.io)",
+      "WebFetch(domain:engineering.atspotify.com)",
+      "WebSearch",
+      "Bash(mkdir -p C:/Users/jayho/Developer/practice/.claude/research/Airflow)",
+      "Bash(mkdir -p C:/Users/jayho/Developer/practice/.claude/rules)"
+    ]
+  }
+}
