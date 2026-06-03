@@ -373,31 +373,73 @@ combined.invoke("대한민국")
 
 
 
+## RunnableLambda
+
+- 매개변수 하나를 무조건 가져야한다.
+
+```python
+# RunnableLambda
+from langchain_core.runnables import RunnableLambda
+
+def get_today(a):
+    # RunnablePassthrough에 들어간 값이 들어가게 된다.
+    # 따라서 invoke(3) 을 넣으주면 a의 값은 3이 들어가게된다.
+    return datetime.today().strftime("%b-%d")
+
+prompt = PromptTemplate.from_template(
+    "{today} 가 생일인 유명인 {n} 명을 나열하세요. 생년월일을 표기해 주세요."
+)
+model = ChatOpenAI(temperature=0)
+runnable_lambda_chain = (
+    {"today": RunnableLambda(get_today), "n":{"n": RunnablePassthrough()}}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+print(runnable_lambda_chain.invoke(3))
+```
+
+```python
+runnable_lambda_chain = (
+    # {"today": RunnableLambda(get_today), "n":{"n": RunnablePassthrough()}}
+    {"today": RunnableLambda(get_today), "n":{"n": itemgetter("n")}}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+print(runnable_lambda_chain.invoke({"n":3}))
+```
+
+- 만약에 dictionary 로 들어오게 되면 **itemgetter**를 통해서 여러 값을 가져올 수 있음
 
 
 
+### 다중 인자 넣기
 
+- 아래와 같이  여러 인자를 dict로 넣어줄 수 있다.
 
+```python
+# + 다중 인자
+def length_function(text):
+    return len(text)
+def _multiple_length_function(text1, text2):
+    return len(text1) * len(text2)
+def multiple_length_function(_dict):
+    return _multiple_length_function(_dict["text1"], _dict["text2"])
 
+prompt = PromptTemplate.from_template(
+    "{} + {} 는 무엇인가요?"
+)
+model = ChatOpenAI(temperature=0)
+runnable_lambda_chain = (
+    {
+        "a":itemgetter("word1") | RunnableLambda(length_function),
+        "b": {"text1":itemgetter("word1"),"text2":itemgetter("word2")} | RunnableLambda(multiple_length_function)
+    }
+    | prompt
+    | model
+    | StrOutputParser()
+)
+print(runnable_lambda_chain.invoke(3))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
