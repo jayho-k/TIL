@@ -1,0 +1,6 @@
+fastapi[standard]>=0.115.0,<0.137
+pillow>=10.0.0
+python-multipart>=0.0.9
+pydantic>=2.0.0
+uvicorn[standard]>=0.29.0
+vllm==0.23.0
