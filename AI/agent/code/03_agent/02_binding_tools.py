@@ -18,26 +18,26 @@ def add_function(a: float, b: float) -> float:
     """Adds two numbers together."""
     return a + b
 
-@tool
-def naver_news_crawl(news_url: str) -> str:
-    """Crawls a 네이버 (naver.com) news article and returns the body content."""
-    # HTTP GET 요청 보내기
-    response = requests.get(news_url)
-
-    # 요청이 성공했는지 확인
-    if response.status_code == 200:
-        # BeautifulSoup을 사용하여 HTML 파싱
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        # 원하는 정보 추출
-        title = soup.find("h2", id="title_area").get_text()
-        content = soup.find("div", id="contents").get_text()
-        cleaned_title = re.sub(r"\n{2,}", "\n", title)
-        cleaned_content = re.sub(r"\n{2,}", "\n", content)
-    else:
-        print(f"HTTP 요청 실패. 응답 코드: {response.status_code}")
-
-    return f"{cleaned_title}\n{cleaned_content}"
+# @tool
+# def naver_news_crawl(news_url: str) -> str:
+#     """Crawls a 네이버 (naver.com) news article and returns the body content."""
+#     # HTTP GET 요청 보내기
+#     response = requests.get(news_url)
+#
+#     # 요청이 성공했는지 확인
+#     if response.status_code == 200:
+#         # BeautifulSoup을 사용하여 HTML 파싱
+#         soup = BeautifulSoup(response.text, "html.parser")
+#
+#         # 원하는 정보 추출
+#         title = soup.find("h2", id="title_area").get_text()
+#         content = soup.find("div", id="contents").get_text()
+#         cleaned_title = re.sub(r"\n{2,}", "\n", title)
+#         cleaned_content = re.sub(r"\n{2,}", "\n", content)
+#     else:
+#         print(f"HTTP 요청 실패. 응답 코드: {response.status_code}")
+#
+#     return f"{cleaned_title}\n{cleaned_content}"
 
 def execute_tool_calls(tool_call_results):
     """
@@ -66,9 +66,18 @@ def execute_tool_calls(tool_call_results):
             print(f"경고: {tool_name}에 해당하는 도구를 찾을 수 없습니다.")
 
 
-tools = [get_word_length, add_function, naver_news_crawl]
+tools = [get_word_length, add_function]
 
-llm = ChatOpenAI(temperature=0)
+OLLAMA_BASE_URL = "https://jayho-macmini.tail60408a.ts.net/v1"
+OLLAMA_MODEL = "gemma4:26b-a4b-it-qat"
+
+llm = ChatOpenAI(
+    api_key="ollama",
+    base_url=OLLAMA_BASE_URL,
+    model=OLLAMA_MODEL,
+    temperature=0.1,
+    max_tokens=5000,
+)
 llm_with_tools = llm.bind_tools(tools)
 
 # 전체 조합
@@ -80,9 +89,9 @@ chain.invoke("What is the length of the word 'teddynote'?")
 chain.invoke("114.5 + 121.2")
 print(114.5 + 121.2)
 # 3
-chain.invoke(
-    "뉴스 기사 내용을 크롤링해줘: https://n.news.naver.com/mnews/hotissue/article/092/0002347672?type=series&cid=2000065"
-)
+# chain.invoke(
+#     "뉴스 기사 내용을 크롤링해줘: https://n.news.naver.com/mnews/hotissue/article/092/0002347672?type=series&cid=2000065"
+# )
 
 
 
