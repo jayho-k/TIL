@@ -51,6 +51,20 @@
 ### Gemma (`AI/gemma/`)
 - `gemma.md`
 
+### Mem0 (`AI/mem0/`)
+- `text/01_Mem0_기반_에이전트_메모리_아키텍처.md` — Mem0·Qdrant·PostgreSQL·MinIO·DeepAgents·LangGraph의 역할 경계
+- `text/02_Mem0_동작원리_및_운영상_제약.md` — V3 ADD-only, Qdrant retrieval, SQLite history, server mode 제약
+- `text/03_PoC와_내부코드_분석_가이드.md` — PoC 단계, 통과 기준, 내부 소스 분석 순서
+- `text/04_고급_메타데이터_필터링.md` — filter 연산자, Qdrant indexing, 논리 조합과 검증 방법
+- `text/05_리랭커_강화_검색.md` — Python·TypeScript reranker, provider별 설정, 성능·비용·fallback
+- `text/06_비동기_메모리.md` — AsyncMemory API, 동시성·재시도·FastAPI·운영 계측
+- `text/07_멀티모달_지원.md` — vision 설정, URL/base64 image 입력, privacy·용량·오류 처리
+- `text/08_사용자_지침.md` — custom instruction, few-shot fact 추출, schema·version 관리
+- `text/09_V3_메모리_알고리즘_마이그레이션.md` — V3 ADD-only, hybrid retrieval, entity linking, SDK migration
+- `text/code_analize/` — Python OSS library mode source code 분석 노트
+- `text/code_analize/09_PostgreSQL_State_Store_대체_설계.md` — SQLite history/recent-message를 PostgreSQL로 대체하는 wrapper·schema·동시성·업그레이드 상세 설계
+- `code/` — Mem0 연동 및 검증 실험 코드
+
 ---
 
 ## CS/
