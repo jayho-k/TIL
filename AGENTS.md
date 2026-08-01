@@ -87,3 +87,10 @@
 
 - Airflow 관련 조사나 노트 작성 시 `.codex/rules/airflow.md`를 먼저 읽고 따른다.
 - 외부 자료를 참고한 경우 버전, 날짜, 출처 신뢰도를 명확히 남긴다.
+
+## Git 작업 금지
+
+- 사용자가 명시적으로 요청하기 전에는 Git 상태를 변경하지 않는다.
+- `git add`, `git commit`, `git reset`, `git checkout`, `git restore`, `git rebase`, `git merge`, `git push`, `git pull`을 실행하지 않는다.
+- Git 상태 확인(`git status`, `git diff`, `git log`)만 필요할 때 읽기 전용으로 사용한다.
+- 이미 만들어진 커밋을 되돌리거나 수정하는 작업도 사용자의 명시적 지시가 있을 때만 수행한다.
