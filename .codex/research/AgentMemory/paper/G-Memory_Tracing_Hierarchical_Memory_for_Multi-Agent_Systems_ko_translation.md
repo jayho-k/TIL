@@ -64,86 +64,114 @@ MAS에 맞춘 memory mechanism은 여전히 충분히 탐구되지 않았다. LL
 
 ### Multi-agent system 정식화
 
-MAS framework를 directed graph $G=(V,E)$로 둔다. $|V|=N$은 agent 수이고 $E\subseteq V\times V$는 communication channel이다. 각 node $C_i\in V$는 다음 quadruple의 개별 agent다.
+MAS framework를 directed graph $G=(V,E)$ 로 둔다. $|V|=N$ 은 agent 수이고 $E\subseteq V\times V$ 는 communication channel이다. 각 node $C_i\in V$ 는 다음 quadruple의 개별 agent다.
 
-$$C_i=(Base_i, Role_i, Mem_i, Plugin_i). \tag{1}$$
+$$
+C_i=(Base_i, Role_i, Mem_i, Plugin_i). \tag{1}
+$$
 
-$Base_i$는 underlying LLM instance, $Role_i$는 지정된 role/persona, $Mem_i$는 과거 interaction·external knowledge store를 포함하는 memory state, $Plugin_i$는 web search engine 같은 auxiliary tool 집합이다.
+$Base_i$ 는 underlying LLM instance, $Role_i$ 는 지정된 role/persona, $Mem_i$ 는 과거 interaction·external knowledge store를 포함하는 memory state, $Plugin_i$ 는 web search engine 같은 auxiliary tool 집합이다.
 
-사용자 query $Q$를 받으면 system은 $T$개의 synchronous communication epoch을 거친다. 각 epoch $t$에서 edge가 $\pi_j\to\pi_k$이면 $j<k$가 되도록 node의 topological ordering $\pi=[\pi_1,\ldots,\pi_N]$를 잡는다. 즉 각 agent는 모든 predecessor가 행동한 뒤에만 input을 처리한다. ordering 속 agent $C_i$의 $t$번째 output은 다음과 같다.
+사용자 query $Q$ 를 받으면 system은 $T$ 개의 synchronous communication epoch을 거친다. 각 epoch $t$ 에서 edge가 $\pi_j\to\pi_k$ 이면 $j<k$ 가 되도록 node의 topological ordering $\pi=[\pi_1,\ldots,\pi_N]$ 를 잡는다. 즉 각 agent는 모든 predecessor가 행동한 뒤에만 input을 처리한다. ordering 속 agent $C_i$ 의 $t$ 번째 output은 다음과 같다.
 
-$$r_i^{(t)}=C_i\left(P_{sys}^{(t)},Q,\{r_j^{(t)}:C_j\in N^-(C_i)\}\right).$$
+$$
+r_i^{(t)}=C_i\left(P_{sys}^{(t)},Q,\{r_j^{(t)}:C_j\in N^-(C_i)\}\right).
+$$
 
-$r_i^{(t)}$에는 reasoning step, intermediate analysis, final proposal 등이 들어갈 수 있다. $P_{sys}^{(t)}$는 각 agent의 role을 포함하는 global instruction이고, $N^-(C_i)$는 output을 context로 주는 in-neighbor 집합이다. 모든 agent가 행동하면 global aggregation operator $A$가 response들을 interim solution으로 합친다.
+$r_i^{(t)}$ 에는 reasoning step, intermediate analysis, final proposal 등이 들어갈 수 있다. $P_{sys}^{(t)}$ 는 각 agent의 role을 포함하는 global instruction이고, $N^-(C_i)$ 는 output을 context로 주는 in-neighbor 집합이다. 모든 agent가 행동하면 global aggregation operator $A$ 가 response들을 interim solution으로 합친다.
 
-$$a^{(t)}=A(r_1^{(t)},\ldots,r_N^{(t)}).$$
+$$
+a^{(t)}=A(r_1^{(t)},\ldots,r_N^{(t)}).
+$$
 
-$A$의 구현은 majority voting [48], dedicated aggregator agent의 hierarchical summarization [13, 30], 마지막 agent output을 답으로 채택하는 방식 [47] 등이 있다. epoch은 preset limit 또는 early-stopping criterion [72]까지 $t=1,\ldots,T$로 반복되고, query $Q$의 final response $a^{(T)}$를 낸다.
+$A$ 의 구현은 majority voting [48], dedicated aggregator agent의 hierarchical summarization [13, 30], 마지막 agent output을 답으로 채택하는 방식 [47] 등이 있다. epoch은 preset limit 또는 early-stopping criterion [72]까지 $t=1,\ldots,T$ 로 반복되고, query $Q$ 의 final response $a^{(T)}$ 를 낸다.
 
 ### Memory Architecture
 
 G-Memory는 MAS memory를 다음 세 hierarchical graph로 조율·관리한다.
 
-1. **Interaction graph(utterance graph).** query $Q$에 대해 $G_{inter}^{(Q)}=(U^{(Q)},E_u^{(Q)})$로 둔다. node $U^{(Q)}=\{u_i\}$는 atomic utterance이며 $u_i=(A_i,m_i)$에서 $A_i\in V$는 발화 agent, $m_i$는 text content다. edge $(u_j,u_k)\in E_u^{(Q)}$는 시간 관계, 즉 $u_j$가 전달되어 $u_k$에 영감을 주었음을 뜻한다.
-2. **Query graph.** 이전에 푼 query와 metadata를 저장하는 $G_{query}=(\mathcal Q,E_q)=\left(\{(Q_i,\phi_i,G_{inter}^{(Q_i)})\}_{i=1}^{|\mathcal Q|},E_q\right)$다. query node $q_i=(Q_i,\phi_i,G_{inter}^{(Q_i)})$는 원 query, task status $\phi_i\in\{Failed,Resolved\}$, 연결된 interaction graph로 구성된다. $E_q\subseteq\mathcal Q\times\mathcal Q$는 query의 semantic relationship을 부호화하며, 세밀한 topology를 통해 단순 embedding similarity보다 풍부한 retrieval을 가능하게 한다.
-3. **Insight graph.** 최상위 graph는 $G_{insight}=(\mathcal I,E_i)=\left(\{(\omega_k,\mathcal Q_k)\}_{k=1}^{|\mathcal I|},E_i\right)$다. $\omega_k$는 distilled insight content, $\mathcal Q_k\subseteq\mathcal Q$는 이를 뒷받침하는 query 집합이다. $E_i\subseteq\mathcal I\times\mathcal I\times\mathcal Q$의 hyper-connection $(\iota_m,\iota_n,q_j)$는 insight $\iota_m$이 query $q_j$를 통해 $\iota_n$을 맥락화함을 나타낸다.
+1. **Interaction graph(utterance graph).** query $Q$ 에 대해 $G_{inter}^{(Q)}=(U^{(Q)},E_u^{(Q)})$ 로 둔다. node $U^{(Q)}=\{u_i\}$ 는 atomic utterance이며 $u_i=(A_i,m_i)$ 에서 $A_i\in V$ 는 발화 agent, $m_i$ 는 text content다. edge $(u_j,u_k)\in E_u^{(Q)}$ 는 시간 관계, 즉 $u_j$ 가 전달되어 $u_k$ 에 영감을 주었음을 뜻한다.
+2. **Query graph.** 이전에 푼 query와 metadata를 저장하는 $G_{query}=(\mathcal Q,E_q)=\left(\{(Q_i,\phi_i,G_{inter}^{(Q_i)})\}_{i=1}^{|\mathcal Q|},E_q\right)$ 다. query node $q_i=(Q_i,\phi_i,G_{inter}^{(Q_i)})$ 는 원 query, task status $\phi_i\in\{Failed,Resolved\}$, 연결된 interaction graph로 구성된다. $E_q\subseteq\mathcal Q\times\mathcal Q$ 는 query의 semantic relationship을 부호화하며, 세밀한 topology를 통해 단순 embedding similarity보다 풍부한 retrieval을 가능하게 한다.
+3. **Insight graph.** 최상위 graph는 $G_{insight}=(\mathcal I,E_i)=\left(\{(\omega_k,\mathcal Q_k)\}_{k=1}^{|\mathcal I|},E_i\right)$ 다. $\omega_k$ 는 distilled insight content, $\mathcal Q_k\subseteq\mathcal Q$ 는 이를 뒷받침하는 query 집합이다. $E_i\subseteq\mathcal I\times\mathcal I\times\mathcal Q$ 의 hyper-connection $(\iota_m,\iota_n,q_j)$ 는 insight $\iota_m$ 이 query $q_j$ 를 통해 $\iota_n$ 을 맥락화함을 나타낸다.
 
 ## 4. G-Memory
 
-그림 2의 workflow처럼, 새 query $Q$가 오면 G-Memory는 먼저 관련 trajectory record를 coarse-grained retrieval로 찾는다(4.1절). 이어 upward traversal로 collective cognitive insight를 검색하고 downward traversal로 구체적 procedural trajectory를 증류한다(4.2절). memory-augmented MAS가 query를 실행한 뒤에는 environmental feedback에 기반해 hierarchical memory architecture 전체를 함께 갱신하여 group knowledge를 제도화한다(4.3절).
+그림 2의 workflow처럼, 새 query $Q$ 가 오면 G-Memory는 먼저 관련 trajectory record를 coarse-grained retrieval로 찾는다(4.1절). 이어 upward traversal로 collective cognitive insight를 검색하고 downward traversal로 구체적 procedural trajectory를 증류한다(4.2절). memory-augmented MAS가 query를 실행한 뒤에는 environmental feedback에 기반해 hierarchical memory architecture 전체를 함께 갱신하여 group knowledge를 제도화한다(4.3절).
 
 > 그림 2. 제안하는 G-Memory 개요. query graph의 similarity retrieval을 시작점으로, 위 방향 traversal은 insight graph의 추상적 지침을, 아래 방향 traversal은 interaction graph의 압축된 협업 궤적을 얻는다. agent별 memory augmentation 후 환경 feedback에 따라 insight·query·interaction graph를 갱신한다.
 
 ### 4.1 Coarse-grained Memory Retrieval
 
-Mainstream MAS에 자연스럽게 통합되는 plug-in으로서 G-Memory는 MAS $G$가 새 사용자 query $Q$를 만날 때 실행된다. 조직 memory theory [1]가 강조하듯 효율적인 지식 retrieval은 보통 세밀한 접근보다 폭넓게 관련 있는 schema에서 시작한다. 따라서 G-Memory는 query graph $G_{query}$에서 similarity-based retrieval을 먼저 수행해 query의 sketch set $Q_S$를 얻는다.
+Mainstream MAS에 자연스럽게 통합되는 plug-in으로서 G-Memory는 MAS $G$ 가 새 사용자 query $Q$ 를 만날 때 실행된다. 조직 memory theory [1]가 강조하듯 효율적인 지식 retrieval은 보통 세밀한 접근보다 폭넓게 관련 있는 schema에서 시작한다. 따라서 G-Memory는 query graph $G_{query}$ 에서 similarity-based retrieval을 먼저 수행해 query의 sketch set $Q_S$ 를 얻는다.
 
-$$Q_S=\underset{q_i\in\mathcal Q,\ |Q_S|=k}{\arg\operatorname{top-k}}\frac{v(Q)\cdot v(q_i)}{|v(Q)||v(q_i)|}. \tag{4}$$
+$$
+Q_S=\underset{q_i\in\mathcal Q,\ |Q_S|=k}{\arg\operatorname{top-k}}\frac{v(Q)\cdot v(q_i)}{|v(Q)||v(q_i)|}. \tag{4}
+$$
 
-$v(\cdot)$는 MiniLM [73] 같은 model로 query를 fixed-length embedding으로 바꾼다. 식 (4)는 의미상 유사한 역사적 query를 찾지만, 그 유사성은 피상적이거나 noisy할 수 있다. 그래서 G-Memory는 query graph에서 $Q_S$의 1-hop neighbor를 더해 관련 집합을 확장한다.
+$v(\cdot)$ 는 MiniLM [73] 같은 model로 query를 fixed-length embedding으로 바꾼다. 식 (4)는 의미상 유사한 역사적 query를 찾지만, 그 유사성은 피상적이거나 noisy할 수 있다. 그래서 G-Memory는 query graph에서 $Q_S$ 의 1-hop neighbor를 더해 관련 집합을 확장한다.
 
-$$\tilde Q_S=Q_S\cup\{Q_k\in\mathcal Q\mid\exists Q_j\in Q_S,\ Q_k\in N^+(Q_j)\cup N^-(Q_j)\}. \tag{5}$$
+$$
+\tilde Q_S=Q_S\cup\{Q_k\in\mathcal Q\mid\exists Q_j\in Q_S,\ Q_k\in N^+(Q_j)\cup N^-(Q_j)\}. \tag{5}
+$$
 
 이 record를 일부 single-agent memory system [41, 37]처럼 바로 input에 넣는 것은 최선이 아니다. context가 지나치게 길면 LLM을 압도하고, MAS의 agent들은 서로 다른 role이므로 기능에 맞춘 specialized memory가 필요하다. 다음 절의 bi-directional processing이 abstract·fine-grained level 모두에서 이를 해결한다.
 
 ### 4.2 Bi-directional Memory Traversal
 
-확장된 relevant query node 집합 $\tilde Q_S$를 식별한 뒤 G-Memory는 multi-granularity memory support를 위한 양방향 traversal을 실행한다. 먼저 upward traversal($G_{query}\to G_{insight}$)은 현재 task의 전략 방향을 잡는 일반화된 insight node를 검색한다.
+확장된 relevant query node 집합 $\tilde Q_S$ 를 식별한 뒤 G-Memory는 multi-granularity memory support를 위한 양방향 traversal을 실행한다. 먼저 upward traversal($G_{query}\to G_{insight}$) 은 현재 task의 전략 방향을 잡는 일반화된 insight node를 검색한다.
 
-$$I_S=\mathcal P_{Q\to I}(\tilde Q_S),\qquad \mathcal P_{Q\to I}(S_q)\triangleq\{\iota_k\in\mathcal I\mid\mathcal Q_k\cap S_q\ne\varnothing\}.\tag{6}$$
+$$
+I_S=\mathcal P_{Q\to I}(\tilde Q_S),\qquad \mathcal P_{Q\to I}(S_q)\triangleq\{\iota_k\in\mathcal I\mid\mathcal Q_k\cap S_q\ne\varnothing\}.\tag{6}
+$$
 
-$\mathcal P_{Q\to I}$는 입력 query set과 supporting query set이 교차하는 insight node를 찾는 query-to-insight projector다. $I_S$는 MAS $G$가 $Q$에 접근하는 방식을 이끌 수 있는 distilled, generalized knowledge다.
+$\mathcal P_{Q\to I}$ 는 입력 query set과 supporting query set이 교차하는 insight node를 찾는 query-to-insight projector다. $I_S$ 는 MAS $G$ 가 $Q$ 에 접근하는 방식을 이끌 수 있는 distilled, generalized knowledge다.
 
-일반화 insight와 함께, 성공·실패한 협업을 낳은 reasoning pattern을 드러내는 agent의 세밀한 textual interaction history도 가치가 있다 [68, 74, 75]. downward traversal($G_{query}\to G_{interaction}$)에서 G-Memory는 LLM 기반 graph sparsifier $S_{LLM}(\cdot,\cdot)$로 필수 agent 협업을 담은 core subgraph를 뽑는다.
+일반화 insight와 함께, 성공·실패한 협업을 낳은 reasoning pattern을 드러내는 agent의 세밀한 textual interaction history도 가치가 있다 [68, 74, 75]. downward traversal($G_{query}\to G_{interaction}$) 에서 G-Memory는 LLM 기반 graph sparsifier $S_{LLM}(\cdot,\cdot)$ 로 필수 agent 협업을 담은 core subgraph를 뽑는다.
 
-$$\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^{M}=S_{LLM}\left(\{G_{inter}^{(Q_j)},Q\}\mid q_j\in\underset{q_k\in\tilde Q_S,\ |\cdot|=M}{\arg\operatorname{top-M}}R_{LLM}(Q,q_k)\right).\tag{7}$$
+$$
+\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^{M}=S_{LLM}\left(\{G_{inter}^{(Q_j)},Q\}\mid q_j\in\underset{q_k\in\tilde Q_S,\ |\cdot|=M}{\arg\operatorname{top-M}}R_{LLM}(Q,q_k)\right).\tag{7}
+$$
 
-$R_{LLM}(Q,q_j)$는 과거 query의 $Q$에 대한 관련도를 평가한다. sparsifier는 원 interaction graph에서 필요한 dialogue element만 남긴 $\tilde G_{inter}^{(Q_j)}=(\tilde U^{(Q_j)},\tilde E_u^{(Q_j)})$를 만든다. 구현은 부록 C에 제시된다.
+$R_{LLM}(Q,q_j)$ 는 과거 query의 $Q$ 에 대한 관련도를 평가한다. sparsifier는 원 interaction graph에서 필요한 dialogue element만 남긴 $\tilde G_{inter}^{(Q_j)}=(\tilde U^{(Q_j)},\tilde E_u^{(Q_j)})$ 를 만든다. 구현은 부록 C에 제시된다.
 
-양방향 traversal 뒤에는 generalizable insight $I_S$와 상세 collaboration trajectory $\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^M$를 얻는다. G-Memory는 MAS의 각 agent $C_i\in V$에 role별 memory support를 준다.
+양방향 traversal 뒤에는 generalizable insight $I_S$ 와 상세 collaboration trajectory $\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^M$ 를 얻는다. G-Memory는 MAS의 각 agent $C_i\in V$ 에 role별 memory support를 준다.
 
-$$Mem_i\leftarrow\mathcal F\left(I_S,\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^M;Role_i,Q\right),\quad C_i=(Base_i,Role_i,Mem_i,Plugin_i)\in V.\tag{8}$$
+$$
+Mem_i\leftarrow\mathcal F\left(I_S,\{\tilde G_{inter}^{(Q_i)}\}_{i=1}^M;Role_i,Q\right),\quad C_i=(Base_i,Role_i,Mem_i,Plugin_i)\in V.\tag{8}
+$$
 
-$\mathcal F$는 각 insight와 sparse interaction graph가 해당 agent의 role·task에 주는 효용·관련성을 평가한다. 이어 filtered insight, interaction snippet, 그 summary로 $Mem_i$를 초기화하여 agent가 reasoning epoch에 참여하기 전 관련 historical context를 제공한다. 논문 구현은 query $Q$ 풀이 시작 시 G-Memory를 부르지만, 실제 사용자는 MAS dialogue round마다 또는 특정 agent에만 호출하는 세밀한 전략을 선택할 수 있다.
+$\mathcal F$ 는 각 insight와 sparse interaction graph가 해당 agent의 role·task에 주는 효용·관련성을 평가한다. 이어 filtered insight, interaction snippet, 그 summary로 $Mem_i$ 를 초기화하여 agent가 reasoning epoch에 참여하기 전 관련 historical context를 제공한다. 논문 구현은 query $Q$ 풀이 시작 시 G-Memory를 부르지만, 실제 사용자는 MAS dialogue round마다 또는 특정 agent에만 호출하는 세밀한 전략을 선택할 수 있다.
 
 ### 4.3 Hierarchy Memory Update
 
-각 agent memory augmentation 뒤 system $G$는 3절의 방식으로 실행되어 final solution $a^{(T)}$와 execution status $\phi\in\{Failed,Resolved\}$, token usage 등 environmental feedback을 받는다. G-Memory는 새 query를 통합하도록 3계층 memory architecture를 갱신한다.
+각 agent memory augmentation 뒤 system $G$ 는 3절의 방식으로 실행되어 final solution $a^{(T)}$ 와 execution status $\phi\in\{Failed,Resolved\}$, token usage 등 environmental feedback을 받는다. G-Memory는 새 query를 통합하도록 3계층 memory architecture를 갱신한다.
 
-interaction level에서는 각 agent utterance를 추적해 $G_{inter}^{(Q)}$를 만들고 저장한다. query level에서는 새 query node를 만들고 query graph에 더한다.
+interaction level에서는 각 agent utterance를 추적해 $G_{inter}^{(Q)}$ 를 만들고 저장한다. query level에서는 새 query node를 만들고 query graph에 더한다.
 
-$$q_{new}\leftarrow(Q,\phi,G_{inter}^{(Q)}),\quad N_{conn}\leftarrow Q_R\cup\bigcup_{\iota_k\in I_S}\mathcal Q_k,$$
-$$E_{new}\leftarrow\{(q_n,q_{new})\mid q_n\in N_{conn}\},\quad G_{query}\leftarrow(\mathcal Q\cup\{q_{new}\},E_q\cup E_{new}).\tag{9}$$
+$$
+\begin{aligned}
+q_{new}&\leftarrow(Q,\phi,G_{inter}^{(Q)}), & N_{conn}&\leftarrow Q_R\cup\bigcup_{\iota_k\in I_S}\mathcal Q_k, \\
+E_{new}&\leftarrow\{(q_n,q_{new})\mid q_n\in N_{conn}\}, & G_{query}&\leftarrow(\mathcal Q\cup\{q_{new}\},E_q\cup E_{new}).
+\end{aligned}\tag{9}
+$$
 
-edge는 식 (7)의 top-$M$ relevant historical query 집합 $Q_R$ 및 $I_S$의 insight를 지지하는 query에 연결된다. insight level에서는 completed query의 learning을 insight graph에 합친다. summarization function $\mathcal J(\cdot,\cdot)$가 새 insight를 생성·연결한다.
+edge는 식 (7)의 top-$M$ relevant historical query 집합 $Q_R$ 및 $I_S$ 의 insight를 지지하는 query에 연결된다. insight level에서는 completed query의 learning을 insight graph에 합친다. summarization function $\mathcal J(\cdot,\cdot)$ 가 새 insight를 생성·연결한다.
 
-$$\iota_{new}=\left(\mathcal J(G_{inter}^{(Q)},\phi),\{q_{new}\}\right),\quad E_{i,new}=\{(\iota_k,\iota_{new},q_{new})\mid\iota_k\in I_S\},$$
-$$G_{insight}\leftarrow(\mathcal I\cup\{\iota_{new}\},E_i\cup E_{i,new}).\tag{10}$$
+$$
+\begin{aligned}
+\iota_{new}&=\left(\mathcal J(G_{inter}^{(Q)},\phi),\{q_{new}\}\right), & E_{i,new}&=\{(\iota_k,\iota_{new},q_{new})\mid\iota_k\in I_S\}, \\
+G_{insight}&\leftarrow(\mathcal I\cup\{\iota_{new}\},E_i\cup E_{i,new}).
+\end{aligned}\tag{10}
+$$
 
-이전 insight가 새 task의 성공 또는 실패에 관련되었음을 반영하여, 사용한 insight의 supporting query set에도 $q_{new}$를 넣는다.
+이전 insight가 새 task의 성공 또는 실패에 관련되었음을 반영하여, 사용한 insight의 supporting query set에도 $q_{new}$ 를 넣는다.
 
-$$\mathcal I^{next}=(\mathcal I\setminus I_S)\cup\{(\omega_k,\mathcal Q_k\cup\{q_{new}\})\mid\iota_k=(\omega_k,\mathcal Q_k)\in I_S\}\cup\{\iota_{new}\},$$
-$$G_{insight}\leftarrow(\mathcal I^{next},E_i\cup E_{i,new}).\tag{11}$$
+$$
+\begin{aligned}
+\mathcal I^{next}&=(\mathcal I\setminus I_S)\cup\{(\omega_k,\mathcal Q_k\cup\{q_{new}\})\mid\iota_k=(\omega_k,\mathcal Q_k)\in I_S\}\cup\{\iota_{new}\}, \\
+G_{insight}&\leftarrow(\mathcal I^{next},E_i\cup E_{i,new}).
+\end{aligned}\tag{11}
+$$
 
 모든 계층에서의 이 연속 갱신 cycle은 지속 경험에 따라 collective memory를 학습하고 적응적으로 정제하게 한다.
 
@@ -159,7 +187,7 @@ $$G_{insight}\leftarrow(\mathcal I^{next},E_i\cup E_{i,new}).\tag{11}$$
 
 **MAS와 backbone.** AutoGen [13], DyLAN [72], MacNet [47] 3개 MAS에 G-Memory·baseline을 통합한다. backbone은 Qwen-2.5-7b, Qwen-2.5-14b, `gpt-4o-mini`다. Qwen은 Ollama로 local deployment하고 GPT는 OpenAI API로 접근한다.
 
-**Parameter.** 식 (4)의 $v(\cdot)$는 `all-MiniLM-L6-v2` [81]로 구현한다. 식 (7)의 relevant interaction graph 수 $M\in\{2,3,4,5\}$, 식 (4)의 relevant query 수 $k\in\{1,2\}$이며, hyperparameter ablation은 5.4절에 있다.
+**Parameter.** 식 (4)의 $v(\cdot)$ 는 `all-MiniLM-L6-v2` [81]로 구현한다. 식 (7)의 relevant interaction graph 수 $M\in\{2,3,4,5\}$, 식 (4)의 relevant query 수 $k\in\{1,2\}$ 이며, hyperparameter ablation은 5.4절에 있다.
 
 ### 5.2 주요 결과(RQ1)
 
@@ -186,13 +214,13 @@ $$G_{insight}\leftarrow(\mathcal I^{next},E_i\cup E_{i,new}).\tag{11}$$
 
 ### 5.3 비용 분석(RQ2)
 
-그림 3·7은 여러 setting의 performance–token cost trade-off를 보여준다. G-Memory는 과도한 token 소비 없이 high-performing collective memory를 달성한다. 예를 들어 PDDL+AutoGen에서 no-memory보다 최고 개선(10.32%)을 내면서 token 증가는 $1.4\times10^6$에 불과했다. 반면 MetaGPT-M은 $2.2\times10^6$ token을 추가로 쓰고도 4.07% 향상에 그쳤다. 이는 G-Memory의 token efficiency를 보여준다.
+그림 3·7은 여러 setting의 performance–token cost trade-off를 보여준다. G-Memory는 과도한 token 소비 없이 high-performing collective memory를 달성한다. 예를 들어 PDDL+AutoGen에서 no-memory보다 최고 개선(10.32%)을 내면서 token 증가는 $1.4\times10^6$ 에 불과했다. 반면 MetaGPT-M은 $2.2\times10^6$ token을 추가로 쓰고도 4.07% 향상에 그쳤다. 이는 G-Memory의 token efficiency를 보여준다.
 
 > 그림 3. 여러 memory architecture와 결합했을 때 G-Memory의 performance 대 전체 system token cost 분석.
 
 ### 5.4 Framework 분석(RQ3)
 
-**Sensitivity analysis.** 식 (5)의 hop expansion은 1-hop이 일관되게 최고 또는 근접 최고 성능을 냈다(AutoGen에서 ALFWorld 85.82%, PDDL 55.24%). 2-hop·3-hop은 종종 성능을 낮췄고, 예를 들어 PDDL은 2-hop에서 49.79%로 떨어진다. 과도한 hop expansion은 upward traversal 때 task와 무관한 insight를 넣어 reasoning을 방해할 수 있다. 식 (4)의 $k$도 $\{1,2\}$가 최적이며, $k=5$처럼 큰 값은 ALFWorld+AutoGen에서 7.71%, FEVER+DyLAN에서 2.5%까지 성능을 낮춘다. 이에 모든 실험에서 1-hop, $k\in\{1,2\}$를 쓴다.
+**Sensitivity analysis.** 식 (5)의 hop expansion은 1-hop이 일관되게 최고 또는 근접 최고 성능을 냈다(AutoGen에서 ALFWorld 85.82%, PDDL 55.24%). 2-hop·3-hop은 종종 성능을 낮췄고, 예를 들어 PDDL은 2-hop에서 49.79%로 떨어진다. 과도한 hop expansion은 upward traversal 때 task와 무관한 insight를 넣어 reasoning을 방해할 수 있다. 식 (4)의 $k$ 도 $\{1,2\}$ 가 최적이며, $k=5$ 처럼 큰 값은 ALFWorld+AutoGen에서 7.71%, FEVER+DyLAN에서 2.5%까지 성능을 낮춘다. 이에 모든 실험에서 1-hop, $k\in\{1,2\}$ 를 쓴다.
 
 **Ablation.** 그림 4c는 high-level insight module(식 (6)의 $I_S$)과 fine-grained interaction module(식 (7)의 core trajectory)을 분리한다. 어느 하나를 빼도 성능이 일관되게 하락한다. fine-grained interaction만 켜면 full method보다 AutoGen 평균 4.47%, DyLAN 평균 3.82% 낮고, insight만 켜면 하락 폭은 각각 3.95%, 3.39%다. 둘 다 기여하지만, 대화 수준의 세밀한 contextual grounding을 보존하는 interaction이 조금 더 큰 영향을 준다.
 

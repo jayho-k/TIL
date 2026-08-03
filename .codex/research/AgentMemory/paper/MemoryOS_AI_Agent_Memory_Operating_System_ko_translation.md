@@ -76,7 +76,6 @@ MemoryOS의 전체 아키텍처는 그림 1에 보였으며, 메모리 저장, �
 메모리 저장 모듈은 Short-Term Memory(STM), Mid-Term Memory(MTM), Long-term Personal Memory(LPM)라는 세 종류의 저장 단위로 이루어진 계층형 구조로 구현한다.
 
 **Short-Term Memory(STM).** STM은 대화 페이지(dialogue page)라는 단위로 실시간 대화 데이터를 저장한다. 각 대화 페이지는 사용자 질의 $Q$, 모델 응답 $R$, 타임스탬프 $T$를 포함하며 다음과 같이 구성된다.
-
 $$
 page_i = \{Q_i, R_i, T_i\}.
 $$
@@ -90,7 +89,6 @@ $$
 메타 정보는 LLM이 두 단계로 생성한다. 먼저 새 페이지가 이전 페이지와 맥락상 관련되는지 평가하여 체인 연결 여부를 정하고, 의미적으로 불연속이면 현재 페이지부터 체인을 다시 시작한다. 다음으로 체인에 속한 모든 페이지를 $meta_i^{chain}$으로 요약한다.
 
 **Mid-Term Memory(MTM).** MTM은 운영체제의 메모리 관리 원리에서 영감을 받은 **세그먼트 페이징(Segmented Paging)** 저장 아키텍처를 채택한다. 같은 주제의 대화 페이지를 세그먼트로 묶고, 각 세그먼트는 하나의 고유 주제에 관한 여러 페이지를 담는다. MTM의 세그먼트는 다음과 같이 정의한다.
-
 $$
 segment_i = \{page_i \mid F_{score}(page_i, segment_i) > \theta\}. \tag{2}
 $$
@@ -121,7 +119,6 @@ $$
 **STM–MTM 갱신.** STM은 고정 길이 큐에 대화 페이지 형태로 정보를 저장한다. 저자들은 정보를 MTM으로 옮길 때 선입선출(First-In-First-Out, FIFO) 갱신 전략을 사용한다. 새 대화 페이지는 큐의 끝에 추가된다. STM 큐가 최대 용량에 도달하면 가장 오래된 대화 페이지를 FIFO 원칙에 따라 STM에서 MTM으로 전송한다.
 
 **MTM–LPM 갱신.** MTM 갱신은 세그먼트 삭제와 세그먼트에서 LPM으로의 갱신이라는 두 연산으로 이루어지며, 둘 다 다음과 같이 정의한 세그먼트의 Heat 점수를 기반으로 한다.
-
 $$
 Heat = \alpha \cdot N_{visit} + \beta \cdot L_{interaction} + \gamma \cdot R_{recency}. \tag{4}
 $$
