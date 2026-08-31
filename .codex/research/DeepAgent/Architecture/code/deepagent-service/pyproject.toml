@@ -1,0 +1,49 @@
+[project]
+name = "deepagent-service-skeleton"
+version = "0.1.0"
+description = "FastAPI, LangGraph, and Deep Agents service skeleton"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+  "deepagents==0.7.11",
+  "fastapi==0.141.1",
+  "langchain-openai>=1.0,<2.0",
+  "langgraph==1.2.11",
+  "pydantic-settings==2.15.0",
+  "uvicorn[standard]>=0.35,<1.0",
+]
+
+[project.optional-dependencies]
+storage = [
+  "asyncpg>=0.30,<1.0",
+  "minio>=7.2,<8.0",
+  "qdrant-client>=1.15,<2.0",
+  "redis>=6.0,<7.0",
+  "sqlalchemy[asyncio]>=2.0,<3.0",
+]
+dev = [
+  "httpx>=0.28,<1.0",
+  "pytest>=8.4,<9.0",
+  "pytest-asyncio>=1.1,<2.0",
+  "ruff>=0.12,<1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+

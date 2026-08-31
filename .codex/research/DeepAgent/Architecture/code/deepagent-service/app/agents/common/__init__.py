@@ -1,0 +1,2 @@
+"""Shared Agent contracts."""
+
