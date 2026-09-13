@@ -1,5 +1,7 @@
+import json
 from dataclasses import dataclass
 from pathlib import Path
+from uuid import uuid4
 
 from app.domain.models import Segment
 
@@ -69,3 +71,27 @@ class LocalRunFileStore:
         directory = self.root / run_id
         directory.mkdir(parents=True, exist_ok=True)
         return directory
+
+    def write_approved_output(self, run_id: str, content: str, approval: dict) -> Path:
+        from app.domain.revisions import content_hash
+
+        directory = self._run_dir(run_id)
+        target = directory / "output.txt"
+        manifest_path = directory / "output.manifest.json"
+        manifest = {**approval, "output_hash": content_hash(content)}
+        if manifest_path.exists():
+            existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if existing != manifest:
+                raise ValueError("이미 다른 승인으로 파일이 생성되었습니다.")
+            if (
+                target.exists()
+                and content_hash(target.read_text(encoding="utf-8")) == manifest["output_hash"]
+            ):
+                return target
+        temporary = directory / f"output-{uuid4()}.tmp"
+        temporary.write_text(content, encoding="utf-8")
+        temporary.replace(target)
+        metadata = directory / f"manifest-{uuid4()}.tmp"
+        metadata.write_text(json.dumps(manifest), encoding="utf-8")
+        metadata.replace(manifest_path)
+        return target

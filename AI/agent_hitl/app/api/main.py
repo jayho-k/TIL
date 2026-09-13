@@ -28,7 +28,10 @@ async def lifespan(app: FastAPI):
         app.state.repository = repository
         app.state.files = files
         app.state.runner = AgentRunner(agent, repository, files)
-        yield
+        try:
+            yield
+        finally:
+            await app.state.runner.close()
     await redis.aclose()
 
 

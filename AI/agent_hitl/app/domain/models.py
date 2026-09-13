@@ -19,9 +19,7 @@ class ValidationSegment(BaseModel):
 
 
 class ValidationResult(BaseModel):
-    result_type: Literal["translation_validation_completed"] = (
-        "translation_validation_completed"
-    )
+    result_type: Literal["translation_validation_completed"] = "translation_validation_completed"
     validation_run_id: str
     revision: int = 1
     segments: list[ValidationSegment]
@@ -32,6 +30,9 @@ class ReviewRequest(BaseModel):
     review_request_id: str
     revision: int
     segments: list[ValidationSegment]
+    snapshot_hash: str = ""
+    history: list[dict] = Field(default_factory=list)
+    initial_translations: dict[str, str] = Field(default_factory=dict)
 
 
 class SegmentDecision(BaseModel):
@@ -58,6 +59,7 @@ class RunStatus(StrEnum):
     RESUMING = "RESUMING"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+    RECOVERY_REQUIRED = "RECOVERY_REQUIRED"
 
 
 class RunRecord(BaseModel):
@@ -70,3 +72,8 @@ class RunRecord(BaseModel):
     decision_hash: str | None = None
     validation_call_count: int = Field(default=0, ge=0)
     replace_call_count: int = Field(default=0, ge=0)
+    interrupt_id: str | None = None
+    active_command: dict | None = None
+    commands: dict[str, dict] = Field(default_factory=dict)
+    history: list[dict] = Field(default_factory=list)
+    error: str | None = None

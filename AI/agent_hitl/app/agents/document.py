@@ -12,14 +12,16 @@ def create_document_agent(
     model: BaseChatModel,
     file_store: LocalRunFileStore,
     checkpointer: BaseCheckpointSaver,
+    *,
+    subagent_specs=None,
 ):
-    file_agent = create_file_translation_agent(model, file_store)
+    file_agent = create_file_translation_agent(model, file_store, subagent_specs=subagent_specs)
     file_subagent: CompiledSubAgent = {
         "name": "file-translation",
         "description": "TXT 파일을 분석, 추출, 번역, 검증, 사람 검수 후 교체합니다.",
         "runnable": file_agent,
     }
-    return create_deep_agent(
+    document = create_deep_agent(
         model=model,
         subagents=[file_subagent],
         middleware=[DocumentDelegationMiddleware()],
@@ -29,3 +31,5 @@ def create_document_agent(
             "정확히 한 번 위임하고 그 결과를 반환하세요."
         ),
     )
+    document.file_translation_graph = file_agent
+    return document

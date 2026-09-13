@@ -50,6 +50,17 @@ class AgentApiClient:
         response.raise_for_status()
         return response.json()
 
+    def review_action(self, run_id: str, payload: dict[str, Any]):
+        yield from self._post_events(f"/runs/{run_id}/review-actions", payload)
+
+    def retry(self, run_id: str):
+        yield from self._post_events(f"/runs/{run_id}/retry", {})
+
+    def _post_events(self, path: str, payload: dict[str, Any]):
+        with httpx.stream("POST", f"{self.base_url}{path}", json=payload, timeout=300) as response:
+            response.raise_for_status()
+            yield from parse_sse_lines(response.iter_lines())
+
     def download(self, run_id: str) -> bytes:
         response = httpx.get(f"{self.base_url}/runs/{run_id}/download", timeout=30)
         response.raise_for_status()

@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from app.agents.middleware import (
@@ -115,3 +116,21 @@ def test_file_pipeline_schedules_first_missing_stage():
     )
     assert result["jump_to"] == "tools"
     assert result["messages"][0].tool_calls[0]["args"]["subagent_type"] == "file-analyzer"
+
+
+def test_document_does_not_treat_error_as_completion():
+    messages = [
+        AIMessage(
+            content="",
+            tool_calls=[
+                {
+                    "name": "task",
+                    "id": "failed",
+                    "args": {"subagent_type": "file-translation", "description": "translate"},
+                }
+            ],
+        ),
+        ToolMessage(content="failed", status="error", tool_call_id="failed"),
+    ]
+    with pytest.raises(ValueError):
+        DocumentDelegationMiddleware().before_model({"messages": messages}, None)
