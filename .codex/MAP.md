@@ -7,6 +7,12 @@
 
 ## AI/
 
+### Agent Streaming (`AI/agent_streaming/`)
+- `README.md` — DeepAgent/LangGraph 공통 파이프라인의 `StreamingResponse`·`EventSourceResponse` 비교 실행 가이드
+- `docs/specs/2026-09-20-agent-streaming-production-design.md` — Redis 멀티턴 checkpoint, PostgreSQL 로그, SSE 운영 설계
+- `docs/plans/2026-09-20-agent-streaming-implementation.md` — TDD 구현 계획과 진행 체크리스트
+- `docs/reports/load-test-report.md` — 현재 테스트 장비용 1/10 부하(30 connections, 10 Agent runs, 1 RPS) 실행 기준
+
 ### Matplotlib (`AI/Matplotlib/`)
 - `01` ~ `17` — 그래프 기초, 축/범례/스타일, 저장, 바 그래프, 파이 차트, 산점도, 다중 그래프 (Jupyter)
 
