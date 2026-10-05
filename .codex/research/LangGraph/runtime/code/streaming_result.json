@@ -1,0 +1,135 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "updates_and_values": {
+      "status": "passed",
+      "observed": {
+        "modes": [
+          "values",
+          "updates",
+          "values"
+        ],
+        "updates": [
+          {
+            "work": {
+              "value": 1
+            }
+          }
+        ],
+        "values": [
+          {
+            "value": 0,
+            "messages": []
+          },
+          {
+            "value": 1,
+            "messages": []
+          }
+        ],
+        "invoke_matches_last_value": true
+      }
+    },
+    "custom_and_node_messages": {
+      "status": "passed",
+      "observed": {
+        "event_modes": [
+          "values",
+          "custom",
+          "messages",
+          "values"
+        ],
+        "custom": [
+          {
+            "progress": "working"
+          }
+        ],
+        "message_type": "AIMessage",
+        "message_node": "work",
+        "message_content": "complete message",
+        "final_value": 1
+      }
+    },
+    "v2_shape": {
+      "status": "passed",
+      "observed": {
+        "event_fields": [
+          [
+            "data",
+            "interrupts",
+            "ns",
+            "type"
+          ],
+          [
+            "data",
+            "ns",
+            "type"
+          ],
+          [
+            "data",
+            "interrupts",
+            "ns",
+            "type"
+          ]
+        ],
+        "event_types": [
+          "values",
+          "updates",
+          "values"
+        ],
+        "root_namespace": []
+      }
+    },
+    "tasks_and_checkpoints": {
+      "status": "passed",
+      "observed": {
+        "task_events": 2,
+        "checkpoint_events": 3,
+        "task_payload_keys": [
+          "error",
+          "id",
+          "input",
+          "interrupts",
+          "name",
+          "result",
+          "triggers"
+        ],
+        "checkpoint_payload_keys": [
+          "config",
+          "metadata",
+          "next",
+          "parent_config",
+          "tasks",
+          "values"
+        ],
+        "saved_final_value": 1
+      }
+    },
+    "async_close": {
+      "status": "passed",
+      "observed": {
+        "first_event": {
+          "progress": "started"
+        },
+        "node_cancelled": true,
+        "node_returned": false,
+        "saved_value": 0,
+        "next": [
+          "work"
+        ]
+      }
+    },
+    "subgraph_namespaces": {
+      "status": "passed",
+      "observed": {
+        "nested_namespace_has_child_task": true,
+        "root_namespace": [],
+        "nested_payload_nodes": [
+          "work"
+        ],
+        "parent_payload_nodes": [
+          "child"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "context_and_state": {
+      "status": "passed",
+      "observed": {
+        "runtime_context_used": true,
+        "saved_keys": [
+          "question",
+          "response"
+        ],
+        "client_stored_in_state": false,
+        "dict_context_coerced": "B:q"
+      }
+    },
+    "cache_and_context": {
+      "status": "passed",
+      "observed": {
+        "context_only_cache_result": "A:q",
+        "context_only_calls": [
+          "A"
+        ],
+        "after_clear_result": "B:q",
+        "tenant_in_node_input_results": [
+          "A:q",
+          "B:q"
+        ]
+      }
+    },
+    "recursion_limit": {
+      "status": "passed",
+      "observed": {
+        "unbounded_loop_error": "GraphRecursionError",
+        "with_stop_condition": {
+          "count": 3
+        }
+      }
+    },
+    "concurrency_limit": {
+      "status": "passed",
+      "observed": {
+        "configured_max_concurrency": 2,
+        "peak_node_concurrency": 2,
+        "node_calls": 5,
+        "recursion_limit": 3
+      }
+    },
+    "same_thread_overlap": {
+      "status": "passed",
+      "observed": {
+        "both_nodes_enter_before_release": true,
+        "call_outputs": [
+          1,
+          2
+        ],
+        "final_checkpoint_winner_asserted": false
+      }
+    }
+  }
+}

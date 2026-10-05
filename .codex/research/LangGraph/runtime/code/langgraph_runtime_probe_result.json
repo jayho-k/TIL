@@ -1,0 +1,79 @@
+{
+  "versions": {
+    "deepagents": "0.7.13",
+    "langchain": "1.4.0",
+    "langchain-core": "1.6.3",
+    "langgraph": "1.2.11",
+    "langgraph-checkpoint": "4.2.0",
+    "langgraph-prebuilt": "1.1.0"
+  },
+  "passed": 9,
+  "probes": {
+    "compiled_channels": {
+      "b_reads": [
+        "x"
+      ],
+      "b_triggers": [
+        "branch:to:b"
+      ]
+    },
+    "partial_updates": {
+      "partial": [
+        "seed",
+        "new"
+      ],
+      "full_accumulated_value": [
+        "seed",
+        "seed",
+        "new"
+      ]
+    },
+    "step_visibility_and_aliases": {
+      "both_read": [
+        0,
+        0
+      ],
+      "next_x": 1,
+      "outer_dicts_distinct": true,
+      "nested_object_shared": true
+    },
+    "concurrent_collision": {
+      "result": "InvalidUpdateError (no last-finisher-wins)"
+    },
+    "short_term_memory": {
+      "same_thread_ids": [
+        "u1",
+        "u2"
+      ],
+      "other_thread_ids": [
+        "v1"
+      ]
+    },
+    "interrupted_node_restarts": {
+      "before_interrupt_executions": 2,
+      "approved": true
+    },
+    "retry_reexecutes_effect": {
+      "effect_executions": 2,
+      "done": true
+    },
+    "pending_writes_recovery": {
+      "executions": {
+        "a": 1,
+        "b": 2
+      },
+      "results": [
+        "a",
+        "b"
+      ]
+    },
+    "deepagents_message_channel": {
+      "channel": "DeltaChannel",
+      "snapshot_frequency": 50,
+      "restored_ids": [
+        "d1",
+        "d2"
+      ]
+    }
+  }
+}

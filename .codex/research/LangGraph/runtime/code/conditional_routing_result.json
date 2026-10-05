@@ -1,0 +1,236 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "normal_route": {
+      "status": "passed",
+      "observed": {
+        "registration": {
+          "branch_class": "BranchSpec",
+          "path_class": "RunnableCallable",
+          "ends": {
+            "found": "answer",
+            "empty": "__end__"
+          },
+          "input_schema": "State",
+          "events": []
+        },
+        "search_writers": [
+          "ChannelWrite",
+          "RunnableCallable"
+        ],
+        "answer_triggers": [
+          "branch:to:answer"
+        ],
+        "events": [
+          {
+            "name": "search",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          },
+          {
+            "name": "route",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": [
+              "evidence"
+            ]
+          },
+          {
+            "name": "answer",
+            "step": 2,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": [
+              "evidence"
+            ]
+          }
+        ],
+        "output": {
+          "question": "runtime",
+          "results": [
+            "evidence"
+          ],
+          "answer": "evidence"
+        }
+      }
+    },
+    "route_to_end": {
+      "status": "passed",
+      "observed": {
+        "events": [
+          {
+            "name": "search",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          },
+          {
+            "name": "route",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          }
+        ],
+        "output": {
+          "question": "empty",
+          "results": []
+        }
+      }
+    },
+    "static_edge_and_end": {
+      "status": "passed",
+      "observed": {
+        "events": [
+          {
+            "name": "search",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          },
+          {
+            "name": "route",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          },
+          {
+            "name": "audit",
+            "step": 2,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          }
+        ],
+        "output": {
+          "question": "empty",
+          "results": [],
+          "audited": true
+        }
+      }
+    },
+    "narrow_router_input": {
+      "status": "passed",
+      "observed": {
+        "registration": {
+          "branch_class": "BranchSpec",
+          "path_class": "RunnableCallable",
+          "ends": {
+            "found": "answer",
+            "empty": "__end__"
+          },
+          "input_schema": "RouteInput",
+          "events": []
+        },
+        "router_input": {
+          "name": "route",
+          "step": 1,
+          "keys": [
+            "results"
+          ],
+          "results": [
+            "evidence"
+          ]
+        }
+      }
+    },
+    "routing_errors": {
+      "status": "passed",
+      "observed": {
+        "unmapped_label": "'not_in_map'",
+        "duplicate_branch": "Branch with name `route` already exists for node `search`",
+        "unknown_mapped_target": "At 'search' node, 'condition' branch found unknown target 'missing'"
+      }
+    },
+    "send_inputs": {
+      "status": "passed",
+      "observed": {
+        "worker_inputs": [
+          {
+            "item": "a"
+          },
+          {
+            "item": "b"
+          }
+        ],
+        "output": {
+          "items": [
+            "a",
+            "b"
+          ],
+          "processed": [
+            "A",
+            "B"
+          ]
+        }
+      }
+    },
+    "async_route": {
+      "status": "passed",
+      "observed": {
+        "events": [
+          {
+            "name": "search",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": []
+          },
+          {
+            "name": "route",
+            "step": 1,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": [
+              "evidence"
+            ]
+          },
+          {
+            "name": "answer",
+            "step": 2,
+            "keys": [
+              "question",
+              "results"
+            ],
+            "results": [
+              "evidence"
+            ]
+          }
+        ],
+        "output": {
+          "question": "runtime",
+          "results": [
+            "evidence"
+          ],
+          "answer": "evidence"
+        }
+      }
+    }
+  }
+}

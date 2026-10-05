@@ -1,0 +1,116 @@
+{
+  "langgraph_version": "1.2.11",
+  "deepagents_version": "0.7.13",
+  "results": {
+    "message_identity": {
+      "status": "passed",
+      "observed": {
+        "replaced": [
+          {
+            "id": "u1",
+            "type": "human",
+            "content": "edited"
+          },
+          {
+            "id": "a1",
+            "type": "ai",
+            "content": "first"
+          }
+        ],
+        "removed": [
+          {
+            "id": "u1",
+            "type": "human",
+            "content": "edited"
+          },
+          {
+            "id": "u2",
+            "type": "human",
+            "content": "new"
+          }
+        ],
+        "reset": [
+          {
+            "id": "r1",
+            "type": "human",
+            "content": "reset"
+          }
+        ]
+      }
+    },
+    "reducer_differences": {
+      "status": "passed",
+      "observed": {
+        "standard_unknown_delete": "Attempting to delete a message with an ID that doesn't exist ('missing')",
+        "deepagent_unknown_delete": [],
+        "deepagent_direct_reducer_assigns_id": false,
+        "standard_assigns_id": true
+      }
+    },
+    "batch_example": {
+      "status": "passed",
+      "observed": {
+        "grouped": [
+          {
+            "id": "a1",
+            "type": "ai",
+            "content": "reply"
+          }
+        ],
+        "combined": [
+          {
+            "id": "a1",
+            "type": "ai",
+            "content": "reply"
+          }
+        ]
+      }
+    },
+    "update_and_replay": {
+      "status": "passed",
+      "observed": {
+        "reducer_calls": [
+          {
+            "base": [],
+            "writes": [
+              [
+                1
+              ]
+            ]
+          },
+          {
+            "base": [
+              1
+            ],
+            "writes": [
+              [
+                2
+              ]
+            ]
+          }
+        ],
+        "value": [
+          1,
+          2
+        ]
+      }
+    },
+    "deepagent_restore": {
+      "status": "passed",
+      "observed": {
+        "channel": "DeltaChannel",
+        "snapshot_frequency": 50,
+        "latest_checkpoint_contains_full_messages": false,
+        "restored_contents": [
+          "one",
+          "reply 1",
+          "two",
+          "reply 2"
+        ],
+        "stable_ids_across_reads": true,
+        "ancestor_message_writes": 4,
+        "next_nodes": []
+      }
+    }
+  }
+}

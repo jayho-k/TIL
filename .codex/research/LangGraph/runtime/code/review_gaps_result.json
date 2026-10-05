@@ -1,0 +1,92 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "unequal_join": {
+      "status": "passed",
+      "observed": {
+        "separate_edges": {
+          "c_inputs": [
+            [
+              "a"
+            ],
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "final_results": [
+            "a",
+            "b"
+          ]
+        },
+        "barrier_edge": {
+          "c_inputs": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "final_results": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    },
+    "same_step_join": {
+      "status": "passed",
+      "observed": {
+        "separate_edges": {
+          "c_inputs": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "final_results": [
+            "a",
+            "b"
+          ]
+        },
+        "barrier_edge": {
+          "c_inputs": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "final_results": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    },
+    "missing_barrier_signal": {
+      "status": "passed",
+      "observed": {
+        "c_inputs": [],
+        "final_results": [
+          "a"
+        ]
+      }
+    },
+    "cached_control_writes": {
+      "status": "passed",
+      "observed": {
+        "calls": {
+          "work": 1,
+          "route": 1,
+          "next": 2
+        },
+        "first_log": [
+          "work"
+        ],
+        "second_log": [
+          "work",
+          "work"
+        ]
+      }
+    }
+  }
+}

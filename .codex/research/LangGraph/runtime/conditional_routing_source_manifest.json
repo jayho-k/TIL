@@ -1,0 +1,187 @@
+{
+  "verified_date": "2026-10-05",
+  "langgraph_version": "1.2.11",
+  "source_root": "AI\\agent_hitl\\.venv\\Lib\\site-packages",
+  "files": {
+    "langgraph/graph/state.py": {
+      "sha256": "d8c8021a93a8fc895d62335a9482e50d51353343bf885901e6487611dcd0d212",
+      "symbols": [
+        {
+          "name": "add_conditional_edges",
+          "line": 982,
+          "end_line": 1030
+        },
+        {
+          "name": "validate",
+          "line": 1129,
+          "end_line": 1175
+        },
+        {
+          "name": "attach_branch",
+          "line": 1577,
+          "end_line": 1624
+        }
+      ]
+    },
+    "langgraph/graph/_branch.py": {
+      "sha256": "2d0e8da9936edaa6ca0202f59178fe50326d10f34ef2c5c882a59cd34430fe40",
+      "symbols": [
+        {
+          "name": "_get_branch_path_input_schema",
+          "line": 41,
+          "end_line": 80
+        },
+        {
+          "name": "from_path",
+          "line": 89,
+          "end_line": 120
+        },
+        {
+          "name": "run",
+          "line": 122,
+          "end_line": 144
+        },
+        {
+          "name": "_route",
+          "line": 146,
+          "end_line": 167
+        },
+        {
+          "name": "_aroute",
+          "line": 169,
+          "end_line": 190
+        },
+        {
+          "name": "_finish",
+          "line": 192,
+          "end_line": 225
+        }
+      ]
+    },
+    "langgraph/pregel/_read.py": {
+      "sha256": "c44cc0c8597055fee343a65f4d8c1841bdf07a67e0b7d5e0a291523ec970a3dd",
+      "symbols": [
+        {
+          "name": "flat_writers",
+          "line": 210,
+          "end_line": 224
+        },
+        {
+          "name": "node",
+          "line": 227,
+          "end_line": 248
+        },
+        {
+          "name": "invoke",
+          "line": 261,
+          "end_line": 272
+        },
+        {
+          "name": "stream",
+          "line": 287,
+          "end_line": 298
+        }
+      ]
+    },
+    "langgraph/pregel/_algo.py": {
+      "sha256": "29d54dc6704e4e4a0385d36317faa74f4fa2ceefd6836aca03f1938b9fa51fa5",
+      "symbols": [
+        {
+          "name": "local_read",
+          "line": 188,
+          "end_line": 224
+        },
+        {
+          "name": "prepare_next_tasks",
+          "line": 349,
+          "end_line": 367
+        },
+        {
+          "name": "prepare_next_tasks",
+          "line": 371,
+          "end_line": 389
+        },
+        {
+          "name": "prepare_next_tasks",
+          "line": 392,
+          "end_line": 513
+        },
+        {
+          "name": "_triggers",
+          "line": 1260,
+          "end_line": 1277
+        }
+      ]
+    },
+    "langgraph/pregel/_loop.py": {
+      "sha256": "33150cf70fc08fd01affeae0345aa20569d2705704e3d209733d9c7b43dd5c0a",
+      "symbols": [
+        {
+          "name": "_first",
+          "line": 848,
+          "end_line": 1079
+        }
+      ]
+    },
+    "langgraph/pregel/main.py": {
+      "sha256": "02651dc9471b88f9299d12f6d836e67ad1114ad84498b9ae26df6cd75be8592c",
+      "symbols": [
+        {
+          "name": "validate",
+          "line": 933,
+          "end_line": 948
+        },
+        {
+          "name": "stream",
+          "line": 2616,
+          "end_line": 2633
+        },
+        {
+          "name": "stream",
+          "line": 2636,
+          "end_line": 2653
+        },
+        {
+          "name": "stream",
+          "line": 2655,
+          "end_line": 3021
+        },
+        {
+          "name": "invoke",
+          "line": 3783,
+          "end_line": 3798
+        },
+        {
+          "name": "invoke",
+          "line": 3801,
+          "end_line": 3816
+        },
+        {
+          "name": "invoke",
+          "line": 3819,
+          "end_line": 3834
+        },
+        {
+          "name": "invoke",
+          "line": 3836,
+          "end_line": 3957
+        }
+      ]
+    },
+    "langgraph/pregel/_write.py": {
+      "sha256": "4f067c1c034fab2be682ec52b6101631d44494a0d23f9048aafbe65f660218d2",
+      "symbols": [
+        {
+          "name": "_assemble_writes",
+          "line": 172,
+          "end_line": 192
+        },
+        {
+          "name": "do_write",
+          "line": 106,
+          "end_line": 126
+        }
+      ]
+    }
+  }
+}

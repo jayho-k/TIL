@@ -1,0 +1,145 @@
+{
+  "langgraph_version": "1.2.11",
+  "checkpoint_version": "4.2.0",
+  "results": {
+    "memory_history_and_output": {
+      "status": "passed",
+      "observed": {
+        "before_first_run": {
+          "values": {},
+          "next": []
+        },
+        "first_output": {
+          "count": 1
+        },
+        "second_output": {
+          "count": 2
+        },
+        "latest_values": {
+          "question": "two",
+          "records": [
+            "one",
+            "two"
+          ],
+          "count": 2
+        },
+        "latest_next": [],
+        "specified_checkpoint_values": {
+          "question": "one",
+          "records": [
+            "one"
+          ],
+          "count": 1
+        },
+        "history": [
+          {
+            "step": 4,
+            "source": "loop",
+            "next": [],
+            "values": {
+              "question": "two",
+              "records": [
+                "one",
+                "two"
+              ],
+              "count": 2
+            }
+          },
+          {
+            "step": 3,
+            "source": "loop",
+            "next": [
+              "record"
+            ],
+            "values": {
+              "question": "two",
+              "records": [
+                "one"
+              ],
+              "count": 1
+            }
+          },
+          {
+            "step": 2,
+            "source": "input",
+            "next": [
+              "__start__"
+            ],
+            "values": {
+              "question": "one",
+              "records": [
+                "one"
+              ],
+              "count": 1
+            }
+          }
+        ],
+        "reads_execute_user_nodes": false,
+        "other_thread_values": {
+          "question": "other",
+          "records": [
+            "other"
+          ],
+          "count": 1
+        },
+        "checkpoint_keys": [
+          "channel_values",
+          "channel_versions",
+          "id",
+          "ts",
+          "updated_channels",
+          "v",
+          "versions_seen"
+        ],
+        "checkpoint_format_version": 4
+      }
+    },
+    "pending_views_and_recovery": {
+      "status": "passed",
+      "observed": {
+        "latest_view": {
+          "values": {
+            "question": "q",
+            "records": [
+              "a"
+            ]
+          },
+          "next": [
+            "b"
+          ]
+        },
+        "specified_checkpoint_view": {
+          "values": {
+            "question": "q",
+            "records": []
+          },
+          "next": [
+            "a",
+            "b"
+          ]
+        },
+        "pending_write_channels": [
+          "__error__",
+          "records"
+        ],
+        "calls_after_recovery": {
+          "a": 1,
+          "b": 2
+        },
+        "final_values": {
+          "question": "q",
+          "records": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    },
+    "missing_checkpointer": {
+      "status": "passed",
+      "observed": {
+        "error": "No checkpointer set"
+      }
+    }
+  }
+}

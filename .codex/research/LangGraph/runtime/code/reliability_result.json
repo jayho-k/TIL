@@ -1,0 +1,60 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "retry_scope": {
+      "status": "passed",
+      "observed": {
+        "external_effect_count": 3,
+        "channel_results": [
+          "success"
+        ],
+        "unmatched_error_attempts": 1
+      }
+    },
+    "node_timeout": {
+      "status": "passed",
+      "observed": {
+        "timeout_kind": "run",
+        "node_cancellation_observed": true,
+        "external_effect_remains": true,
+        "sync_timeout_error": "Node timeouts are only supported for async nodes because sync Python execution cannot be safely cancelled in-process. Node 'work' is sync."
+      }
+    },
+    "durability_sync": {
+      "status": "passed",
+      "observed": {
+        "second_started_after_first_save": true,
+        "saved_values": [
+          null,
+          0,
+          1,
+          2
+        ],
+        "final_value": 2
+      }
+    },
+    "durability_async": {
+      "status": "passed",
+      "observed": {
+        "second_started_after_first_save": false,
+        "saved_values": [
+          null,
+          0,
+          1,
+          2
+        ],
+        "final_value": 2
+      }
+    },
+    "durability_exit": {
+      "status": "passed",
+      "observed": {
+        "second_started_after_first_save": false,
+        "saved_values": [
+          2
+        ],
+        "final_value": 2
+      }
+    }
+  }
+}

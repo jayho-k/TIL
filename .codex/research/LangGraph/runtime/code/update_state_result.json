@@ -1,0 +1,74 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "writers_and_routing": {
+      "status": "passed",
+      "observed": {
+        "calls_during_update": [
+          "route"
+        ],
+        "after_update_values": {
+          "results": [
+            "seed",
+            "manual"
+          ],
+          "answer": "seed"
+        },
+        "after_update_next": [
+          "answer"
+        ],
+        "source": "update",
+        "new_checkpoint_created": true,
+        "old_checkpoint_values": {
+          "results": [
+            "seed"
+          ],
+          "answer": "seed"
+        },
+        "after_continue": {
+          "results": [
+            "seed",
+            "manual"
+          ],
+          "answer": "seed | manual"
+        }
+      }
+    },
+    "attribution_and_overwrite": {
+      "status": "passed",
+      "observed": {
+        "as_answer_next": [],
+        "as_answer_values": {
+          "results": [
+            "seed",
+            "manual"
+          ],
+          "answer": "seed"
+        },
+        "reset_values": {
+          "results": [],
+          "answer": "seed"
+        },
+        "reset_next": []
+      }
+    },
+    "ambiguous_attribution": {
+      "status": "passed",
+      "observed": {
+        "error": "Ambiguous update, specify as_node"
+      }
+    },
+    "deepagent_manual_message_ids": {
+      "status": "passed",
+      "observed": {
+        "update_state_auto_assigns_missing_id_in_this_case": false,
+        "explicit_id_preserved_across_reads": true,
+        "contents": [
+          "first",
+          "manual",
+          "explicit"
+        ]
+      }
+    }
+  }
+}

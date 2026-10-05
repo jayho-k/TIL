@@ -1,0 +1,98 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "partial_and_overwrite": {
+      "status": "passed",
+      "observed": {
+        "partial": {
+          "question": "q",
+          "results": [
+            "seed",
+            "new"
+          ]
+        },
+        "full": {
+          "question": "q",
+          "results": [
+            "seed",
+            "seed",
+            "new"
+          ]
+        },
+        "empty_list": {
+          "question": "q",
+          "results": [
+            "seed"
+          ]
+        },
+        "overwrite": {
+          "question": "q",
+          "results": []
+        }
+      }
+    },
+    "return_contract": {
+      "status": "passed",
+      "observed": {
+        "none_does_not_stop_edges": [
+          "next"
+        ],
+        "unknown_key_filtered": {
+          "question": "q",
+          "results": [],
+          "answer": "ok"
+        },
+        "invalid_return": "Expected dict, got invalid\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/INVALID_GRAPH_NODE_RETURN_VALUE"
+      }
+    },
+    "parallel_step": {
+      "status": "passed",
+      "observed": {
+        "inputs": [
+          {
+            "node": "fast",
+            "results": [
+              "seed"
+            ]
+          },
+          {
+            "node": "slow",
+            "results": [
+              "seed"
+            ]
+          }
+        ],
+        "completion_order": [
+          "fast",
+          "slow"
+        ],
+        "merged_results": [
+          "seed",
+          "slow",
+          "fast"
+        ]
+      }
+    },
+    "equal_writes_collision": {
+      "status": "passed",
+      "observed": {
+        "same_value_still_conflicts": "At key 'answer': Can receive only one value per step. Use an Annotated key to handle multiple values.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE"
+      }
+    },
+    "input_aliases": {
+      "status": "passed",
+      "observed": {
+        "top_dict_is_distinct": true,
+        "nested_object_is_shared": true
+      }
+    },
+    "command_and_static_edge": {
+      "status": "passed",
+      "observed": {
+        "value": 1,
+        "fixed_seen": true,
+        "chosen_seen": true
+      }
+    }
+  }
+}

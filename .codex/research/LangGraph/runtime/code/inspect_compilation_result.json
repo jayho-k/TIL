@@ -1,0 +1,129 @@
+{
+  "langgraph_version": "1.2.11",
+  "before_compile": {
+    "channels": {
+      "question": "LastValue",
+      "answer": "LastValue",
+      "results": "BinaryOperatorAggregate"
+    },
+    "nodes": [],
+    "calls": []
+  },
+  "after_add_node": {
+    "search": {
+      "class": "StateNodeSpec",
+      "runnable": "RunnableCallable",
+      "input_schema": "State",
+      "has_triggers": false,
+      "has_writers": false
+    },
+    "answer": {
+      "class": "StateNodeSpec",
+      "runnable": "RunnableCallable",
+      "input_schema": "State",
+      "has_triggers": false,
+      "has_writers": false
+    }
+  },
+  "after_add_edge": {
+    "edges": [
+      [
+        "__start__",
+        "search"
+      ],
+      [
+        "answer",
+        "__end__"
+      ],
+      [
+        "search",
+        "answer"
+      ]
+    ],
+    "waiting_edges": [],
+    "calls": []
+  },
+  "registration_checks": {
+    "inferred_name": "narrow",
+    "inferred_input_schema": "SearchInput",
+    "explicit_input_schema": "State",
+    "added_channel": "private_note",
+    "duplicate_string_edge_stored_once": true,
+    "string_edge_compile_error": "Found edge starting at unknown node 'not_registered'",
+    "list_edge_registration_error": "Need to add_node `not_registered` first"
+  },
+  "after_compile": {
+    "class": "CompiledStateGraph",
+    "base_is_pregel": true,
+    "channels": {
+      "question": "LastValue",
+      "answer": "LastValue",
+      "results": "BinaryOperatorAggregate",
+      "__start__": "EphemeralValue",
+      "__pregel_tasks": "Topic",
+      "branch:to:search": "EphemeralValue",
+      "branch:to:answer": "EphemeralValue"
+    },
+    "input_channels": "__start__",
+    "output_channels": [
+      "answer"
+    ],
+    "stream_channels": [
+      "question",
+      "answer",
+      "results"
+    ],
+    "nodes": {
+      "__start__": {
+        "class": "PregelNode",
+        "channels": "__start__",
+        "triggers": [
+          "__start__"
+        ],
+        "writers": [
+          "ChannelWrite",
+          "ChannelWrite"
+        ]
+      },
+      "search": {
+        "class": "PregelNode",
+        "channels": [
+          "question",
+          "answer",
+          "results"
+        ],
+        "triggers": [
+          "branch:to:search"
+        ],
+        "writers": [
+          "ChannelWrite",
+          "ChannelWrite"
+        ]
+      },
+      "answer": {
+        "class": "PregelNode",
+        "channels": [
+          "question",
+          "answer",
+          "results"
+        ],
+        "triggers": [
+          "branch:to:answer"
+        ],
+        "writers": [
+          "ChannelWrite"
+        ]
+      }
+    },
+    "calls": []
+  },
+  "after_invoke": {
+    "calls": [
+      "search",
+      "answer"
+    ],
+    "output": {
+      "answer": "evidence for runtime"
+    }
+  }
+}

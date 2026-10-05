@@ -1,0 +1,67 @@
+{
+  "langgraph_version": "1.2.11",
+  "results": {
+    "single_approval": {
+      "status": "passed",
+      "observed": {
+        "paused_next": [
+          "review"
+        ],
+        "paused_payload": {
+          "question": "approve?"
+        },
+        "calls_after_resume": {
+          "before": 2,
+          "after": 1
+        },
+        "final": {
+          "approved": false
+        }
+      }
+    },
+    "ordered_interrupts": {
+      "status": "passed",
+      "observed": {
+        "first_question": "name?",
+        "second_question": "age?",
+        "calls": {
+          "before_first": 3,
+          "between": 2
+        },
+        "final": {
+          "name": "Jay",
+          "age": 30
+        }
+      }
+    },
+    "none_is_not_answer": {
+      "status": "passed",
+      "observed": {
+        "none_input_reinterrupts": true,
+        "entry_count": 2
+      }
+    },
+    "parallel_resume_map": {
+      "status": "passed",
+      "observed": {
+        "pending_interrupts": 2,
+        "scalar_resume_error": "When there are multiple pending interrupts, you must specify the interrupt id when resuming. Docs: https://docs.langchain.com/oss/python/langgraph/add-human-in-the-loop#resume-multiple-interrupts-with-one-invocation.",
+        "mapping_resolves_both": true,
+        "final": {
+          "a": "ok-a",
+          "b": "ok-b"
+        }
+      }
+    },
+    "static_breakpoint": {
+      "status": "passed",
+      "observed": {
+        "node_called_before_pause": false,
+        "none_continues_static_pause": true,
+        "final": {
+          "done": true
+        }
+      }
+    }
+  }
+}
