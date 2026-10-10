@@ -256,3 +256,15 @@
 | `PS/programmers/` | 프로그래머스 |
 | `PS/swea/` | SWEA (삼성) |
 | `PS/test/` | 기타 테스트 |
+
+---
+
+## 조사 자료 (`.codex/research/`)
+
+### AgentComponent / Decomposer
+
+- `.codex/research/AgentComponent/Decomposer/self-ask_ko_translation.md` — Self-ask 논문 한국어 완역 (arXiv:2210.03350v3, 본문·부록·표·그림·각주·참고문헌 포함)
+- `.codex/research/AgentComponent/Decomposer/01_single_hop_retrieval_improvement_research.md` — Advanced RAG 이후 단일 홉 검색 고도화: 도메인 적응·hard negative·reranker 학습과 실험 설계
+- `.codex/research/AgentComponent/Decomposer/02_self_ask_prompt_and_execution_analysis.md` — Self-ask 번역본 기반 프롬프트·실행 분석, 원 논문 방식 코드와 현대 응용의 차이
+- `.codex/research/AgentComponent/Decomposer/code/` — Self-ask LangGraph 실행 코드, Ollama 연결, 대역 예제와 28개 테스트 (분석 문서 10·11절)
+- `.codex/research/AgentComponent/Decomposer/03_self_ask_langgraph.md` — Self-ask LangGraph 변환: 상태·노드·조건 분기, 실행법과 검증 결과
