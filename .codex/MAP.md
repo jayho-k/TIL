@@ -268,3 +268,7 @@
 - `.codex/research/AgentComponent/Decomposer/02_self_ask_prompt_and_execution_analysis.md` — Self-ask 번역본 기반 프롬프트·실행 분석, 원 논문 방식 코드와 현대 응용의 차이
 - `.codex/research/AgentComponent/Decomposer/code/` — Self-ask LangGraph 실행 코드, Ollama 연결, 대역 예제와 28개 테스트 (분석 문서 10·11절)
 - `.codex/research/AgentComponent/Decomposer/03_self_ask_langgraph.md` — Self-ask LangGraph 변환: 상태·노드·조건 분기, 실행법과 검증 결과
+
+### AgentComponent / Evaulation
+
+- `.codex/research/AgentComponent/Evaulation/paper/Large_Language_Models_can_Accurately_Predict_Searcher_Preferences_ko_translation.md` — 검색자 선호 예측 논문 한국어 완역 (arXiv:2309.10621v3, 본문·부록·표 5개·그림 4개·각주·참고문헌 57개 포함)
