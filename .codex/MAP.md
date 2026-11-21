@@ -271,4 +271,8 @@
 
 ### AgentComponent / Evaulation
 
+- `.codex/research/AgentComponent/Evaulation/03_rag_evaluation_surveys_selection.md` — RAG 평가·평가셋 관련 survey 선정: 공개·개정일, 실제 문헌 범위, OpenAlex 인용 수와 독서 우선순위 (2026-10-18)
+- `.codex/research/AgentComponent/Evaulation/03_survey_citation_snapshot.json` — survey 후보 15개 OpenAlex 공식 API 원본 응답과 조회 시간
+- `.codex/research/AgentComponent/Evaulation/02_seed_golden_set_expansion_research.md` — 골든셋 50개 기반 확장 재조사: LaRA seed QA 생성·검토, DataMorgana 유형·비율 제어, 근거 검증과 2026 후속 연구 (2026-10-18)
+- `.codex/research/AgentComponent/Evaulation/01_rag_evaluation_dataset_reading_roadmap.md` — RAG 평가셋 구축 후속 논문, 2025–2026 연구 방향, 사람 기준·합성셋 검증과 초기 실험 제안 (2026-10-18 조사)
 - `.codex/research/AgentComponent/Evaulation/paper/Large_Language_Models_can_Accurately_Predict_Searcher_Preferences_ko_translation.md` — 검색자 선호 예측 논문 한국어 완역 (arXiv:2309.10621v3, 본문·부록·표 5개·그림 4개·각주·참고문헌 57개 포함)

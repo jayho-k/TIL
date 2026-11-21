@@ -1,0 +1,133 @@
+services:
+  ollama:
+    image: ollama/ollama:0.32.9
+    container_name: a2a-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    healthcheck:
+      test: [ "CMD", "ollama", "list" ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app-2:
+    build: .
+    container_name: a2a-app-2
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      POSTGRES_URL: postgresql://a2a:a2a@postgres:5432/a2a
+      WORKER_URL: http://worker:8000
+      RECEIVER_URL: http://receiver:8100
+    depends_on:
+      ollama:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    container_name: a2a-postgres
+    environment:
+      POSTGRES_USER: a2a
+      POSTGRES_PASSWORD: a2a
+      POSTGRES_DB: a2a
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U a2a" ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  worker:
+    build: .
+    container_name: a2a-worker
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      POSTGRES_URL: postgresql://a2a:a2a@postgres:5432/a2a
+      RECEIVER_URL: http://receiver:8100
+    # command: uvicorn worker:app --host 0.0.0.0 --port 8000 --app-dir src --reload --reload-dir src
+    command: uvicorn a2a_server:app --host 0.0.0.0 --port 8000 --app-dir src --reload --reload-dir src
+    depends_on:
+      ollama:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  receiver:
+    build: .
+    container_name: a2a-receiver
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+    command: uvicorn receiver:app --host 0.0.0.0 --port 8100 --app-dir src --reload --reload-dir src
+
+  crew:
+    build:
+      context: .
+      dockerfile: Dockerfile.crew
+    container_name: a2a-crew
+    working_dir: /app
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./crew:/app/crew
+      - ./src:/app/shared:ro
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      CREWAI_DISABLE_TELEMETRY: "true"
+      PYTHONPATH: /app/crew:/app/shared
+    command: uvicorn crew_server:app --host 0.0.0.0 --port 8200 --app-dir crew --reload --reload-dir crew
+    depends_on:
+      ollama:
+        condition: service_healthy
+  # adk:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.adk
+  #   container_name: a2a-adk
+  #   working_dir: /app
+  #   volumes:
+  #     - ./adk:/app/adk
+  #   environment:
+  #     OLLAMA_URL: http://ollama:11434
+  #     PYTHONPATH: /app/adk
+  #   depends_on:
+  #     ollama:
+  #       condition: service_healthy
+
+  adk:
+    build:
+      context: .
+      dockerfile: Dockerfile.adk
+    container_name: a2a-adk
+    working_dir: /app
+    ports:
+      - "8300:8300"
+    volumes:
+      - ./adk:/app/adk
+      - ./src:/app/shared:ro
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      CREW_URL: http://crew:8200
+      PYTHONPATH: /app/adk:/app/shared
+    command: uvicorn adk_server:app --host 0.0.0.0 --port 8300 --app-dir adk --reload --reload-dir adk
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+volumes:
+  ollama-data:
+  pg-data:
+

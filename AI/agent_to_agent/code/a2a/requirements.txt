@@ -1,0 +1,11 @@
+langgraph==1.2.11
+langchain-core==1.5.4
+langchain-ollama==1.1.0
+langgraph-checkpoint-postgres==3.1.2
+psycopg[binary,pool]==3.3.4
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+httpx==0.28.1
+a2a-sdk==1.1.2
+
+grpcio==1.76.0
