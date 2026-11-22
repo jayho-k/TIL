@@ -58,8 +58,6 @@ services:
     # command: uvicorn worker:app --host 0.0.0.0 --port 8000 --app-dir src --reload --reload-dir src
     command: uvicorn a2a_server:app --host 0.0.0.0 --port 8000 --app-dir src --reload --reload-dir src
     depends_on:
-      ollama:
-        condition: service_healthy
       postgres:
         condition: service_healthy
 
@@ -87,9 +85,6 @@ services:
       CREWAI_DISABLE_TELEMETRY: "true"
       PYTHONPATH: /app/crew:/app/shared
     command: uvicorn crew_server:app --host 0.0.0.0 --port 8200 --app-dir crew --reload --reload-dir crew
-    depends_on:
-      ollama:
-        condition: service_healthy
   # adk:
   #   build:
   #     context: .
@@ -121,11 +116,7 @@ services:
       CREW_URL: http://crew:8200
       PYTHONPATH: /app/adk:/app/shared
     command: uvicorn adk_server:app --host 0.0.0.0 --port 8300 --app-dir adk --reload --reload-dir adk
-    depends_on:
-      ollama:
-        condition: service_healthy
 
 volumes:
-  ollama-data:
   pg-data:
 
